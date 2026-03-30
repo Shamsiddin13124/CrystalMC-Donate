@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<title>CrystalMC & MasterCraft</title>
+<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#060b14;--sf:#0d1626;--sf2:#111f36;
+  --cr:#00d4ff;--gold:#ffd700;--gr:#00ff88;
+  --rd:#ff4466;--or:#ff9922;--pu:#a855f7;
+  --tx:#e8f4ff;--mu:#6a8aaa;--br:rgba(0,212,255,.15);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--tx);font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden}
+
+/* BG */
+.glow{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 50% at 15% 40%,rgba(0,100,200,.1) 0%,transparent 60%),
+  radial-gradient(ellipse 50% 60% at 85% 20%,rgba(0,212,255,.07) 0%,transparent 60%);}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(0,212,255,.025) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(0,212,255,.025) 1px,transparent 1px);background-size:50px 50px;}
+
+/* ══════════════════════════
+   AUTH — always shows first
+══════════════════════════ */
+#authScreen{
+  position:relative;z-index:10;min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:1.5rem;
+}
+#mainApp{display:none}
+
+.auth-head{text-align:center;margin-bottom:2rem;}
+.auth-title{font-family:'Oxanium',monospace;font-size:clamp(1.5rem,6vw,2.2rem);font-weight:800;
+  background:linear-gradient(90deg,var(--cr),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.auth-sub{font-size:.72rem;color:var(--mu);letter-spacing:.18em;text-transform:uppercase;margin-top:.25rem;}
+
+/* Server status pills */
+.srv-pills{display:flex;gap:.75rem;justify-content:center;margin-bottom:1.8rem;flex-wrap:wrap;}
+.srv-pill{background:var(--sf);border:1px solid var(--br);border-radius:100px;
+  padding:.45rem 1rem;display:flex;align-items:center;gap:.55rem;font-size:.78rem;font-weight:600;}
+.sdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.sdot.on{background:var(--gr);box-shadow:0 0 7px var(--gr);animation:pulse 2s infinite;}
+.sdot.off{background:var(--rd);}
+.sdot.chk{background:var(--or);animation:bl 1s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 5px var(--gr)}50%{box-shadow:0 0 14px var(--gr)}}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* Auth card */
+.auth-card{background:var(--sf);border:1px solid var(--br);border-radius:18px;width:100%;max-width:400px;overflow:hidden;animation:popIn .4s ease;}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--br);}
+.atab{padding:.9rem;text-align:center;font-family:'Oxanium',monospace;font-size:.78rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;color:var(--mu);
+  background:none;border:none;border-bottom:2px solid transparent;transition:.2s;}
+.atab.active{color:var(--cr);border-bottom-color:var(--cr);}
+
+.auth-body{padding:1.8rem;}
+.apage{display:none;}.apage.active{display:block;}
+
+.fg{margin-bottom:1rem;}
+.fg label{display:block;font-size:.67rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--mu);margin-bottom:.32rem;}
+.fg input{width:100%;background:var(--bg);border:1px solid var(--br);border-radius:7px;
+  padding:.72rem .95rem;color:var(--tx);font-family:'Rajdhani',sans-serif;font-size:1rem;
+  font-weight:600;outline:none;transition:.2s;-webkit-appearance:none;}
+.fg input:focus{border-color:var(--cr);}
+.fg input::placeholder{color:var(--mu);}
+
+.auth-btn{width:100%;background:linear-gradient(135deg,#0077aa,#00d4ff);color:#000;border:none;
+  border-radius:8px;padding:.88rem;font-family:'Oxanium',monospace;font-size:.9rem;font-weight:800;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:.2s;-webkit-appearance:none;}
+.auth-btn:active{opacity:.85;transform:scale(.98);}
+
+.divider-or{display:flex;align-items:center;gap:.7rem;margin:.85rem 0;}
+.divider-or::before,.divider-or::after{content:'';flex:1;height:1px;background:var(--br);}
+.divider-or span{font-size:.7rem;color:var(--mu);}
+
+.g-btn{width:100%;background:var(--sf2);border:1px solid var(--br);border-radius:8px;
+  padding:.82rem;font-family:'Rajdhani',sans-serif;font-size:.9rem;font-weight:700;color:var(--tx);
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.7rem;transition:.2s;-webkit-appearance:none;}
+.g-btn:active{opacity:.8;}
+.g-btn:disabled{opacity:.4;cursor:not-allowed;}
+
+.aerr{background:rgba(255,68,102,.1);border:1px solid rgba(255,68,102,.3);border-radius:7px;
+  padding:.62rem .9rem;color:var(--rd);font-size:.82rem;font-weight:600;margin-bottom:.85rem;display:none;}
+.asuc{background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.25);border-radius:7px;
+  padding:.62rem .9rem;color:var(--gr);font-size:.82rem;font-weight:600;margin-bottom:.85rem;display:none;}
+
+.gnote{font-size:.7rem;color:var(--mu);text-align:center;margin-top:.45rem;line-height:1.5;}
+
+/* ══════════════════════════
+   MAIN APP
+══════════════════════════ */
+/* TOP NAV */
+.topnav{
+  position:fixed;top:0;left:0;right:0;z-index:200;height:56px;
+  background:rgba(6,11,20,.95);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--br);
+  display:flex;align-items:center;justify-content:space-between;padding:0 1rem;
+}
+.tn-logo{font-family:'Oxanium',monospace;font-size:1rem;font-weight:800;
+  background:linear-gradient(90deg,var(--cr),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;white-space:nowrap;}
+.tn-center{display:flex;gap:.1rem;}
+.tn-btn{display:flex;align-items:center;gap:.3rem;padding:.42rem .7rem;border-radius:6px;color:var(--mu);
+  font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  background:none;border:none;cursor:pointer;font-family:'Rajdhani',sans-serif;transition:.2s;white-space:nowrap;}
+.tn-btn:hover,.tn-btn.active{color:var(--cr);background:rgba(0,212,255,.08);}
+.tn-btn.tok.active{color:var(--gold);background:rgba(255,215,0,.08);}
+.tn-right{display:flex;align-items:center;gap:.5rem;}
+.tn-av{width:28px;height:28px;border-radius:6px;background:var(--sf2);border:1px solid var(--br);
+  display:flex;align-items:center;justify-content:center;font-family:'Oxanium',monospace;
+  font-size:.7rem;font-weight:800;color:var(--cr);overflow:hidden;flex-shrink:0;}
+.tn-av img{width:100%;height:100%;object-fit:cover;}
+.tn-uname{font-family:'Oxanium',monospace;font-size:.75rem;font-weight:700;max-width:80px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.tn-logout{background:rgba(255,68,102,.1);border:1px solid rgba(255,68,102,.2);color:var(--rd);
+  border-radius:5px;padding:.28rem .6rem;font-family:'Oxanium',monospace;font-size:.65rem;
+  font-weight:700;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;}
+
+/* PAGES */
+.page{display:none;min-height:100vh;padding:68px 1rem 2rem;}
+.page.active{display:block;}
+.page-inner{max-width:1100px;margin:0 auto;}
+
+/* Section header */
+.sh{text-align:center;padding:2rem 1rem 2rem;}
+.sh-tag{font-size:.6rem;letter-spacing:.3em;text-transform:uppercase;margin-bottom:.4rem;font-weight:700;}
+.sh-title{font-family:'Oxanium',monospace;font-size:clamp(1.6rem,5vw,2.8rem);font-weight:800;line-height:1.1;}
+.sh-sub{color:var(--mu);font-size:.88rem;margin-top:.4rem;}
+
+/* ── HOME ── */
+.home-hero{text-align:center;padding:2.5rem 1rem 1rem;}
+.hero-badge{display:inline-flex;align-items:center;gap:.45rem;background:rgba(0,212,255,.08);
+  border:1px solid rgba(0,212,255,.25);border-radius:100px;padding:.32rem .9rem;
+  font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--cr);
+  margin-bottom:1.5rem;}
+.hero-badge::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--gr);animation:bl 1.5s infinite;}
+.home-title{font-family:'Oxanium',monospace;font-size:clamp(2rem,8vw,5rem);font-weight:800;
+  line-height:.95;letter-spacing:-.02em;margin-bottom:1rem;}
+.home-sub{font-size:.95rem;color:var(--mu);max-width:480px;margin:0 auto 2rem;line-height:1.7;}
+.home-btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;}
+.btn-c{display:inline-flex;align-items:center;gap:.4rem;background:linear-gradient(135deg,#0077aa,#00d4ff);
+  color:#000;padding:.82rem 1.8rem;border-radius:8px;font-family:'Oxanium',monospace;font-size:.82rem;
+  font-weight:800;letter-spacing:.08em;text-transform:uppercase;border:none;cursor:pointer;transition:.2s;}
+.btn-c:active{transform:scale(.97);}
+.btn-gold{display:inline-flex;align-items:center;gap:.4rem;background:linear-gradient(135deg,#8a6200,#ffd700);
+  color:#000;padding:.82rem 1.8rem;border-radius:8px;font-family:'Oxanium',monospace;font-size:.82rem;
+  font-weight:800;letter-spacing:.08em;text-transform:uppercase;border:none;cursor:pointer;transition:.2s;}
+.btn-gold:active{transform:scale(.97);}
+.btn-o{display:inline-flex;align-items:center;gap:.4rem;background:transparent;color:var(--tx);
+  padding:.82rem 1.8rem;border-radius:8px;font-family:'Oxanium',monospace;font-size:.82rem;
+  font-weight:800;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--br);cursor:pointer;transition:.2s;}
+.btn-o:active{border-color:var(--cr);color:var(--cr);}
+
+.home-servers{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap;margin:1.8rem 0;}
+.srv-card{background:var(--sf);border:1px solid var(--br);border-radius:12px;
+  padding:.85rem 1.4rem;display:flex;align-items:center;gap:.85rem;
+  transition:border-color .3s;flex:1;min-width:220px;max-width:320px;}
+.srv-card:hover{border-color:rgba(0,212,255,.3);}
+.srv-ip{font-family:'Oxanium',monospace;font-size:.85rem;font-weight:700;}
+.srv-pl{font-size:.72rem;color:var(--mu);margin-top:.1rem;}
+.srv-copy{background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2);color:var(--cr);
+  border-radius:4px;padding:.18rem .5rem;font-family:'Oxanium',monospace;font-size:.6rem;
+  font-weight:700;cursor:pointer;margin-left:.4rem;-webkit-appearance:none;}
+.feat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;margin-top:1.5rem;}
+.feat{background:var(--sf);border:1px solid var(--br);border-radius:12px;padding:1.2rem;}
+.feat-icon{font-size:1.5rem;margin-bottom:.5rem;}
+.feat-name{font-family:'Oxanium',monospace;font-size:.88rem;font-weight:800;margin-bottom:.3rem;}
+.feat-desc{font-size:.8rem;color:var(--mu);line-height:1.6;}
+
+/* ── PERIOD TOGGLE ── */
+.toggle-wrap{display:flex;align-items:center;justify-content:center;gap:.9rem;margin-bottom:2rem;}
+.tlabel{font-size:.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;transition:.2s;}
+.tswitch{position:relative;width:50px;height:25px;}
+.tswitch input{opacity:0;width:0;height:0;}
+.tslider{position:absolute;inset:0;background:var(--sf2);border:1px solid var(--br);border-radius:100px;cursor:pointer;transition:.3s;}
+.tslider::before{content:'';position:absolute;left:3px;top:3px;width:17px;height:17px;border-radius:50%;background:var(--cr);transition:.3s;}
+input:checked+.tslider{background:rgba(255,215,0,.15);border-color:rgba(255,215,0,.3);}
+input:checked+.tslider::before{transform:translateX(25px);background:var(--gold);}
+
+/* ── RANK CARDS ── */
+.rank-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.75rem;}
+.rcard{background:var(--sf);border:1px solid var(--br);border-radius:10px;
+  padding:1.2rem 1rem;text-align:center;transition:.3s;position:relative;overflow:hidden;}
+.rcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:10px 10px 0 0;}
+.rcard:active{transform:translateY(-2px);}
+.ri{font-size:1.4rem;margin-bottom:.4rem;}
+.rname{font-family:'Oxanium',monospace;font-size:.88rem;font-weight:800;letter-spacing:.1em;margin-bottom:.8rem;}
+.rprice{font-family:'Oxanium',monospace;font-size:1.3rem;font-weight:800;line-height:1;margin-bottom:.22rem;}
+.rlabel{font-size:.65rem;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem;}
+.rbuy{display:block;background:transparent;border:1px solid currentColor;border-radius:4px;
+  padding:.38rem .7rem;font-family:'Oxanium',monospace;font-size:.65rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;width:100%;transition:.2s;-webkit-appearance:none;}
+.pm{display:block}.pl{display:none}.plm{display:none}
+
+/* Rank colors */
+.rc-HEROIC{border-color:rgba(150,75,0,.4)}.rc-HEROIC::before{background:#c87941}.rc-HEROIC:hover{border-color:#c87941}.rc-HEROIC .ri{color:#c87941}
+.rc-ASPID{border-color:rgba(100,200,100,.25)}.rc-ASPID::before{background:#55cc66}.rc-ASPID:hover{border-color:#55cc66}.rc-ASPID .ri{color:#55cc66}
+.rc-SKVID{border-color:rgba(80,200,255,.25)}.rc-SKVID::before{background:#44ccff}.rc-SKVID:hover{border-color:#44ccff}.rc-SKVID .ri{color:#44ccff}
+.rc-GLAVA{border-color:rgba(200,80,255,.25)}.rc-GLAVA::before{background:#cc55ff}.rc-GLAVA:hover{border-color:#cc55ff}.rc-GLAVA .ri{color:#cc55ff}
+.rc-ELITE{border-color:rgba(255,160,0,.25)}.rc-ELITE::before{background:#ff9922}.rc-ELITE:hover{border-color:#ff9922}.rc-ELITE .ri{color:#ff9922}
+.rc-TITAN{border-color:rgba(100,180,255,.3)}.rc-TITAN::before{background:#66aaff}.rc-TITAN:hover{border-color:#66aaff}.rc-TITAN .ri{color:#66aaff}
+.rc-STRIKER{border-color:rgba(255,80,80,.3)}.rc-STRIKER::before{background:#ff4455}.rc-STRIKER:hover{border-color:#ff4455}.rc-STRIKER .ri{color:#ff4455}
+.rc-PRINSS{border-color:rgba(255,100,200,.3)}.rc-PRINSS::before{background:#ff55cc}.rc-PRINSS:hover{border-color:#ff55cc}.rc-PRINSS .ri{color:#ff55cc}
+.rc-KNYAZ{border-color:rgba(255,200,0,.3)}.rc-KNYAZ::before{background:#ffcc00}.rc-KNYAZ:hover{border-color:#ffcc00}.rc-KNYAZ .ri{color:#ffcc00}
+.rc-GERCOG{border-color:rgba(0,220,255,.4)}.rc-GERCOG::before{background:linear-gradient(90deg,#00d4ff,#ffd700)}.rc-GERCOG:hover{border-color:#00d4ff}.rc-GERCOG .ri{background:linear-gradient(135deg,var(--cr),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+
+/* ── DONATE FORM ── */
+.dform-wrap{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem;align-items:start;}
+.pay-card-box{background:linear-gradient(135deg,#0a1f3a,#0d2848 50%,#071830);border:1px solid rgba(0,212,255,.3);
+  border-radius:14px;padding:1.5rem;margin-bottom:1.2rem;box-shadow:0 8px 30px rgba(0,100,200,.2);}
+.chip{display:inline-block;width:32px;height:24px;background:linear-gradient(135deg,#daa520,#ffd700);
+  border-radius:4px;margin-bottom:.8rem;position:relative;}
+.chip::after{content:'';position:absolute;inset:5px;border:1px solid rgba(0,0,0,.3);border-radius:2px;}
+.cnum{font-family:'Oxanium',monospace;font-size:1.1rem;letter-spacing:.18em;margin-bottom:.5rem;}
+.cmeta{display:flex;justify-content:space-between;font-size:.75rem;color:var(--mu);}
+.cmeta strong{color:var(--tx);}
+.steps-box{background:var(--sf);border:1px solid var(--br);border-radius:10px;padding:1.2rem;margin-bottom:1.2rem;}
+.step{display:flex;gap:.65rem;margin-bottom:.65rem;align-items:flex-start;}
+.snum{background:rgba(0,212,255,.15);color:var(--cr);border-radius:50%;width:20px;height:20px;
+  display:flex;align-items:center;justify-content:center;font-family:'Oxanium',monospace;
+  font-weight:800;font-size:.7rem;flex-shrink:0;}
+.snum.ok{background:rgba(0,255,136,.15);color:var(--gr);}
+.stxt{color:var(--mu);font-size:.83rem;line-height:1.5;}
+.dform-box{background:var(--sf);border:1px solid var(--br);border-radius:14px;padding:1.8rem;}
+.dform-box h2{font-family:'Oxanium',monospace;font-size:1.15rem;font-weight:800;margin-bottom:1.2rem;}
+.fg2{margin-bottom:1rem;}
+.fg2 label{display:block;font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--mu);margin-bottom:.3rem;}
+.fg2 input,.fg2 select{width:100%;background:var(--bg);border:1px solid var(--br);border-radius:6px;
+  padding:.68rem .9rem;color:var(--tx);font-family:'Rajdhani',sans-serif;font-size:.95rem;font-weight:600;
+  outline:none;transition:.2s;-webkit-appearance:none;appearance:none;}
+.fg2 input:focus,.fg2 select:focus{border-color:var(--cr);}
+.fg2 input::placeholder{color:var(--mu);}
+.fg2 select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236a8aaa' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .9rem center;}
+.fg2 select option{background:#0d1626;}
+.fg2-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.file-zone{border:2px dashed var(--br);border-radius:8px;padding:1.2rem;text-align:center;cursor:pointer;position:relative;transition:.2s;}
+.file-zone:hover{border-color:var(--cr);background:rgba(0,212,255,.03);}
+.file-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.fname{font-size:.78rem;color:var(--cr);margin-top:.3rem;font-weight:600;min-height:1em;}
+.sub-btn{width:100%;margin-top:.4rem;background:linear-gradient(135deg,#0077aa,#00d4ff);color:#000;
+  border:none;border-radius:6px;padding:.85rem;font-family:'Oxanium',monospace;font-size:.88rem;
+  font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;transition:.2s;-webkit-appearance:none;}
+.sub-btn:active{opacity:.85;transform:scale(.98);}
+.sub-btn:disabled{opacity:.5;cursor:not-allowed;}
+
+/* ── TOKEN PAGE ── */
+.tok-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:.75rem;margin-bottom:2.5rem;}
+.tcard{background:var(--sf);border:1px solid rgba(255,215,0,.22);border-radius:12px;
+  padding:1.3rem 1.1rem;text-align:center;position:relative;overflow:hidden;transition:.3s;}
+.tcard::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,#8a6200,#ffd700);}
+.tcard:active{transform:translateY(-3px);}
+.tcard .popular{position:absolute;top:.6rem;right:.6rem;background:rgba(255,215,0,.15);
+  border:1px solid rgba(255,215,0,.3);border-radius:4px;padding:.1rem .45rem;
+  font-family:'Oxanium',monospace;font-size:.58rem;font-weight:800;color:var(--gold);}
+.tcard-icon{font-size:1.8rem;margin-bottom:.5rem;}
+.tcard-amount{font-family:'Oxanium',monospace;font-size:1.8rem;font-weight:800;color:var(--gold);line-height:1;margin-bottom:.15rem;}
+.tcard-unit{font-size:.65rem;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;}
+.tcard-cmd{background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.15);border-radius:4px;
+  padding:.28rem .6rem;font-family:'Oxanium',monospace;font-size:.62rem;color:rgba(255,215,0,.65);
+  margin-bottom:.8rem;letter-spacing:.03em;word-break:break-all;}
+.tcard-price{font-family:'Oxanium',monospace;font-size:1.3rem;font-weight:800;line-height:1;margin-bottom:.2rem;}
+.tcard-plabel{font-size:.65rem;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.8rem;}
+.tcard-buy{width:100%;background:linear-gradient(135deg,#8a6200,#ffd700);color:#000;border:none;
+  border-radius:5px;padding:.42rem;font-family:'Oxanium',monospace;font-size:.68rem;font-weight:800;
+  letter-spacing:.08em;text-transform:uppercase;cursor:pointer;-webkit-appearance:none;}
+.tcard-buy:active{opacity:.85;}
+
+/* ── UNBAN ── */
+.unban-wrap{margin-top:.5rem;}
+.unban-hdr{font-family:'Oxanium',monospace;font-size:.95rem;font-weight:800;color:var(--rd);
+  margin-bottom:1.1rem;display:flex;align-items:center;gap:.5rem;padding-top:2rem;
+  border-top:1px solid var(--br);}
+.unban-card{background:var(--sf);border:1px solid rgba(255,68,102,.3);border-radius:14px;
+  padding:1.5rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1.2rem;
+  transition:.3s;}
+.unban-card:hover{border-color:rgba(255,68,102,.5);}
+.unban-l .title{font-family:'Oxanium',monospace;font-size:1.1rem;font-weight:800;margin-bottom:.3rem;}
+.unban-l .desc{font-size:.85rem;color:var(--mu);line-height:1.65;max-width:400px;}
+.unban-l .cmd-tag{display:inline-block;background:rgba(255,68,102,.1);border:1px solid rgba(255,68,102,.25);
+  border-radius:4px;padding:.18rem .55rem;font-family:'Oxanium',monospace;font-size:.7rem;color:var(--rd);margin-top:.5rem;}
+.unban-r{text-align:center;flex-shrink:0;}
+.unban-price{font-family:'Oxanium',monospace;font-size:2rem;font-weight:800;color:var(--rd);line-height:1;}
+.unban-plabel{font-size:.68rem;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.75rem;}
+.unban-btn{background:linear-gradient(135deg,#a01a2a,#ff4466);color:#fff;border:none;border-radius:6px;
+  padding:.72rem 1.8rem;font-family:'Oxanium',monospace;font-size:.8rem;font-weight:800;
+  letter-spacing:.1em;text-transform:uppercase;cursor:pointer;-webkit-appearance:none;}
+.unban-btn:active{opacity:.85;}
+
+/* ── RULES ── */
+.rtabs{display:flex;gap:.3rem;flex-wrap:wrap;margin-bottom:1.2rem;
+  background:var(--sf);border:1px solid var(--br);border-radius:10px;padding:.4rem;}
+.rtab{background:none;border:none;padding:.35rem .75rem;border-radius:7px;font-family:'Oxanium',monospace;
+  font-size:.68rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mu);cursor:pointer;transition:.2s;}
+.rtab.active{background:rgba(0,212,255,.12);color:var(--cr);}
+.rsec{display:none;}.rsec.active{display:block;}
+.rule-item{display:flex;gap:.85rem;padding:.78rem .88rem;border-radius:8px;margin-bottom:.3rem;transition:.2s;}
+.rule-item:hover{background:rgba(0,212,255,.04);}
+.rnum{font-family:'Oxanium',monospace;font-size:.72rem;font-weight:800;color:var(--cr);min-width:32px;flex-shrink:0;padding-top:.1rem;}
+.rtxt{font-size:.88rem;color:var(--mu);line-height:1.65;}
+.rtxt strong{color:var(--tx);}
+.pen{display:inline-block;margin-top:.2rem;padding:.1rem .45rem;border-radius:100px;font-size:.68rem;font-weight:700;font-family:'Oxanium',monospace;}
+.pen-m{background:rgba(255,153,34,.12);color:var(--or);border:1px solid rgba(255,153,34,.25);}
+.pen-b{background:rgba(255,68,102,.1);color:var(--rd);border:1px solid rgba(255,68,102,.25);}
+.pen-p{background:rgba(168,85,247,.1);color:var(--pu);border:1px solid rgba(168,85,247,.2);}
+.cat-hdr{font-family:'Oxanium',monospace;font-size:.95rem;font-weight:800;color:var(--cr);
+  margin-bottom:.85rem;padding-bottom:.6rem;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:.45rem;}
+
+/* MODAL */
+.modal{display:none;position:fixed;inset:0;z-index:500;background:rgba(0,0,0,.88);backdrop-filter:blur(8px);align-items:center;justify-content:center;padding:1rem;}
+.modal.open{display:flex;}
+.mbox{background:var(--sf);border:1px solid var(--br);border-radius:16px;padding:2rem;text-align:center;max-width:380px;width:100%;animation:popIn .4s ease;}
+.mbox h2{font-family:'Oxanium',monospace;font-size:1.6rem;margin-bottom:.7rem;}
+.mbox p{color:var(--mu);line-height:1.7;margin-bottom:1.2rem;font-size:.92rem;}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%) translateY(10px);z-index:1000;
+  background:var(--sf);border:1px solid var(--br);border-radius:100px;padding:.65rem 1.4rem;
+  font-size:.85rem;font-weight:600;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;
+  white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis;}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+.toast.ok{border-color:rgba(0,255,136,.4);color:var(--gr);}
+.toast.err{border-color:rgba(255,68,102,.4);color:var(--rd);}
+
+/* MOBILE NAV BOTTOM */
+.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;z-index:200;
+  background:rgba(6,11,20,.97);border-top:1px solid var(--br);
+  display:flex;justify-content:space-around;padding:.5rem 0 calc(.5rem + env(safe-area-inset-bottom));}
+.mob-btn{display:flex;flex-direction:column;align-items:center;gap:.2rem;padding:.4rem .6rem;
+  background:none;border:none;cursor:pointer;color:var(--mu);font-family:'Rajdhani',sans-serif;font-size:.62rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;transition:.2s;min-width:60px;}
+.mob-btn.active{color:var(--cr);}
+.mob-btn.tok.active{color:var(--gold);}
+.mob-btn span{font-size:1.2rem;}
+
+@keyframes popIn{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .topnav .tn-center{display:none;}
+  .mob-nav{display:flex;}
+  .page{padding-bottom:80px;}
+  .dform-wrap{grid-template-columns:1fr;}
+  .feat-grid{grid-template-columns:1fr 1fr;}
+  .home-servers{flex-direction:column;align-items:center;}
+  .srv-card{max-width:100%;width:100%;}
+  .tn-uname{display:none;}
+}
+@media(max-width:480px){
+  .rank-grid{grid-template-columns:repeat(2,1fr);}
+  .tok-grid{grid-template-columns:repeat(2,1fr);}
+  .home-btns{flex-direction:column;align-items:center;}
+  .feat-grid{grid-template-columns:1fr;}
+  .unban-card{flex-direction:column;text-align:center;}
+  .rtabs{gap:.2rem;}
+  .rtab{padding:.3rem .55rem;font-size:.62rem;}
+  .dform-box{padding:1.3rem;}
+}
+@media(min-width:769px){
+  .mob-nav{display:none;}
+}
+</style>
+</head>
+<body>
+<div class="glow"></div>
+
+<!-- ═══════════════════════════
+     AUTH SCREEN (always first)
+═══════════════════════════ -->
+<div id="authScreen">
+  <div class="auth-head">
+    <div style="font-size:2.5rem;margin-bottom:.5rem">⚔️</div>
+    <div class="auth-title">CrystalMC & MasterCraft</div>
+    <div class="auth-sub">Serverga xush kelibsiz</div>
+  </div>
+
+  <div class="srv-pills">
+    <div class="srv-pill"><span class="sdot chk" id="ad1"></span><span id="ap1">crystalmc.uz</span></div>
+    <div class="srv-pill"><span class="sdot chk" id="ad2"></span><span id="ap2">mc.mastercraft.uz</span></div>
+  </div>
+
+  <div class="auth-card">
+    <div class="auth-tabs">
+      <button class="atab active" id="tab-login" onclick="switchTab('login')">🔐 Kirish</button>
+      <button class="atab" id="tab-reg" onclick="switchTab('reg')">📝 Ro'yxat</button>
+    </div>
+    <div class="auth-body">
+      <!-- LOGIN -->
+      <div class="apage active" id="ap-login">
+        <div class="aerr" id="lerr"></div>
+        <div class="fg">
+          <label>Login</label>
+          <input type="text" id="li" placeholder="username" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()"/>
+        </div>
+        <div class="fg">
+          <label>Parol</label>
+          <input type="password" id="lp" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+        </div>
+        <button class="auth-btn" id="lbtn" onclick="doLogin()">Kirish →</button>
+        <div class="divider-or"><span>yoki</span></div>
+        <div id="gBtnWrap" style="display:none;width:100%;margin-top:.5rem"></div>
+        <p class="gnote" id="gnote">Google Client ID admin panelda kiritilmagan</p>
+      </div>
+      <!-- REGISTER -->
+      <div class="apage" id="ap-reg">
+        <div class="aerr" id="rerr"></div>
+        <div class="asuc" id="rsuc"></div>
+        <div class="fg">
+          <label>Login</label>
+          <input type="text" id="ri" placeholder="username" autocomplete="username"/>
+        </div>
+        <div class="fg">
+          <label>Parol</label>
+          <input type="password" id="rp" placeholder="Kuchli parol" autocomplete="new-password"/>
+        </div>
+        <div class="fg">
+          <label>Ism (ixtiyoriy)</label>
+          <input type="text" id="rn" placeholder="Ali Valiyev"/>
+        </div>
+        <button class="auth-btn" id="rbtn" onclick="doRegister()">Ro'yxatdan o'tish →</button>
+        <div class="divider-or"><span>yoki</span></div>
+        <div id="gBtnWrap2" style="display:none;width:100%;margin-top:.5rem"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     MAIN APP
+═══════════════════════════ -->
+<div id="mainApp">
+  <!-- TOP NAV (desktop) -->
+  <nav class="topnav">
+    <div class="tn-logo" onclick="showPage('home')">CrystalMC & MC</div>
+    <div class="tn-center">
+      <button class="tn-btn active" id="nb-home" onclick="showPage('home')">🏠 Bosh sahifa</button>
+      <button class="tn-btn" id="nb-ranks" onclick="showPage('ranks')">💎 Ranklar</button>
+      <button class="tn-btn tok" id="nb-token" onclick="showPage('token')">🪙 Token</button>
+      <button class="tn-btn" id="nb-unban" onclick="showPage('unban')" style="color:var(--mu)">🔓 Unban</button>
+      <button class="tn-btn" id="nb-rules" onclick="showPage('rules')">📜 Qoidalar</button>
+    </div>
+    <div class="tn-right">
+      <div class="tn-av" id="tnAv">??</div>
+      <span class="tn-uname" id="tnName">—</span>
+      <button class="tn-logout" onclick="doLogout()">Chiqish</button>
+    </div>
+  </nav>
+
+  <!-- HOME -->
+  <div class="page active" id="page-home">
+    <div class="page-inner">
+      <div class="home-hero">
+        <div class="hero-badge">🟢 Server Online — 24/7</div>
+        <h1 class="home-title">
+          <span style="color:var(--cr)">Crystal</span>MC<br/>
+          <span style="color:var(--mu);font-size:40%">&</span>
+          <span style="color:var(--gold)">MasterCraft</span>
+        </h1>
+        <p class="home-sub">O'zbekistonning eng yaxshi Minecraft serverlari. Rank va token oling!</p>
+        <div class="home-btns">
+          <button class="btn-c" onclick="showPage('ranks')">💎 Rank olish</button>
+          <button class="btn-gold" onclick="showPage('token')">🪙 Token olish</button>
+          <button class="btn-o" onclick="showPage('rules')">📜 Qoidalar</button>
+        </div>
+      </div>
+      <div class="home-servers">
+        <div class="srv-card">
+          <span class="sdot chk" id="hd1"></span>
+          <div>
+            <div class="srv-ip">crystalmc.uz <button class="srv-copy" onclick="copyIP('crystalmc.uz')">Nusxa</button></div>
+            <div class="srv-pl" id="hp1">Tekshirilmoqda...</div>
+          </div>
+        </div>
+        <div class="srv-card">
+          <span class="sdot chk" id="hd2"></span>
+          <div>
+            <div class="srv-ip">mc.mastercraft.uz <button class="srv-copy" onclick="copyIP('mc.mastercraft.uz')">Nusxa</button></div>
+            <div class="srv-pl" id="hp2">Tekshirilmoqda...</div>
+          </div>
+        </div>
+      </div>
+      <div class="feat-grid">
+        <div class="feat"><div class="feat-icon">⚔️</div><div class="feat-name">PvP Rejimi</div><div class="feat-desc">O'yinchilar bilan kurashing va ratingda yuqoriga chiqing.</div></div>
+        <div class="feat"><div class="feat-icon">🏗️</div><div class="feat-name">Qurilish</div><div class="feat-desc">Do'stlar bilan ulkan inshootlar yarating.</div></div>
+        <div class="feat"><div class="feat-icon">💰</div><div class="feat-name">Ekonomika</div><div class="feat-desc">Savdo qiling, boylik to'plang.</div></div>
+        <div class="feat"><div class="feat-icon">🛡️</div><div class="feat-name">Xavfsiz O'yin</div><div class="feat-desc">Moderlar 24/7 tartibni saqlaydi.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RANKS -->
+  <div class="page" id="page-ranks">
+    <div class="page-inner">
+      <div class="sh"><div class="sh-tag" style="color:var(--cr)">Rank narxlari</div><h2 class="sh-title">O'zingizga mos rank</h2><p class="sh-sub">Admin tasdiqlashi bilan rank ⚡ AVTOMATIK beriladi</p></div>
+      <div class="toggle-wrap">
+        <span class="tlabel" id="tl-m" style="color:var(--cr)">📅 30 Kunlik</span>
+        <label class="tswitch"><input type="checkbox" id="tPeriod" onchange="switchPeriod(this)"/><span class="tslider"></span></label>
+        <span class="tlabel" id="tl-l" style="color:var(--mu)">♾️ Butun umrlik</span>
+      </div>
+      <div class="rank-grid">
+        <div class="rcard rc-HEROIC"><div class="ri">🟤</div><div class="rname">HEROIC</div><div class="rprice pm">3,000</div><div class="rprice pl">7,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('HEROIC')" style="color:#c87941;border-color:#c87941">Sotib olish</button></div>
+        <div class="rcard rc-ASPID"><div class="ri">🟢</div><div class="rname">ASPID</div><div class="rprice pm">7,000</div><div class="rprice pl">18,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('ASPID')" style="color:#55cc66;border-color:#55cc66">Sotib olish</button></div>
+        <div class="rcard rc-SKVID"><div class="ri">🔵</div><div class="rname">SKVID</div><div class="rprice pm">10,000</div><div class="rprice pl">25,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('SKVID')" style="color:#44ccff;border-color:#44ccff">Sotib olish</button></div>
+        <div class="rcard rc-GLAVA"><div class="ri">🟣</div><div class="rname">GLAVA</div><div class="rprice pm">15,000</div><div class="rprice pl">50,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('GLAVA')" style="color:#cc55ff;border-color:#cc55ff">Sotib olish</button></div>
+        <div class="rcard rc-ELITE"><div class="ri">🟠</div><div class="rname">ELITE</div><div class="rprice pm">30,000</div><div class="rprice pl">75,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('ELITE')" style="color:#ff9922;border-color:#ff9922">Sotib olish</button></div>
+        <div class="rcard rc-TITAN"><div class="ri">💙</div><div class="rname">TITAN</div><div class="rprice pm">40,000</div><div class="rprice pl">100,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('TITAN')" style="color:#66aaff;border-color:#66aaff">Sotib olish</button></div>
+        <div class="rcard rc-STRIKER"><div class="ri">🔴</div><div class="rname">STRIKER</div><div class="rprice pm">50,000</div><div class="rprice pl">125,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('STRIKER')" style="color:#ff4455;border-color:#ff4455">Sotib olish</button></div>
+        <div class="rcard rc-PRINSS"><div class="ri">💗</div><div class="rname">PRINSS</div><div class="rprice pm">60,000</div><div class="rprice pl">150,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('PRINSS')" style="color:#ff55cc;border-color:#ff55cc">Sotib olish</button></div>
+        <div class="rcard rc-KNYAZ"><div class="ri">👑</div><div class="rname">KNYAZ</div><div class="rprice pm">70,000</div><div class="rprice pl">200,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('KNYAZ')" style="color:#ffcc00;border-color:#ffcc00">Sotib olish</button></div>
+        <div class="rcard rc-GERCOG"><div class="ri">💎</div><div class="rname">GERCOG</div><div class="rprice pm" style="background:linear-gradient(90deg,#00d4ff,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent">80,000</div><div class="rprice pl" style="background:linear-gradient(90deg,#00d4ff,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent">250,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('GERCOG')" style="background:linear-gradient(135deg,#0077aa,#00d4ff);color:#000;border:none">Sotib olish</button></div>
+      </div>
+      <!-- Rank form -->
+      <div class="dform-wrap">
+        <div>
+          <div class="pay-card-box"><div class="chip"></div><div class="cnum" id="cardNum">3400 0385 6025 XXXX</div><div class="cmeta"><div><div style="font-size:.6rem;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.18rem">Egasi</div><strong id="cardHolder">MASTERCRAFT ADMIN</strong></div><div style="text-align:right"><div style="font-size:.6rem;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.18rem">Bank</div><strong style="color:var(--cr)" id="cardBank">Uzcard / Humo</strong></div></div></div>
+          <div class="steps-box">
+            <div style="font-family:'Oxanium',monospace;font-size:.77rem;font-weight:700;color:var(--cr);margin-bottom:.8rem;letter-spacing:.1em;text-transform:uppercase">📋 Qadamlar</div>
+            <div class="step"><span class="snum">1</span><span class="stxt">Rank tanlang va kartaga to'lov qiling</span></div>
+            <div class="step"><span class="snum">2</span><span class="stxt">Chek rasmini saqlang</span></div>
+            <div class="step"><span class="snum">3</span><span class="stxt">Formani to'ldiring va yuboring</span></div>
+            <div class="step"><span class="snum ok">⚡</span><span class="stxt">Rank <strong style="color:var(--cr)">AVTOMATIK</strong> beriladi!</span></div>
+          </div>
+          <div style="font-size:.83rem;color:var(--mu)">Savol? <a id="tgLink" href="https://t.me/MASTERCRAFT_ADMIN" style="color:var(--cr);text-decoration:none">@MASTERCRAFT_ADMIN</a></div>
+        </div>
+        <div class="dform-box">
+          <h2 style="color:var(--cr)">💳 Rank sotib olish</h2>
+          <div class="fg2"><label>Minecraft nickname</label><input type="text" id="f-nick" placeholder="Steve_pro"/></div>
+          <div class="fg2-row">
+            <div class="fg2"><label>Rank</label>
+              <select id="f-rank">
+                <option value="">— Tanlang —</option>
+                <option>HEROIC</option><option>ASPID</option><option>SKVID</option><option>GLAVA</option>
+                <option>ELITE</option><option>TITAN</option><option>STRIKER</option>
+                <option>PRINSS</option><option>KNYAZ</option><option>GERCOG</option>
+              </select>
+            </div>
+            <div class="fg2"><label>Muddat</label>
+              <select id="f-period">
+                <option value="month">📅 30 Kunlik</option>
+                <option value="life">♾️ Butun umrlik</option>
+              </select>
+            </div>
+          </div>
+          <div class="fg2"><label>Summa (UZS)</label><input type="number" id="f-amount" placeholder="15000" inputmode="numeric"/></div>
+          <div class="fg2"><label>Telegram (ixtiyoriy)</label><input type="text" id="f-tg" placeholder="@username"/></div>
+          <div class="fg2">
+            <label>Chek rasmi</label>
+            <div class="file-zone"><input type="file" id="f-check" accept="image/*" onchange="document.getElementById('fname').textContent='📄 '+this.files[0]?.name"/><div style="font-size:1.5rem;margin-bottom:.3rem">📎</div><div style="font-size:.78rem;color:var(--mu)">Bosing yoki suring</div><div class="fname" id="fname"></div></div>
+          </div>
+          <button class="sub-btn" id="rankSubBtn" onclick="submitRank()">⚡ To'lovni tasdiqlayman</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOKEN -->
+  <div class="page" id="page-token">
+    <div class="page-inner">
+      <div class="sh"><div class="sh-tag" style="color:var(--gold)">Token narxlari</div><h2 class="sh-title">Token <span style="color:var(--gold)">Paketlari</span></h2><p class="sh-sub"><code style="background:rgba(255,215,0,.1);padding:.15rem .5rem;border-radius:4px;font-size:.82em;color:rgba(255,215,0,.8)">points give NICKNAME MIQDOR</code></p></div>
+
+      <div class="tok-grid">
+        <div class="tcard">
+          <div class="tcard-icon">🪙</div>
+          <div class="tcard-amount">1,000</div><div class="tcard-unit">Token</div>
+          <div class="tcard-cmd">points give NICK 1000</div>
+          <div class="tcard-price">5,000</div><div class="tcard-plabel">UZS</div>
+          <button class="tcard-buy" onclick="openTokenForm(1000,5000)">Sotib olish</button>
+        </div>
+        <div class="tcard">
+          <div class="tcard-icon">🪙🪙</div>
+          <div class="tcard-amount">2,000</div><div class="tcard-unit">Token</div>
+          <div class="tcard-cmd">points give NICK 2000</div>
+          <div class="tcard-price">10,000</div><div class="tcard-plabel">UZS</div>
+          <button class="tcard-buy" onclick="openTokenForm(2000,10000)">Sotib olish</button>
+        </div>
+        <div class="tcard" style="border-color:rgba(255,215,0,.4)">
+          <div class="popular">MASHHUR</div>
+          <div class="tcard-icon">💰</div>
+          <div class="tcard-amount">5,000</div><div class="tcard-unit">Token</div>
+          <div class="tcard-cmd">points give NICK 5000</div>
+          <div class="tcard-price">25,000</div><div class="tcard-plabel">UZS</div>
+          <button class="tcard-buy" onclick="openTokenForm(5000,25000)">Sotib olish</button>
+        </div>
+        <div class="tcard">
+          <div class="tcard-icon">💎</div>
+          <div class="tcard-amount">10,000</div><div class="tcard-unit">Token</div>
+          <div class="tcard-cmd">points give NICK 10000</div>
+          <div class="tcard-price">50,000</div><div class="tcard-plabel">UZS</div>
+          <button class="tcard-buy" onclick="openTokenForm(10000,50000)">Sotib olish</button>
+        </div>
+      </div>
+
+      <!-- Token form -->
+      <div class="dform-wrap">
+        <div>
+          <div class="pay-card-box"><div class="chip"></div><div class="cnum" id="tokCardNum">3400 0385 6025 XXXX</div><div class="cmeta"><div><div style="font-size:.6rem;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.18rem">Egasi</div><strong id="tokCardHolder">MASTERCRAFT ADMIN</strong></div><div style="text-align:right"><div style="font-size:.6rem;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.18rem">Bank</div><strong style="color:var(--cr)" id="tokCardBank">Uzcard / Humo</strong></div></div></div>
+          <div class="steps-box">
+            <div style="font-family:'Oxanium',monospace;font-size:.77rem;font-weight:700;color:var(--gold);margin-bottom:.8rem;letter-spacing:.1em;text-transform:uppercase">📋 Qadamlar</div>
+            <div class="step"><span class="snum" style="background:rgba(255,215,0,.15);color:var(--gold)">1</span><span class="stxt">Token paket tanlang va to'lov qiling</span></div>
+            <div class="step"><span class="snum" style="background:rgba(255,215,0,.15);color:var(--gold)">2</span><span class="stxt">Chek rasmini saqlang</span></div>
+            <div class="step"><span class="snum" style="background:rgba(255,215,0,.15);color:var(--gold)">3</span><span class="stxt">Formani to'ldiring va yuboring</span></div>
+            <div class="step"><span class="snum ok">⚡</span><span class="stxt">Token <strong style="color:var(--gold)">AVTOMATIK</strong> beriladi!</span></div>
+          </div>
+        </div>
+        <div class="dform-box" style="border-color:rgba(255,215,0,.2)">
+          <h2 style="color:var(--gold)">🪙 Token sotib olish</h2>
+          <div class="fg2"><label>Minecraft nickname</label><input type="text" id="tf-nick" placeholder="Steve_pro"/></div>
+          <div class="fg2-row">
+            <div class="fg2"><label>Token miqdori</label>
+              <select id="tf-amount" onchange="document.getElementById('tf-price').value=tokPrices[this.value]||0">
+                <option value="1000">1,000 token</option>
+                <option value="2000">2,000 token</option>
+                <option value="5000">5,000 token</option>
+                <option value="10000">10,000 token</option>
+              </select>
+            </div>
+            <div class="fg2"><label>To'lov (UZS)</label><input type="number" id="tf-price" value="5000" readonly inputmode="numeric" style="background:rgba(255,215,0,.04);border-color:rgba(255,215,0,.15)"/></div>
+          </div>
+          <div class="fg2"><label>Telegram (ixtiyoriy)</label><input type="text" id="tf-tg" placeholder="@username"/></div>
+          <div class="fg2">
+            <label>Chek rasmi</label>
+            <div class="file-zone" style="border-color:rgba(255,215,0,.2)"><input type="file" id="tf-check" accept="image/*" onchange="document.getElementById('tfname').textContent='📄 '+this.files[0]?.name"/><div style="font-size:1.5rem;margin-bottom:.3rem">📎</div><div style="font-size:.78rem;color:var(--mu)">Bosing yoki suring</div><div class="fname" id="tfname"></div></div>
+          </div>
+          <button class="sub-btn" id="tokSubBtn" onclick="submitToken()" style="background:linear-gradient(135deg,#8a6200,#ffd700)">⚡ To'lovni tasdiqlayman</button>
+        </div>
+      </div>
+
+      <!-- Unban ga yo'naltirish -->
+      <div style="text-align:center;margin-top:1.5rem;padding:1.5rem;background:rgba(255,68,102,.05);border:1px solid rgba(255,68,102,.2);border-radius:12px">
+        <div style="font-size:1.5rem;margin-bottom:.4rem">🔓</div>
+        <div style="font-family:'Oxanium',monospace;font-size:1rem;font-weight:800;margin-bottom:.3rem">Akkauntingiz ban bo'ldimi?</div>
+        <div style="font-size:.85rem;color:var(--mu);margin-bottom:1rem">Unban xizmati orqali 15,000 UZS to'lab unban oling</div>
+        <button onclick="showPage('unban')" style="background:linear-gradient(135deg,#a01a2a,#ff4466);color:#fff;border:none;border-radius:8px;padding:.75rem 2rem;font-family:'Oxanium',monospace;font-size:.85rem;font-weight:800;cursor:pointer;letter-spacing:.08em;text-transform:uppercase">🔓 Unban sahifasiga o'tish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- UNBAN -->
+  <div class="page" id="page-unban">
+    <div class="page-inner">
+      <div class="sh">
+        <div class="sh-tag" style="color:var(--rd)">Unban xizmati</div>
+        <h2 class="sh-title">🔓 Akkauntni <span style="color:var(--rd)">Unban</span> qilish</h2>
+        <p class="sh-sub">Admin to'lovni tasdiqlashi bilan <code style="background:rgba(255,68,102,.1);padding:.15rem .5rem;border-radius:4px;font-size:.82em;color:var(--rd)">/unban NICKNAME</code> buyrug'i avtomatik bajariladi</p>
+      </div>
+
+      <!-- Price card -->
+      <div style="display:flex;justify-content:center;margin-bottom:2.5rem">
+        <div style="background:var(--sf);border:2px solid rgba(255,68,102,.4);border-radius:16px;padding:2rem 2.5rem;text-align:center;max-width:340px;width:100%;position:relative;overflow:hidden">
+          <div style="position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,#a01a2a,#ff4466)"></div>
+          <div style="font-size:3rem;margin-bottom:.6rem">🔓</div>
+          <div style="font-family:'Oxanium',monospace;font-size:1.3rem;font-weight:800;margin-bottom:.3rem">Bir martalik Unban</div>
+          <div style="font-size:.82rem;color:var(--mu);line-height:1.7;margin-bottom:1.2rem">Akkauntingiz ban bo'lganmi? To'lov qilib, admin orqali unban oling. Har bir so'rov alohida ko'rib chiqiladi.</div>
+          <div style="font-family:'Oxanium',monospace;font-size:3rem;font-weight:800;color:var(--rd);line-height:1;margin-bottom:.2rem">15,000</div>
+          <div style="font-size:.72rem;color:var(--mu);letter-spacing:.12em;text-transform:uppercase;margin-bottom:1.5rem">UZS / bir marta</div>
+          <div style="font-family:'Oxanium',monospace;font-size:.72rem;color:var(--rd);margin-bottom:1.5rem;display:inline-block;background:rgba(255,68,102,.08);border:1px solid rgba(255,68,102,.2);border-radius:6px;padding:.5rem .9rem">/unban NICKNAME</div>
+        </div>
+      </div>
+
+      <!-- Unban form -->
+      <div class="dform-wrap">
+        <div>
+          <div class="pay-card-box">
+            <div class="chip"></div>
+            <div class="cnum" id="uCardNum">3400 0385 6025 XXXX</div>
+            <div class="cmeta">
+              <div><div style="font-size:.6rem;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.18rem">Egasi</div><strong id="uCardHolder">MASTERCRAFT ADMIN</strong></div>
+              <div style="text-align:right"><div style="font-size:.6rem;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.18rem">Bank</div><strong style="color:var(--cr)" id="uCardBank">Uzcard / Humo</strong></div>
+            </div>
+          </div>
+          <div class="steps-box">
+            <div style="font-family:'Oxanium',monospace;font-size:.77rem;font-weight:700;color:var(--rd);margin-bottom:.8rem;letter-spacing:.1em;text-transform:uppercase">📋 Qadamlar</div>
+            <div class="step"><span class="snum" style="background:rgba(255,68,102,.15);color:var(--rd)">1</span><span class="stxt">15,000 UZS kartaga to'lov qiling</span></div>
+            <div class="step"><span class="snum" style="background:rgba(255,68,102,.15);color:var(--rd)">2</span><span class="stxt">To'lov chekini saqlang</span></div>
+            <div class="step"><span class="snum" style="background:rgba(255,68,102,.15);color:var(--rd)">3</span><span class="stxt">Formani to'ldiring va yuboring</span></div>
+            <div class="step"><span class="snum ok">⚡</span><span class="stxt">Admin tasdiqlashi bilan <strong style="color:var(--rd)">/unban</strong> bajariladi!</span></div>
+          </div>
+        </div>
+        <div class="dform-box" style="border-color:rgba(255,68,102,.25)">
+          <h2 style="color:var(--rd)">🔓 Unban so'rovi</h2>
+          <div class="fg2"><label>Ban bo'lgan Minecraft nickname</label><input type="text" id="uf-nick" placeholder="Steve_pro"/></div>
+          <div class="fg2"><label>Telegram (ixtiyoriy)</label><input type="text" id="uf-tg" placeholder="@username"/></div>
+          <div class="fg2"><label>Sabab (ixtiyoriy)</label><input type="text" id="uf-reason" placeholder="Nima uchun ban oldingiz?"/></div>
+          <div class="fg2">
+            <label>Chek rasmi (15,000 UZS to'lov)</label>
+            <div class="file-zone" style="border-color:rgba(255,68,102,.25)">
+              <input type="file" id="uf-check" accept="image/*" onchange="document.getElementById('ufname').textContent='📄 '+this.files[0]?.name"/>
+              <div style="font-size:1.5rem;margin-bottom:.3rem">📎</div>
+              <div style="font-size:.78rem;color:var(--mu)">Bosing yoki suring</div>
+              <div class="fname" id="ufname"></div>
+            </div>
+          </div>
+          <button class="sub-btn" id="unbanSubBtn" onclick="submitUnban()" style="background:linear-gradient(135deg,#a01a2a,#ff4466)">🔓 Unban so'rovini yuborish</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RULES -->
+  <div class="page" id="page-rules">
+    <div class="page-inner">
+      <div class="sh"><div class="sh-tag">Server qoidalari</div><h2 class="sh-title">Qoidalar</h2><p class="sh-sub">Serverda o'ynashni boshlash orqali barcha qoidalarga rozilik bildirasiz.</p></div>
+      <div class="rtabs">
+        <button class="rtab active" onclick="showRtab('as',this)">📋 Asosiy</button>
+        <button class="rtab" onclick="showRtab('ch',this)">💬 Chat</button>
+        <button class="rtab" onclick="showRtab('rj',this)">🎮 Rejim</button>
+        <button class="rtab" onclick="showRtab('ak',this)">👤 Akkaunt</button>
+        <button class="rtab" onclick="showRtab('oy',this)">⚔️ O'yin</button>
+        <button class="rtab" onclick="showRtab('tk',this)">🔍 Tekshiruv</button>
+        <button class="rtab" onclick="showRtab('dn',this)">💎 Donat</button>
+      </div>
+      <div class="rsec active" id="rt-as"><div class="cat-hdr">📋 Asosiy Qoidalar</div><div class="rule-item"><div class="rnum">1.1</div><div class="rtxt">Qoidalarni bilmaslik sizni javobgarlikdan ozod qilmaydi.</div></div><div class="rule-item"><div class="rnum">1.2</div><div class="rtxt">Serverda o'ynashni boshlash orqali barcha qoidalarga roziligingizni <strong>avtomatik</strong> tasdiqlaysiz.</div></div><div class="rule-item"><div class="rnum">1.3</div><div class="rtxt">Server plaginlari noto'g'ri ishlashi tufayli o'yinchi narsalari yo'qolishi uchun server <strong>javobgar emas</strong>.</div></div><div class="rule-item"><div class="rnum">1.4</div><div class="rtxt">Ma'muriyat serverning ishlashini kafolatlamaydi.</div></div><div class="rule-item"><div class="rnum">1.5</div><div class="rtxt">Server xatolar natijasida etkazilgan zarar uchun javobgar emas.</div></div><div class="rule-item"><div class="rnum">1.6</div><div class="rtxt">O'yinchilar barcha qoidalarga rioya qilishlari <strong>shart</strong>.</div></div><div class="rule-item"><div class="rnum">1.7</div><div class="rtxt">Server barcha harakatlar va chat xabarlari tarixini saqlaydi.</div></div><div class="rule-item"><div class="rnum">1.8</div><div class="rtxt">Server qoidalarni ogohlantirmasdan o'zgartirish huquqiga ega.</div></div><div class="rule-item"><div class="rnum">1.9</div><div class="rtxt">Server va ishchilarni haqorat qilish taqiqlanadi. <span class="pen pen-m">2 soat mute</span></div></div></div>
+      <div class="rsec" id="rt-ch"><div class="cat-hdr">💬 Chat Qoidalari</div><div class="rule-item"><div class="rnum">2.1</div><div class="rtxt"><strong>Caps/Spam/Flood</strong> taqiqlanadi. <span class="pen pen-m">2 soat mute</span></div></div><div class="rule-item"><div class="rnum">2.2</div><div class="rtxt">O'yinchilarni <strong>kamsitish va haqorat</strong> taqiqlanadi. <span class="pen pen-m">5 soat mute</span></div></div><div class="rule-item"><div class="rnum">2.3</div><div class="rtxt"><strong>Behayo so'zlar</strong> taqiqlanadi. <span class="pen pen-m">5 soat mute</span></div></div><div class="rule-item"><div class="rnum">2.4</div><div class="rtxt">Tashqi manbalarni <strong>reklama qilish</strong> taqiqlanadi. <span class="pen pen-b">30 kun ban</span></div></div><div class="rule-item"><div class="rnum">2.5</div><div class="rtxt">O'yinchilarning <strong>qarindoshlarini</strong> haqorat qilish taqiqlanadi. <span class="pen pen-b">5 kun ban</span></div></div><div class="rule-item"><div class="rnum">2.6</div><div class="rtxt"><strong>Urush qo'zg'atish, irqchilik</strong> taqiqlanadi. <span class="pen pen-b">5 kun ban</span></div></div><div class="rule-item"><div class="rnum">2.7</div><div class="rtxt">Chat blokirovkasini <strong>chetlab o'tish</strong> taqiqlanadi.</div></div><div class="rule-item"><div class="rnum">2.8</div><div class="rtxt">Server chatdagi <strong>aldov</strong> uchun javobgar emas.</div></div><div class="rule-item"><div class="rnum">2.9</div><div class="rtxt">Chatda aloqa ma'lumotlarini yuborish taqiqlanadi. <span class="pen pen-m">5 soat mute</span></div></div></div>
+      <div class="rsec" id="rt-rj"><div class="cat-hdr">🎮 Rejimlar Qoidalari</div><div class="rule-item"><div class="rnum">3.0</div><div class="rtxt">Rejim nomidagi nik/taxallusni qo'yib kirish taqiqlanadi. <span class="pen pen-b">Ban</span></div></div><div class="rule-item"><div class="rnum">3.1</div><div class="rtxt">Anarxiya rejimida jamoa <strong>3 tadan oshishi</strong> taqiqlanadi. <span class="pen pen-b">30 kun ban</span></div></div><div class="rule-item"><div class="rnum">3.2</div><div class="rtxt">Rejimlarni kamsitish yoki flood qilish taqiqlanadi. <span class="pen pen-m">2 soat mute</span></div></div><div class="rule-item"><div class="rnum">3.3</div><div class="rtxt">3.0 qoida buzilsa — rank boshqa akkauntga ko'chirib o'tkazish mumkin, oldingi ban oladi.</div></div></div>
+      <div class="rsec" id="rt-ak"><div class="cat-hdr">👤 Akkaunt Qoidalari</div><div class="rule-item"><div class="rnum">4.1</div><div class="rtxt">Nikda so'kinish, kamsitish bo'lmasligi kerak. <span class="pen pen-p">Doimiy ban</span></div></div><div class="rule-item"><div class="rnum">4.2</div><div class="rtxt">Hisobingizni boshqa shaxslarga berish taqiqlanadi. <span class="pen pen-p">Doimiy ban</span></div></div><div class="rule-item"><div class="rnum">4.3</div><div class="rtxt">Akkaunt egasi barcha harakatlar uchun javobgar.</div></div><div class="rule-item"><div class="rnum">4.4</div><div class="rtxt">Akkaunt va donatlarni sotish/o'tkazish taqiqlanadi. <span class="pen pen-p">Doimiy ban</span></div></div><div class="rule-item"><div class="rnum">4.5</div><div class="rtxt">Donatni boshqa hisobga o'tkazib bo'lmaydi.</div></div></div>
+      <div class="rsec" id="rt-oy"><div class="cat-hdr">⚔️ O'yin Qoidalari</div><div class="rule-item"><div class="rnum">5.1</div><div class="rtxt"><strong>Firibgarlik</strong> taqiqlanadi. <span class="pen pen-b">Ban</span></div></div><div class="rule-item"><div class="rnum">5.2</div><div class="rtxt"><strong>Uchinchi tomon dasturlari</strong> (chitlar, skriptlar) taqiqlanadi. <span class="pen pen-b">30 kun ban</span></div></div><div class="rule-item"><div class="rnum">5.3</div><div class="rtxt">Qoidabuzarga yordam berish taqiqlanadi.</div></div><div class="rule-item"><div class="rnum">5.4</div><div class="rtxt">Serverni buzishga urinish taqiqlanadi. <span class="pen pen-b">Ban</span></div></div><div class="rule-item"><div class="rnum">5.5</div><div class="rtxt">Server bag'laridan foydalanish taqiqlanadi. <span class="pen pen-b">Ban</span></div></div><div class="rule-item"><div class="rnum">5.6</div><div class="rtxt">Jinsiy organlar, natsist ramzlari qurish taqiqlanadi. <span class="pen pen-b">5 kun ban</span></div></div><div class="rule-item"><div class="rnum">5.7</div><div class="rtxt">Uchinchi shaxslarni qoidalarni buzishga undash taqiqlanadi. <span class="pen pen-b">5 kun ban</span></div></div></div>
+      <div class="rsec" id="rt-tk"><div class="cat-hdr">🔍 Tekshiruv Qoidalari</div><div class="rule-item"><div class="rnum">6.1</div><div class="rtxt">Moderning barcha talablariga rioya qilishingiz <strong>shart</strong>.</div></div><div class="rule-item"><div class="rnum">6.2</div><div class="rtxt">Verifierdan xabarni ko'rmaslik — bandan chiqarish sababi emas.</div></div><div class="rule-item"><div class="rnum">6.3</div><div class="rtxt">Tekshiruvga aralashish taqiqlanadi. <span class="pen pen-b">Ban</span></div></div><div class="rule-item"><div class="rnum">6.4</div><div class="rtxt">Tekshiruv paytida fayllarni o'chirish taqiqlanadi. <span class="pen pen-b">Ban</span></div></div><div class="rule-item"><div class="rnum">6.5</div><div class="rtxt">Tekshiruv paytida Minecraft'dan chiqish taqiqlanadi. <span class="pen pen-b">Ban</span></div></div><div class="rule-item"><div class="rnum">6.6</div><div class="rtxt">Tekshiruvni tasvirga olish taqiqlanadi (Moder ruxsati bundan mustasno).</div></div><div class="rule-item"><div class="rnum">6.7</div><div class="rtxt">Moder dasturlarni o'rnatishingizni so'rashga haqli.</div></div><div class="rule-item"><div class="rnum">6.8</div><div class="rtxt">Moder qoidalarni buzsa — ishidan ozod qilinadi.</div></div></div>
+      <div class="rsec" id="rt-dn"><div class="cat-hdr">💎 Donat Qoidalari</div><div class="rule-item"><div class="rnum">7.0</div><div class="rtxt">Sotib olingan donatlarni bekor qilib pul qaytarib olish <strong>mumkin emas</strong>.</div></div><div class="rule-item"><div class="rnum">7.1</div><div class="rtxt">Donat orqali bosim o'tkazish, tahdid qilish taqiqlanadi. <span class="pen pen-b">10 kun ban</span></div></div><div class="rule-item"><div class="rnum">7.2</div><div class="rtxt">Donatdan foydalanib besabab mute, ban, kick taqiqlanadi. <span class="pen pen-b">10 kun ban</span></div></div><div class="rule-item"><div class="rnum">7.3</div><div class="rtxt">Soxta chek orqali donat olishga urunish taqiqlanadi. <span class="pen pen-p">Doimiy ban</span></div></div><div class="rule-item"><div class="rnum">7.4</div><div class="rtxt">Helper muteni qoidalarga asosan berishi shart. Tanish-bilishchilik — <strong>Helperlikdan olinish va umrbod ban</strong>. <span class="pen pen-p">Doimiy ban</span></div></div></div>
+    </div>
+  </div>
+
+  <!-- MOBILE BOTTOM NAV -->
+  <div class="mob-nav">
+    <button class="mob-btn active" id="mb-home" onclick="showPage('home')"><span>🏠</span>Bosh</button>
+    <button class="mob-btn" id="mb-ranks" onclick="showPage('ranks')"><span>💎</span>Rank</button>
+    <button class="mob-btn tok" id="mb-token" onclick="showPage('token')"><span>🪙</span>Token</button>
+    <button class="mob-btn" id="mb-unban" onclick="showPage('unban')"><span>🔓</span>Unban</button>
+    <button class="mob-btn" id="mb-rules" onclick="showPage('rules')"><span>📜</span>Qoidalar</button>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal" id="sucModal">
+  <div class="mbox">
+    <div id="sucIcon" style="font-size:3rem;margin-bottom:.5rem">✅</div>
+    <h2 id="sucTitle" style="color:var(--gr)">Yuborildi!</h2>
+    <p id="sucMsg">So'rovingiz qabul qilindi!</p>
+    <button class="btn-c" onclick="document.getElementById('sucModal').classList.remove('open')" style="display:inline-flex">Yopish</button>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG ──
+const PRICES = {HEROIC:{month:3000,life:7000},ASPID:{month:7000,life:18000},SKVID:{month:10000,life:25000},GLAVA:{month:15000,life:50000},ELITE:{month:30000,life:75000},TITAN:{month:40000,life:100000},STRIKER:{month:50000,life:125000},PRINSS:{month:60000,life:150000},KNYAZ:{month:70000,life:200000},GERCOG:{month:80000,life:250000}};
+const tokPrices = {1000:5000, 2000:10000, 5000:25000, 10000:50000};
+let curToken = null, curUser = null;
+
+// ── TOAST ──
+let toastT;
+function toast(msg,type=''){
+  clearTimeout(toastT);
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.className='toast show'+(type?' '+type:'');
+  toastT=setTimeout(()=>t.className='toast',3500);
+}
+
+// ── COPY ──
+function copyIP(ip){navigator.clipboard?.writeText(ip).then(()=>toast('✅ '+ip+' nusxa olindi!','ok')).catch(()=>toast('❌ Nusxa olmadi','err'));}
+
+// ── SERVER STATUS ──
+async function checkServers(){
+  const pairs=[['ad1','ap1','hd1','hp1','crystalmc.uz'],['ad2','ap2','hd2','hp2','mc.mastercraft.uz']];
+  for(const [ad,ap,hd,hp,ip] of pairs){
+    try{
+      const d=await fetch(`/api/server-status?ip=${ip}`,{signal:AbortSignal.timeout(6000)}).then(r=>r.json());
+      const cls=d.online?'sdot on':'sdot off';
+      const txt=d.online?`${d.players_online}/${d.players_max} o'yinchi`:'Offline';
+      [ad,hd].forEach(id=>{const e=document.getElementById(id);if(e)e.className=cls;});
+      [ap,hp].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=(id.startsWith('a')?ip+' — ':'')+txt;});
+    }catch{
+      [ad,hd].forEach(id=>{const e=document.getElementById(id);if(e)e.className='sdot off';});
+    }
+  }
+}
+
+// ── AUTH ──
+function switchTab(t){
+  ['login','reg'].forEach(x=>{
+    document.getElementById('tab-'+x).classList.toggle('active',x===t);
+    document.getElementById('ap-'+x).classList.toggle('active',x===t);
+  });
+}
+
+async function doLogin(){
+  const l=document.getElementById('li').value.trim();
+  const p=document.getElementById('lp').value;
+  const err=document.getElementById('lerr'); err.style.display='none';
+  if(!l||!p){err.textContent='Login va parol kiriting!';err.style.display='block';return;}
+  const btn=document.getElementById('lbtn'); btn.disabled=true; btn.textContent='⏳...';
+  try{
+    const d=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({login:l,password:p})}).then(r=>r.json());
+    if(d.ok){curToken=d.token;curUser=d.user;sessionStorage.setItem('_tok',curToken);sessionStorage.setItem('_usr',JSON.stringify(curUser));enterApp();}
+    else{err.textContent=d.error||'Xatolik!';err.style.display='block';}
+  }catch{err.textContent='Server bilan aloqa yo\'q!';err.style.display='block';}
+  btn.disabled=false; btn.textContent='Kirish →';
+}
+
+async function doRegister(){
+  const l=document.getElementById('ri').value.trim();
+  const p=document.getElementById('rp').value;
+  const n=document.getElementById('rn').value.trim();
+  const err=document.getElementById('rerr'),suc=document.getElementById('rsuc');
+  err.style.display='none'; suc.style.display='none';
+  if(!l||!p){err.textContent='Login va parol kiriting!';err.style.display='block';return;}
+  const btn=document.getElementById('rbtn'); btn.disabled=true; btn.textContent='⏳...';
+  try{
+    const d=await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({login:l,password:p,name:n})}).then(r=>r.json());
+    if(d.ok){suc.textContent='✅ Akkaunt yaratildi! Kirish qiling.';suc.style.display='block';setTimeout(()=>switchTab('login'),2000);}
+    else{err.textContent=d.error||'Xatolik!';err.style.display='block';}
+  }catch{err.textContent='Server bilan aloqa yo\'q!';err.style.display='block';}
+  btn.disabled=false; btn.textContent='Ro\'yxatdan o\'tish →';
+}
+
+// Google callback — GSI SDK dan kelgan ID token backendga yuboriladi
+async function onGoogleCredential(resp){
+  try{
+    const d=await fetch('/api/auth/google',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({token:resp.credential})
+    }).then(r=>r.json());
+    if(d.ok){
+      curToken=d.token;
+      curUser=d.user;
+      sessionStorage.setItem('_tok',curToken);
+      sessionStorage.setItem('_usr',JSON.stringify(curUser));
+      enterApp();
+    }else{
+      toast('❌ '+(d.error||'Google kirish xatolik'),'err');
+    }
+  }catch{
+    toast('❌ Server bilan aloqa yo\'q!','err');
+  }
+}
+
+function loadGoogleSDK(cid){
+  if(!cid)return;
+  window._gCid=cid;
+  if(window.google?.accounts?.id){
+    // Allaqachon yuklangan — qayta render
+    renderGoogleBtns();
+    return;
+  }
+  // SDK skriptini dinamik yuklash
+  if(document.querySelector('script[src*="accounts.google.com/gsi"]'))return;
+  const s=document.createElement('script');
+  s.src='https://accounts.google.com/gsi/client';
+  s.async=true;
+  s.onload=renderGoogleBtns;
+  s.onerror=()=>{
+    const gn=document.getElementById('gnote');
+    if(gn)gn.textContent='⚠️ Google SDK yuklanmadi';
+  };
+  document.head.appendChild(s);
+}
+
+function renderGoogleBtns(){
+  if(!window._gCid||!window.google?.accounts?.id)return;
+  // Google'ga callback ro'yxatdan o'tkazish
+  google.accounts.id.initialize({
+    client_id:window._gCid,
+    callback:onGoogleCredential,
+    auto_select:false,
+    cancel_on_tap_outside:true,
+  });
+  // Login sahifasidagi tugma o'rniga Google tugmasini chiqarish
+  ['gBtnWrap','gBtnWrap2'].forEach(id=>{
+    const wrap=document.getElementById(id);
+    if(!wrap)return;
+    wrap.style.display='block';
+    wrap.innerHTML='';
+    google.accounts.id.renderButton(wrap,{
+      type:'standard',
+      shape:'rectangular',
+      theme:'filled_black',
+      text:'signin_with',
+      size:'large',
+      width:358,
+      logo_alignment:'left',
+    });
+  });
+  const gn=document.getElementById('gnote');
+  if(gn)gn.textContent='✅ Google kirish tayyor!';
+}
+
+function enterApp(){
+  document.getElementById('authScreen').style.display='none';
+  document.getElementById('mainApp').style.display='block';
+  if(curUser){
+    document.getElementById('tnName').textContent=curUser.name||curUser.login;
+    const av=document.getElementById('tnAv');
+    if(curUser.avatar)av.innerHTML=`<img src="${curUser.avatar}" alt="av"/>`;
+    else av.textContent=(curUser.name||curUser.login).slice(0,2).toUpperCase();
+  }
+  loadPublicSettings();
+  checkServers(); setInterval(checkServers,60000);
+}
+
+function doLogout(){
+  sessionStorage.clear(); curToken=null; curUser=null;
+  document.getElementById('mainApp').style.display='none';
+  document.getElementById('authScreen').style.display='flex';
+}
+
+// Auto-login check
+(async function(){
+  // Load Google SDK
+  try{const pub=await fetch('/api/settings/public').then(r=>r.json());if(pub.google_client_id)loadGoogleSDK(pub.google_client_id);}catch{}
+  // Check existing session
+  const t=sessionStorage.getItem('_tok');
+  if(t){
+    curToken=t;
+    try{
+      const d=await fetch('/api/auth/me',{headers:{'X-Admin-Token':t}}).then(r=>r.json());
+      if(d.ok){curUser=d.user;enterApp();return;}
+    }catch{}
+    sessionStorage.clear();
+  }
+  // Show auth + check servers
+  checkServers();
+})();
+
+// Load card info from settings
+async function loadPublicSettings(){
+  try{
+    const d=await fetch('/api/settings/public').then(r=>r.json());
+    const cardNum=d.card_number||'3400 0385 6025 XXXX';
+    const cardHolder=d.card_holder||'MASTERCRAFT ADMIN';
+    const cardBank=d.card_bank||'Uzcard / Humo';
+    ['cardNum','tokCardNum','uCardNum'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=cardNum;});
+    ['cardHolder','tokCardHolder','uCardHolder'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=cardHolder;});
+    ['cardBank','tokCardBank','uCardBank'].forEach(id=>{const e=document.getElementById(id);if(e)e.textContent=cardBank;});
+    if(d.tg_admin){const a=document.getElementById('tgLink');if(a){a.href='https://t.me/'+d.tg_admin.replace('@','');a.textContent=d.tg_admin;}}
+  }catch{}
+}
+
+// ── PAGE NAV ──
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  ['nb-home','nb-ranks','nb-token','nb-unban','nb-rules'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('active');});
+  ['mb-home','mb-ranks','mb-token','mb-unban','mb-rules'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('active');});
+  document.getElementById('page-'+name).classList.add('active');
+  const nb=document.getElementById('nb-'+name);if(nb)nb.classList.add('active');
+  const mb=document.getElementById('mb-'+name);if(mb)mb.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  // Sync card info for unban page
+  if(name==='unban') syncUnbanCard();
+}
+
+// ── RULES TABS ──
+function showRtab(name,btn){
+  document.querySelectorAll('.rsec').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.rtab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('rt-'+name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── RANK TOGGLE ──
+function switchPeriod(cb){
+  const on=cb.checked;
+  document.getElementById('tl-m').style.color=on?'var(--mu)':'var(--cr)';
+  document.getElementById('tl-l').style.color=on?'var(--gold)':'var(--mu)';
+  document.querySelectorAll('.pm').forEach(e=>e.style.display=on?'none':'block');
+  document.querySelectorAll('.pl').forEach(e=>e.style.display=on?'block':'none');
+  document.querySelectorAll('.plm').forEach(e=>e.style.display=on?'block':'none');
+}
+
+function openRankForm(rank){
+  document.getElementById('f-rank').value=rank;
+  const p=document.getElementById('tPeriod').checked?'life':'month';
+  document.getElementById('f-period').value=p;
+  document.getElementById('f-amount').value=PRICES[rank][p];
+  setTimeout(()=>document.querySelector('.dform-box').scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+document.getElementById('f-period').addEventListener('change',function(){const r=document.getElementById('f-rank').value;if(r&&PRICES[r])document.getElementById('f-amount').value=PRICES[r][this.value];});
+document.getElementById('f-rank').addEventListener('change',function(){const p=document.getElementById('f-period').value;if(this.value&&PRICES[this.value])document.getElementById('f-amount').value=PRICES[this.value][p];});
+
+async function submitRank(){
+  const nick=document.getElementById('f-nick').value.trim();
+  const rank=document.getElementById('f-rank').value;
+  const period=document.getElementById('f-period').value;
+  const amount=document.getElementById('f-amount').value;
+  const tg=document.getElementById('f-tg').value.trim();
+  const chk=document.getElementById('f-check').files[0];
+  if(!nick){toast('❌ Nickname kiriting!','err');return;}
+  if(!rank){toast('❌ Rank tanlang!','err');return;}
+  if(!amount){toast('❌ Summa kiriting!','err');return;}
+  const btn=document.getElementById('rankSubBtn'); btn.disabled=true; btn.textContent='⏳...';
+  const fd=new FormData();
+  fd.append('nick',nick);fd.append('rank',rank);fd.append('period',period);fd.append('amount',amount);fd.append('tg',tg);fd.append('type','rank');
+  if(chk)fd.append('check',chk);
+  try{
+    const d=await fetch('/api/orders',{method:'POST',body:fd}).then(r=>r.json());
+    if(d.ok){
+      ['f-nick','f-rank','f-amount','f-tg'].forEach(id=>document.getElementById(id).value='');
+      document.getElementById('f-check').value=''; document.getElementById('fname').textContent='';
+      showSuccess('💎','Rank so\'rovi yuborildi!','Admin chekni tekshiradi va rank avtomatik beriladi!');
+    }else toast('❌ '+d.error,'err');
+  }catch{toast('❌ Server bilan aloqa yo\'q!','err');}
+  btn.disabled=false; btn.textContent='⚡ To\'lovni tasdiqlayman';
+}
+
+// ── TOKEN ──
+function openTokenForm(amount,price){
+  document.getElementById('tf-amount').value=amount;
+  document.getElementById('tf-price').value=price;
+  setTimeout(()=>document.getElementById('page-token').querySelectorAll('.dform-box')[0].scrollIntoView({behavior:'smooth',block:'start'}),100);
+}
+
+async function submitToken(){
+  const nick=document.getElementById('tf-nick').value.trim();
+  const amount=document.getElementById('tf-amount').value;
+  const price=document.getElementById('tf-price').value;
+  const tg=document.getElementById('tf-tg').value.trim();
+  const chk=document.getElementById('tf-check').files[0];
+  if(!nick){toast('❌ Nickname kiriting!','err');return;}
+  const btn=document.getElementById('tokSubBtn'); btn.disabled=true; btn.textContent='⏳...';
+  const fd=new FormData();
+  fd.append('nick',nick);fd.append('rank','TOKEN_'+amount);fd.append('period','token');fd.append('amount',price);fd.append('tg',tg);fd.append('type','token');fd.append('token_amount',amount);
+  if(chk)fd.append('check',chk);
+  try{
+    const d=await fetch('/api/orders',{method:'POST',body:fd}).then(r=>r.json());
+    if(d.ok){
+      document.getElementById('tf-nick').value=''; document.getElementById('tf-tg').value='';
+      document.getElementById('tf-check').value=''; document.getElementById('tfname').textContent='';
+      showSuccess('🪙','Token so\'rovi yuborildi!',`Admin ${amount} token berilishini tasdiqlaydi!`);
+    }else toast('❌ '+d.error,'err');
+  }catch{toast('❌ Server bilan aloqa yo\'q!','err');}
+  btn.disabled=false; btn.textContent='⚡ To\'lovni tasdiqlayman';
+}
+
+// ── UNBAN ──
+function syncUnbanCard(){
+  // Copy card info to unban page
+  const cn=document.getElementById('cardNum')?.textContent;
+  const ch=document.getElementById('cardHolder')?.textContent;
+  const cb=document.getElementById('cardBank')?.textContent;
+  if(cn){const e=document.getElementById('uCardNum');if(e)e.textContent=cn;}
+  if(ch){const e=document.getElementById('uCardHolder');if(e)e.textContent=ch;}
+  if(cb){const e=document.getElementById('uCardBank');if(e)e.textContent=cb;}
+}
+
+async function submitUnban(){
+  const nick=document.getElementById('uf-nick').value.trim();
+  const tg=document.getElementById('uf-tg').value.trim();
+  const reason=document.getElementById('uf-reason').value.trim();
+  const chk=document.getElementById('uf-check').files[0];
+  if(!nick){toast('❌ Nickname kiriting!','err');return;}
+  const btn=document.getElementById('unbanSubBtn'); btn.disabled=true; btn.textContent='⏳...';
+  const fd=new FormData();
+  fd.append('nick',nick);fd.append('rank','UNBAN');fd.append('period','unban');fd.append('amount',15000);
+  fd.append('tg',tg||reason?`${tg} | ${reason}`:tg);fd.append('type','unban');
+  if(chk)fd.append('check',chk);
+  try{
+    const d=await fetch('/api/orders',{method:'POST',body:fd}).then(r=>r.json());
+    if(d.ok){
+      document.getElementById('uf-nick').value=''; document.getElementById('uf-tg').value='';
+      document.getElementById('uf-reason').value=''; document.getElementById('uf-check').value='';
+      document.getElementById('ufname').textContent='';
+      showSuccess('🔓','Unban so\'rovi yuborildi!','Admin to\'lovni tekshiradi va /unban buyrug\'ini bajaradi!');
+    }else toast('❌ '+d.error,'err');
+  }catch{toast('❌ Server bilan aloqa yo\'q!','err');}
+  btn.disabled=false; btn.textContent='🔓 Unban so\'rovini yuborish';
+}
+
+function showSuccess(icon,title,msg){
+  document.getElementById('sucIcon').textContent=icon;
+  document.getElementById('sucTitle').textContent=title;
+  document.getElementById('sucMsg').textContent=msg;
+  document.getElementById('sucModal').classList.add('open');
+}
+
+// particles (light version for mobile)
+(function(){
+  const c=document.createElement('canvas');
+  c.style.cssText='position:fixed;inset:0;z-index:0;pointer-events:none;';
+  document.body.prepend(c);
+  const ctx=c.getContext('2d');let W,H;
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight;}
+  resize(); window.addEventListener('resize',resize);
+  const isMob=window.innerWidth<768;
+  const count=isMob?25:55;
+  const pts=Array.from({length:count},()=>({x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.4+.3,vx:(Math.random()-.5)*.15,vy:Math.random()*-.25-.06,alpha:Math.random()*.4+.06,color:Math.random()>.7?'255,215,0':'0,212,255'}));
+  function draw(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.x+=p.vx;p.y+=p.vy;if(p.y<-5){p.y=H+5;p.x=Math.random()*W;}ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(${p.color},${p.alpha})`;ctx.fill();});requestAnimationFrame(draw);}
+  draw();
+})();
+</script>
+</body>
+</html>
