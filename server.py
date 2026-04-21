@@ -35,9 +35,22 @@ def init_db():
             role TEXT DEFAULT 'moder', tg TEXT, google_id TEXT,
             google_email TEXT, avatar TEXT, active INTEGER DEFAULT 1, created TEXT)""")
         con.execute("""CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT)""")
+        default_ranks = json.dumps([
+            {"id":"HEROIC","name":"HEROIC","icon":"🟤","lp":"heroic","color":"#c87941","month_price":3000,"life_price":7000},
+            {"id":"ASPID","name":"ASPID","icon":"🟢","lp":"aspid","color":"#55cc66","month_price":7000,"life_price":18000},
+            {"id":"SKVID","name":"SKVID","icon":"🔵","lp":"skvid","color":"#44ccff","month_price":10000,"life_price":25000},
+            {"id":"GLAVA","name":"GLAVA","icon":"🟣","lp":"glava","color":"#cc55ff","month_price":15000,"life_price":50000},
+            {"id":"ELITE","name":"ELITE","icon":"🟠","lp":"elite","color":"#ff9922","month_price":30000,"life_price":75000},
+            {"id":"TITAN","name":"TITAN","icon":"💙","lp":"titan","color":"#66aaff","month_price":40000,"life_price":100000},
+            {"id":"STRIKER","name":"STRIKER","icon":"🔴","lp":"striker","color":"#ff4455","month_price":50000,"life_price":125000},
+            {"id":"PRINSS","name":"PRINSS","icon":"💗","lp":"prinss","color":"#ff55cc","month_price":60000,"life_price":150000},
+            {"id":"KNYAZ","name":"KNYAZ","icon":"👑","lp":"knyaz","color":"#ffcc00","month_price":70000,"life_price":200000},
+            {"id":"GERCOG","name":"GERCOG","icon":"💎","lp":"gercog","color":"#00d4ff","month_price":80000,"life_price":250000}
+        ])
         defaults = {"rcon_host":"localhost","rcon_port":"25575","rcon_password":"",
                     "card_number":"3400 0385 6025 XXXX","card_holder":"MASTERCRAFT ADMIN",
-                    "card_bank":"Uzcard / Humo","tg_admin":"@MASTERCRAFT_ADMIN","google_client_id":""}
+                    "card_bank":"Uzcard / Humo","tg_admin":"@MASTERCRAFT_ADMIN","google_client_id":"",
+                    "ranks_config":default_ranks}
         for k,v in defaults.items():
             con.execute("INSERT OR IGNORE INTO settings (key,value) VALUES (?,?)",(k,v))
         con.commit()
@@ -93,6 +106,23 @@ def get_current_user(token):
                 return dict(acc)
     return None
 
+# ── RANKS CONFIG ──
+def get_ranks():
+    raw=get_setting("ranks_config","[]")
+    try: return json.loads(raw)
+    except: return []
+
+@app.route("/api/ranks")
+def api_ranks():
+    return jsonify({"ok":True,"ranks":get_ranks()})
+
+@app.route("/api/ranks",methods=["POST"])
+def api_ranks_save():
+    if not check_auth(): return jsonify({"error":"Ruxsat yo'q"}),403
+    ranks=request.get_json() or []
+    set_setting("ranks_config",json.dumps(ranks))
+    return jsonify({"ok":True,"message":"Ranklar saqlandi"})
+
 # ── RCON ──
 def run_rcon(cmd):
     host=get_setting("rcon_host","localhost")
@@ -101,7 +131,12 @@ def run_rcon(cmd):
     with MCRcon(host,password,port=port) as mcr: return mcr.command(cmd)
 
 def give_rank(nick, rank, period):
-    lp=RANK_MAP.get(rank,rank.lower())
+    # ranks_config  `` dan lp nomini olish
+    ranks=get_ranks()
+    lp=rank.lower()
+    for r in ranks:
+        if r["id"]==rank: lp=r.get("lp",rank.lower()); break
+    if not lp: lp=RANK_MAP.get(rank,rank.lower())
     # period DB da "30 kun" yoki "Butun umr" sifatida saqlanadi
     is_temp = period in ("month", "30 kun")
     cmd=f"lp user {nick} parent add {lp}" if not is_temp else f"lp user {nick} parent addtemp {lp} 30d"
