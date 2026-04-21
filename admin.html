@@ -224,6 +224,7 @@ tr:hover td{background:rgba(0,212,255,.02);}
       <button class="snav" onclick="showSec('stats',this)">📊 Statistika</button>
       <div class="ng">Boshqaruv</div>
       <button class="snav" onclick="showSec('accounts',this)">👤 Akkauntlar</button>
+      <button class="snav" onclick="showSec('ranks',this)">💎 Ranklar</button>
       <button class="snav" onclick="showSec('rules',this)">📜 Qoidalar</button>
       <div class="ng">Server</div>
       <button class="snav" onclick="showSec('settings',this)">⚙️ Sozlamalar</button>
@@ -334,6 +335,19 @@ tr:hover td{background:rgba(0,212,255,.02);}
           <button class="abtn" onclick="saveGoogleSettings()">💾 Google Saqlash</button>
         </div>
       </div>
+    </div>
+
+    <!-- RANKS MANAGER -->
+    <div class="sec" id="sec-ranks">
+      <div class="mhdr">
+        <div><div class="pt">💎 Ranklar boshqaruvi</div><div class="ps">Rank nom, narx va LuckPerms nomini tahrirlash</div></div>
+        <div style="display:flex;gap:.5rem">
+          <button class="abtn" onclick="addNewRank()" style="background:rgba(0,255,136,.15);border:1px solid rgba(0,255,136,.3);color:var(--gr)">+ Rank qo'shish</button>
+          <button class="abtn" onclick="saveRanks()">💾 Saqlash</button>
+        </div>
+      </div>
+      <div class="hint">Rank nomini, narxini va LuckPerms buyrug'idagi nomni o'zgartiring. <strong>Saqlash</strong> tugmasini bossangiz sayt va server avtomatik yangilanadi.</div>
+      <div id="ranksContainer" style="display:flex;flex-direction:column;gap:.6rem"></div>
     </div>
 
     <!-- RULES -->
@@ -468,6 +482,7 @@ function showSec(name,btn){
   if(name==='accounts')renderAccounts();
   if(name==='settings')loadSettings();
   if(name==='rules')renderRules();
+  if(name==='ranks')loadRanksMgr();
 }
 
 // RCON
@@ -605,6 +620,71 @@ async function createAccount(){
 }
 async function toggleAcc(id,active){const d=await api(`/api/accounts/${id}`,'PUT',{active:!active});if(d.ok){toast(active?'⏸ Bloklandi':'▶ Faollashtirildi');renderAccounts();}}
 async function deleteAcc(id){if(!confirm('O\'chirmoqchimisiz?'))return;const d=await api(`/api/accounts/${id}`,'DELETE');if(d.ok){toast('🗑 O\'chirildi');renderAccounts();}}
+
+// RANKS MANAGER
+let ranksData=[];
+async function loadRanksMgr(){
+  try{
+    const d=await api('/api/ranks');
+    ranksData=d.ranks||[];
+    renderRanksMgr();
+  }catch{toast('\u274c Ranklar yuklanmadi','err');}
+}
+function renderRanksMgr(){
+  const c=document.getElementById('ranksContainer');
+  if(!c)return;
+  c.innerHTML=ranksData.map((r,i)=>`
+    <div style="background:var(--sf);border:1px solid ${r.color||'var(--br)'};border-radius:10px;padding:1rem 1.2rem;display:grid;grid-template-columns:auto 1fr 1fr 1fr 1fr 1fr auto;gap:.7rem;align-items:center;" id="rank-row-${i}">
+      <div style="font-size:1.4rem;cursor:pointer" title="Rang" onclick="pickColor(${i})">${r.icon||'\ud83d\udc8e'}<span style="display:inline-block;width:12px;height:12px;background:${r.color||'#fff'};border-radius:3px;margin-left:.3rem;border:1px solid rgba(255,255,255,.2)"></span></div>
+      <div>
+        <label style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);display:block;margin-bottom:.2rem">Nom</label>
+        <input type="text" value="${r.name}" onchange="ranksData[${i}].name=this.value" style="width:100%;background:var(--bg);border:1px solid var(--br);border-radius:4px;padding:.45rem .6rem;color:var(--tx);font-family:'Oxanium',monospace;font-size:.82rem;font-weight:700;outline:none" onfocus="this.style.borderColor='${r.color||'var(--cr)'}'" onblur="this.style.borderColor='var(--br)'"/>
+      </div>
+      <div>
+        <label style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);display:block;margin-bottom:.2rem">LP Nomi</label>
+        <input type="text" value="${r.lp||r.name.toLowerCase()}" onchange="ranksData[${i}].lp=this.value" style="width:100%;background:var(--bg);border:1px solid var(--br);border-radius:4px;padding:.45rem .6rem;color:var(--cr);font-family:'Oxanium',monospace;font-size:.82rem;outline:none" placeholder="lp nomi"/>
+      </div>
+      <div>
+        <label style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);display:block;margin-bottom:.2rem">Emoji</label>
+        <input type="text" value="${r.icon||''}" maxlength="4" onchange="ranksData[${i}].icon=this.value" style="width:100%;background:var(--bg);border:1px solid var(--br);border-radius:4px;padding:.45rem .6rem;color:var(--tx);font-size:1.1rem;text-align:center;outline:none"/>
+      </div>
+      <div>
+        <label style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);display:block;margin-bottom:.2rem">30 kun (UZS)</label>
+        <input type="number" value="${r.month_price}" onchange="ranksData[${i}].month_price=+this.value" style="width:100%;background:var(--bg);border:1px solid var(--br);border-radius:4px;padding:.45rem .6rem;color:var(--gold);font-family:'Oxanium',monospace;font-size:.85rem;font-weight:700;outline:none"/>
+      </div>
+      <div>
+        <label style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);display:block;margin-bottom:.2rem">Butun umr (UZS)</label>
+        <input type="number" value="${r.life_price}" onchange="ranksData[${i}].life_price=+this.value" style="width:100%;background:var(--bg);border:1px solid var(--br);border-radius:4px;padding:.45rem .6rem;color:var(--gold);font-family:'Oxanium',monospace;font-size:.85rem;font-weight:700;outline:none"/>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:.3rem">
+        <input type="color" value="${r.color||'#00d4ff'}" onchange="ranksData[${i}].color=this.value;renderRanksMgr()" style="width:32px;height:32px;border:none;background:none;cursor:pointer;border-radius:4px" title="Rang">
+        <button class="ab bdl" onclick="deleteRankRow(${i})" title="O'chirish">🗑</button>
+      </div>
+    </div>
+  `).join('');
+}
+function deleteRankRow(i){
+  if(!confirm('Rankni o\'chirmoqchimisiz?'))return;
+  ranksData.splice(i,1);
+  renderRanksMgr();
+  toast('\ud83d\uddd1 Rank o\'chirildi');
+}
+function addNewRank(){
+  ranksData.push({id:'NEW_'+Date.now(),name:'YANGI',icon:'\u2b50',lp:'yangi',color:'#00d4ff',month_price:10000,life_price:25000});
+  renderRanksMgr();
+  document.getElementById('ranksContainer').lastElementChild?.scrollIntoView({behavior:'smooth'});
+}
+async function saveRanks(){
+  // Sync id from name for new ranks
+  ranksData.forEach(r=>{
+    if(r.id.startsWith('NEW_'))r.id=r.name.toUpperCase().replace(/\s+/g,'_');
+  });
+  try{
+    const d=await api('/api/ranks','POST',ranksData);
+    if(d.ok){toast('\u2705 Ranklar saqlandi!','ok');}
+    else toast('\u274c Xatolik: '+(d.error||''),'err');
+  }catch{toast('\u274c Server bilan aloqa yo\'q!','err');}
+}
 
 // RULES
 function getDefaultRules(){return{asosiy:[{id:'1.1',text:'Qoidalarni bilmaslik sizni javobgarlikdan ozod qilmaydi.',pen:''},{id:'1.2',text:'Serverda o\'ynashni boshlash orqali barcha qoidalarga roziligingizni avtomatik tasdiqlaysiz.',pen:''},{id:'1.3',text:'Server plaginlari noto\'g\'ri ishlashi tufayli narsalar yo\'qolishi uchun server javobgar emas.',pen:''},{id:'1.4',text:'Ma\'muriyat serverning ishlashini kafolatlamaydi.',pen:''},{id:'1.5',text:'Server xatolar natijasida etkazilgan zarar uchun javobgar emas.',pen:''},{id:'1.6',text:'O\'yinchilar barcha qoidalarga rioya qilishlari shart.',pen:''},{id:'1.7',text:'Server barcha harakatlar tarixini saqlaydi.',pen:''},{id:'1.8',text:'Server qoidalarni ogohlantirmasdan o\'zgartirish huquqiga ega.',pen:''},{id:'1.9',text:'Server va ishchilarni haqorat qilish taqiqlanadi.',pen:'2 soat mute'}],chat:[{id:'2.1',text:'Caps/Spam/Flood taqiqlanadi.',pen:'2 soat mute'},{id:'2.2',text:'Kamsitish va haqorat taqiqlanadi.',pen:'5 soat mute'},{id:'2.3',text:'Behayo so\'zlar taqiqlanadi.',pen:'5 soat mute'},{id:'2.4',text:'Reklama taqiqlanadi.',pen:'30 kun ban'},{id:'2.5',text:'Qarindoshlarini haqorat qilish taqiqlanadi.',pen:'5 kun ban'},{id:'2.6',text:'Urush qo\'zg\'atish, irqchilik taqiqlanadi.',pen:'5 kun ban'},{id:'2.7',text:'Chat blokirovkasini chetlab o\'tish taqiqlanadi.',pen:'2.2-2.6'},{id:'2.8',text:'Server chatdagi aldov uchun javobgar emas.',pen:''},{id:'2.9',text:'Chatda aloqa ma\'lumotlarini yuborish taqiqlanadi.',pen:'5 soat mute'}],rejim:[{id:'3.0',text:'Rejim nomidagi nik/taxallusni qo\'yib kirish taqiqlanadi.',pen:'Ban'},{id:'3.1',text:'Anarxiya rejimida jamoa 3 tadan oshishi taqiqlanadi.',pen:'30 kun ban'},{id:'3.2',text:'Rejimlarni kamsitish yoki flood qilish taqiqlanadi.',pen:'2 soat mute'},{id:'3.3',text:'3.0 qoida buzilsa rank boshqa akkauntga ko\'chirib o\'tkazish mumkin.',pen:'Ban'}],akkaunt:[{id:'4.1',text:'Nikda so\'kinish, kamsitish bo\'lmasligi kerak.',pen:'Doimiy ban'},{id:'4.2',text:'Hisobingizni boshqa shaxslarga berish taqiqlanadi.',pen:'Doimiy ban'},{id:'4.3',text:'Akkaunt egasi barcha harakatlar uchun javobgar.',pen:''},{id:'4.4',text:'Akkaunt va donatlarni sotish/o\'tkazish taqiqlanadi.',pen:'Doimiy ban'},{id:'4.5',text:'Donatni boshqa hisobga o\'tkazib bo\'lmaydi.',pen:''}],oyun:[{id:'5.1',text:'Firibgarlik taqiqlanadi.',pen:'Ban'},{id:'5.2',text:'Uchinchi tomon dasturlari taqiqlanadi.',pen:'30 kun ban'},{id:'5.3',text:'Qoidabuzarga yordam berish taqiqlanadi.',pen:'Ban'},{id:'5.4',text:'Serverni buzishga urinish taqiqlanadi.',pen:'Ban'},{id:'5.5',text:'Server bag\'laridan foydalanish taqiqlanadi.',pen:'Ban'},{id:'5.6',text:'Jinsiy organlar, natsist ramzlari qurish taqiqlanadi.',pen:'5 kun ban'},{id:'5.7',text:'Uchinchi shaxslarni qoidalarni buzishga undash taqiqlanadi.',pen:'5 kun ban'}],tekshiruv:[{id:'6.1',text:'Moderning barcha talablariga rioya qilishingiz shart.',pen:''},{id:'6.2',text:'Verifierdan xabarni ko\'rmaslik — bandan chiqarish sababi emas.',pen:''},{id:'6.3',text:'Tekshiruvga aralashish taqiqlanadi.',pen:'Ban'},{id:'6.4',text:'Tekshiruv paytida fayllarni o\'chirish taqiqlanadi.',pen:'Ban'},{id:'6.5',text:'Tekshiruv paytida Minecraft\'dan chiqish taqiqlanadi.',pen:'Ban'},{id:'6.6',text:'Tekshiruvni tasvirga olish taqiqlanadi.',pen:''},{id:'6.7',text:'Moder dasturlarni o\'rnatishingizni so\'rashga haqli.',pen:''},{id:'6.8',text:'Moder qoidalarni buzsa — ishidan ozod qilinadi.',pen:''}],donat:[{id:'7.0',text:'Donatlarni bekor qilib pul qaytarib olish mumkin emas.',pen:''},{id:'7.1',text:'Donat orqali bosim o\'tkazish taqiqlanadi.',pen:'10 kun ban'},{id:'7.2',text:'Donatdan foydalanib besabab mute, ban, kick taqiqlanadi.',pen:'10 kun ban'},{id:'7.3',text:'Soxta chek orqali donat olishga urunish taqiqlanadi.',pen:'Doimiy ban'},{id:'7.4',text:'Helper muteni qoidalarga asosan berishi shart. Tanish-bilishchilik — Helperlikdan olinish va umrbod ban.',pen:'Doimiy ban'}]};}
