@@ -25,14 +25,32 @@ body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
   linear-gradient(90deg,rgba(0,212,255,.025) 1px,transparent 1px);background-size:50px 50px;}
 
 /* ══════════════════════════
-   AUTH — always shows first
+   AUTH MODAL (pops on purchase)
 ══════════════════════════ */
 #authScreen{
   position:relative;z-index:10;min-height:100vh;
   display:flex;flex-direction:column;align-items:center;justify-content:center;
   padding:1.5rem;
 }
-#mainApp{display:none}
+/* authScreen is now only shown as modal inside #authModal */
+#mainApp{display:block}
+
+/* AUTH MODAL OVERLAY */
+#authModal{
+  display:none;position:fixed;inset:0;z-index:900;
+  background:rgba(0,0,0,.88);backdrop-filter:blur(10px);
+  align-items:center;justify-content:center;padding:1.5rem;
+}
+#authModal.open{display:flex;}
+#authModal .auth-card{animation:popIn .35s ease;}
+.amodal-close{position:absolute;top:1rem;right:1rem;
+  background:rgba(255,255,255,.06);border:1px solid var(--br);color:var(--mu);
+  border-radius:50%;width:32px;height:32px;font-size:1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:.2s;}
+.amodal-close:hover{color:var(--tx);}
+.amodal-note{text-align:center;margin-bottom:1rem;}
+.amodal-note p{font-size:.8rem;color:var(--mu);line-height:1.6;}
+.amodal-note strong{color:var(--cr);}
 
 .auth-head{text-align:center;margin-bottom:2rem;}
 .auth-title{font-family:'Oxanium',monospace;font-size:clamp(1.5rem,6vw,2.2rem);font-weight:800;
@@ -369,61 +387,60 @@ input:checked+.tslider::before{transform:translateX(25px);background:var(--gold)
 <div class="glow"></div>
 
 <!-- ═══════════════════════════
-     AUTH SCREEN (always first)
+     AUTH MODAL (opens on purchase)
 ═══════════════════════════ -->
-<div id="authScreen">
-  <div class="auth-head">
-    <div style="font-size:2.5rem;margin-bottom:.5rem">⚔️</div>
-    <div class="auth-title">CrystalMC & MasterCraft</div>
-    <div class="auth-sub">Serverga xush kelibsiz</div>
-  </div>
-
-  <div class="srv-pills">
-    <div class="srv-pill"><span class="sdot chk" id="ad1"></span><span id="ap1">crystalmc.uz</span></div>
-    <div class="srv-pill"><span class="sdot chk" id="ad2"></span><span id="ap2">mc.mastercraft.uz</span></div>
-  </div>
-
-  <div class="auth-card">
-    <div class="auth-tabs">
-      <button class="atab active" id="tab-login" onclick="switchTab('login')">🔐 Kirish</button>
-      <button class="atab" id="tab-reg" onclick="switchTab('reg')">📝 Ro'yxat</button>
+<div id="authModal">
+  <div style="position:relative;width:100%;max-width:420px">
+    <button class="amodal-close" onclick="closeAuthModal()">✕</button>
+    <div class="auth-head" style="margin-bottom:1rem">
+      <div style="font-size:2rem;margin-bottom:.3rem">⚔️</div>
+      <div class="auth-title" style="font-size:1.5rem">CrystalMC & MasterCraft</div>
     </div>
-    <div class="auth-body">
-      <!-- LOGIN -->
-      <div class="apage active" id="ap-login">
-        <div class="aerr" id="lerr"></div>
-        <div class="fg">
-          <label>Login</label>
-          <input type="text" id="li" placeholder="username" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()"/>
-        </div>
-        <div class="fg">
-          <label>Parol</label>
-          <input type="password" id="lp" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
-        </div>
-        <button class="auth-btn" id="lbtn" onclick="doLogin()">Kirish →</button>
-        <div class="divider-or"><span>yoki</span></div>
-        <div id="gBtnWrap" style="display:none;width:100%;margin-top:.5rem"></div>
-        <p class="gnote" id="gnote">Google Client ID admin panelda kiritilmagan</p>
+    <div class="amodal-note">
+      <p>Sotib olish uchun <strong>akkauntga kirish</strong> yoki <strong>ro'yxatdan o'tish</strong> kerak</p>
+    </div>
+    <div class="auth-card">
+      <div class="auth-tabs">
+        <button class="atab active" id="tab-login" onclick="switchTab('login')">🔐 Kirish</button>
+        <button class="atab" id="tab-reg" onclick="switchTab('reg')">📝 Ro'yxat</button>
       </div>
-      <!-- REGISTER -->
-      <div class="apage" id="ap-reg">
-        <div class="aerr" id="rerr"></div>
-        <div class="asuc" id="rsuc"></div>
-        <div class="fg">
-          <label>Login</label>
-          <input type="text" id="ri" placeholder="username" autocomplete="username"/>
+      <div class="auth-body">
+        <!-- LOGIN -->
+        <div class="apage active" id="ap-login">
+          <div class="aerr" id="lerr"></div>
+          <div class="fg">
+            <label>Login</label>
+            <input type="text" id="li" placeholder="username" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()"/>
+          </div>
+          <div class="fg">
+            <label>Parol</label>
+            <input type="password" id="lp" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/>
+          </div>
+          <button class="auth-btn" id="lbtn" onclick="doLogin()">Kirish →</button>
+          <div class="divider-or"><span>yoki</span></div>
+          <div id="gBtnWrap" style="display:none;width:100%;margin-top:.5rem"></div>
+          <p class="gnote" id="gnote">Google Client ID admin panelda kiritilmagan</p>
         </div>
-        <div class="fg">
-          <label>Parol</label>
-          <input type="password" id="rp" placeholder="Kuchli parol" autocomplete="new-password"/>
+        <!-- REGISTER -->
+        <div class="apage" id="ap-reg">
+          <div class="aerr" id="rerr"></div>
+          <div class="asuc" id="rsuc"></div>
+          <div class="fg">
+            <label>Login</label>
+            <input type="text" id="ri" placeholder="username" autocomplete="username"/>
+          </div>
+          <div class="fg">
+            <label>Parol</label>
+            <input type="password" id="rp" placeholder="Kuchli parol" autocomplete="new-password"/>
+          </div>
+          <div class="fg">
+            <label>Ism (ixtiyoriy)</label>
+            <input type="text" id="rn" placeholder="Ali Valiyev"/>
+          </div>
+          <button class="auth-btn" id="rbtn" onclick="doRegister()">Ro'yxatdan o'tish →</button>
+          <div class="divider-or"><span>yoki</span></div>
+          <div id="gBtnWrap2" style="display:none;width:100%;margin-top:.5rem"></div>
         </div>
-        <div class="fg">
-          <label>Ism (ixtiyoriy)</label>
-          <input type="text" id="rn" placeholder="Ali Valiyev"/>
-        </div>
-        <button class="auth-btn" id="rbtn" onclick="doRegister()">Ro'yxatdan o'tish →</button>
-        <div class="divider-or"><span>yoki</span></div>
-        <div id="gBtnWrap2" style="display:none;width:100%;margin-top:.5rem"></div>
       </div>
     </div>
   </div>
@@ -444,9 +461,16 @@ input:checked+.tslider::before{transform:translateX(25px);background:var(--gold)
       <button class="tn-btn" id="nb-rules" onclick="showPage('rules')">📜 Qoidalar</button>
     </div>
     <div class="tn-right">
-      <div class="tn-av" id="tnAv">??</div>
-      <span class="tn-uname" id="tnName">—</span>
-      <button class="tn-logout" onclick="doLogout()">Chiqish</button>
+      <!-- Guest mode -->
+      <div id="navGuest" style="display:flex;align-items:center;gap:.5rem">
+        <button onclick="openAuthModal()" style="background:linear-gradient(135deg,#0077aa,#00d4ff);color:#000;border:none;border-radius:6px;padding:.38rem .9rem;font-family:'Oxanium',monospace;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;cursor:pointer">🔐 Kirish</button>
+      </div>
+      <!-- Logged in mode -->
+      <div id="navUser" style="display:none;align-items:center;gap:.5rem">
+        <div class="tn-av" id="tnAv">??</div>
+        <span class="tn-uname" id="tnName">—</span>
+        <button class="tn-logout" onclick="doLogout()">Chiqish</button>
+      </div>
     </div>
   </nav>
 
@@ -501,20 +525,10 @@ input:checked+.tslider::before{transform:translateX(25px);background:var(--gold)
         <label class="tswitch"><input type="checkbox" id="tPeriod" onchange="switchPeriod(this)"/><span class="tslider"></span></label>
         <span class="tlabel" id="tl-l" style="color:var(--mu)">♾️ Butun umrlik</span>
       </div>
-      <div class="rank-grid">
-        <div class="rcard rc-HEROIC"><div class="ri">🟤</div><div class="rname">HEROIC</div><div class="rprice pm">3,000</div><div class="rprice pl">7,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('HEROIC')" style="color:#c87941;border-color:#c87941">Sotib olish</button></div>
-        <div class="rcard rc-ASPID"><div class="ri">🟢</div><div class="rname">ASPID</div><div class="rprice pm">7,000</div><div class="rprice pl">18,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('ASPID')" style="color:#55cc66;border-color:#55cc66">Sotib olish</button></div>
-        <div class="rcard rc-SKVID"><div class="ri">🔵</div><div class="rname">SKVID</div><div class="rprice pm">10,000</div><div class="rprice pl">25,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('SKVID')" style="color:#44ccff;border-color:#44ccff">Sotib olish</button></div>
-        <div class="rcard rc-GLAVA"><div class="ri">🟣</div><div class="rname">GLAVA</div><div class="rprice pm">15,000</div><div class="rprice pl">50,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('GLAVA')" style="color:#cc55ff;border-color:#cc55ff">Sotib olish</button></div>
-        <div class="rcard rc-ELITE"><div class="ri">🟠</div><div class="rname">ELITE</div><div class="rprice pm">30,000</div><div class="rprice pl">75,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('ELITE')" style="color:#ff9922;border-color:#ff9922">Sotib olish</button></div>
-        <div class="rcard rc-TITAN"><div class="ri">💙</div><div class="rname">TITAN</div><div class="rprice pm">40,000</div><div class="rprice pl">100,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('TITAN')" style="color:#66aaff;border-color:#66aaff">Sotib olish</button></div>
-        <div class="rcard rc-STRIKER"><div class="ri">🔴</div><div class="rname">STRIKER</div><div class="rprice pm">50,000</div><div class="rprice pl">125,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('STRIKER')" style="color:#ff4455;border-color:#ff4455">Sotib olish</button></div>
-        <div class="rcard rc-PRINSS"><div class="ri">💗</div><div class="rname">PRINSS</div><div class="rprice pm">60,000</div><div class="rprice pl">150,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('PRINSS')" style="color:#ff55cc;border-color:#ff55cc">Sotib olish</button></div>
-        <div class="rcard rc-KNYAZ"><div class="ri">👑</div><div class="rname">KNYAZ</div><div class="rprice pm">70,000</div><div class="rprice pl">200,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('KNYAZ')" style="color:#ffcc00;border-color:#ffcc00">Sotib olish</button></div>
-        <div class="rcard rc-GERCOG"><div class="ri">💎</div><div class="rname">GERCOG</div><div class="rprice pm" style="background:linear-gradient(90deg,#00d4ff,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent">80,000</div><div class="rprice pl" style="background:linear-gradient(90deg,#00d4ff,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent">250,000</div><div class="rlabel pm">UZS / 30 kun</div><div class="rlabel plm">UZS / Butun umr</div><button class="rbuy" onclick="openRankForm('GERCOG')" style="background:linear-gradient(135deg,#0077aa,#00d4ff);color:#000;border:none">Sotib olish</button></div>
-      </div>
+      <!-- Rank cards rendered dynamically -->
+      <div class="rank-grid" id="rankGrid"></div>
       <!-- Rank form -->
-      <div class="dform-wrap">
+      <div class="dform-wrap" id="rankFormWrap" style="display:none;margin-top:2rem">
         <div>
           <div class="pay-card-box"><div class="chip"></div><div class="cnum" id="cardNum">3400 0385 6025 XXXX</div><div class="cmeta"><div><div style="font-size:.6rem;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.18rem">Egasi</div><strong id="cardHolder">MASTERCRAFT ADMIN</strong></div><div style="text-align:right"><div style="font-size:.6rem;color:var(--mu);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.18rem">Bank</div><strong style="color:var(--cr)" id="cardBank">Uzcard / Humo</strong></div></div></div>
           <div class="steps-box">
@@ -531,12 +545,7 @@ input:checked+.tslider::before{transform:translateX(25px);background:var(--gold)
           <div class="fg2"><label>Minecraft nickname</label><input type="text" id="f-nick" placeholder="Steve_pro"/></div>
           <div class="fg2-row">
             <div class="fg2"><label>Rank</label>
-              <select id="f-rank">
-                <option value="">— Tanlang —</option>
-                <option>HEROIC</option><option>ASPID</option><option>SKVID</option><option>GLAVA</option>
-                <option>ELITE</option><option>TITAN</option><option>STRIKER</option>
-                <option>PRINSS</option><option>KNYAZ</option><option>GERCOG</option>
-              </select>
+              <select id="f-rank"><option value="">— Tanlang —</option></select>
             </div>
             <div class="fg2"><label>Muddat</label>
               <select id="f-period">
@@ -746,9 +755,11 @@ input:checked+.tslider::before{transform:translateX(25px);background:var(--gold)
 
 <script>
 // ── CONFIG ──
-const PRICES = {HEROIC:{month:3000,life:7000},ASPID:{month:7000,life:18000},SKVID:{month:10000,life:25000},GLAVA:{month:15000,life:50000},ELITE:{month:30000,life:75000},TITAN:{month:40000,life:100000},STRIKER:{month:50000,life:125000},PRINSS:{month:60000,life:150000},KNYAZ:{month:70000,life:200000},GERCOG:{month:80000,life:250000}};
+let RANKS = []; // loaded from /api/ranks
+let PRICES = {}; // built from RANKS
 const tokPrices = {1000:5000, 2000:10000, 5000:25000, 10000:50000};
 let curToken = null, curUser = null;
+let _pendingAction = null; // action to run after login
 
 // ── TOAST ──
 let toastT;
@@ -778,6 +789,79 @@ async function checkServers(){
   }
 }
 
+// ── RANK CONFIG LOAD ──
+async function loadRanks(){
+  try{
+    const d=await fetch('/api/ranks').then(r=>r.json());
+    if(d.ok&&d.ranks.length){RANKS=d.ranks;}
+    else{RANKS=getDefaultRanks();}
+  }catch{RANKS=getDefaultRanks();}
+  // Build PRICES map
+  PRICES={};
+  RANKS.forEach(r=>PRICES[r.id]={month:r.month_price,life:r.life_price});
+  renderRankCards();
+  buildRankSelect();
+}
+
+function getDefaultRanks(){
+  return [
+    {id:'HEROIC',name:'HEROIC',icon:'🟤',lp:'heroic',color:'#c87941',month_price:3000,life_price:7000},
+    {id:'ASPID',name:'ASPID',icon:'🟢',lp:'aspid',color:'#55cc66',month_price:7000,life_price:18000},
+    {id:'SKVID',name:'SKVID',icon:'🔵',lp:'skvid',color:'#44ccff',month_price:10000,life_price:25000},
+    {id:'GLAVA',name:'GLAVA',icon:'🟣',lp:'glava',color:'#cc55ff',month_price:15000,life_price:50000},
+    {id:'ELITE',name:'ELITE',icon:'🟠',lp:'elite',color:'#ff9922',month_price:30000,life_price:75000},
+    {id:'TITAN',name:'TITAN',icon:'💙',lp:'titan',color:'#66aaff',month_price:40000,life_price:100000},
+    {id:'STRIKER',name:'STRIKER',icon:'🔴',lp:'striker',color:'#ff4455',month_price:50000,life_price:125000},
+    {id:'PRINSS',name:'PRINSS',icon:'💗',lp:'prinss',color:'#ff55cc',month_price:60000,life_price:150000},
+    {id:'KNYAZ',name:'KNYAZ',icon:'👑',lp:'knyaz',color:'#ffcc00',month_price:70000,life_price:200000},
+    {id:'GERCOG',name:'GERCOG',icon:'💎',lp:'gercog',color:'#00d4ff',month_price:80000,life_price:250000}
+  ];
+}
+
+function renderRankCards(){
+  const g=document.getElementById('rankGrid');
+  if(!g)return;
+  const isLife=document.getElementById('tPeriod')?.checked;
+  g.innerHTML=RANKS.map(r=>{
+    const clr=r.color||'var(--cr)';
+    const price=isLife?r.life_price:r.month_price;
+    const pLabel=isLife?'UZS / Butun umr':'UZS / 30 kun';
+    const isGercog=r.id==='GERCOG';
+    const priceStyle=isGercog?'background:linear-gradient(90deg,#00d4ff,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;':'';
+    const btnStyle=isGercog?'background:linear-gradient(135deg,#0077aa,#00d4ff);color:#000;border:none;':`color:${clr};border-color:${clr};`;
+    return `<div class="rcard" style="border-color:${clr}33;" onmouseenter="this.style.borderColor='${clr}'" onmouseleave="this.style.borderColor='${clr}33'">
+      <div style="position:absolute;top:0;left:0;right:0;height:3px;background:${clr};border-radius:10px 10px 0 0"></div>
+      <div class="ri" style="color:${clr}">${r.icon}</div>
+      <div class="rname" style="color:${clr}">${r.name}</div>
+      <div class="rprice" style="${priceStyle}">${Number(price).toLocaleString()}</div>
+      <div class="rlabel">${pLabel}</div>
+      <button class="rbuy" onclick="openRankForm('${r.id}')" style="${btnStyle}">Sotib olish</button>
+    </div>`;
+  }).join('');
+}
+
+function buildRankSelect(){
+  const sel=document.getElementById('f-rank');
+  if(!sel)return;
+  sel.innerHTML='<option value="">— Tanlang —</option>'+RANKS.map(r=>`<option value="${r.id}">${r.name}</option>`).join('');
+}
+
+// ── AUTH MODAL ──
+function openAuthModal(action){
+  if(action) _pendingAction=action;
+  document.getElementById('authModal').classList.add('open');
+  // clear fields
+  ['li','lp','ri','rp','rn'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['lerr','rerr'].forEach(id=>{const e=document.getElementById(id);if(e)e.style.display='none';});
+  document.getElementById('rsuc').style.display='none';
+  switchTab('login');
+}
+function closeAuthModal(){
+  document.getElementById('authModal').classList.remove('open');
+  _pendingAction=null;
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeAuthModal();});
+
 // ── AUTH ──
 function switchTab(t){
   ['login','reg'].forEach(x=>{
@@ -794,7 +878,15 @@ async function doLogin(){
   const btn=document.getElementById('lbtn'); btn.disabled=true; btn.textContent='⏳...';
   try{
     const d=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({login:l,password:p})}).then(r=>r.json());
-    if(d.ok){curToken=d.token;curUser=d.user;sessionStorage.setItem('_tok',curToken);sessionStorage.setItem('_usr',JSON.stringify(curUser));enterApp();}
+    if(d.ok){
+      curToken=d.token;curUser=d.user;
+      sessionStorage.setItem('_tok',curToken);
+      sessionStorage.setItem('_usr',JSON.stringify(curUser));
+      updateNavUser();
+      closeAuthModal();
+      toast('✅ Xush kelibsiz, '+( curUser.name||curUser.login)+'!','ok');
+      if(_pendingAction){_pendingAction();_pendingAction=null;}
+    }
     else{err.textContent=d.error||'Xatolik!';err.style.display='block';}
   }catch{err.textContent='Server bilan aloqa yo\'q!';err.style.display='block';}
   btn.disabled=false; btn.textContent='Kirish →';
@@ -816,113 +908,86 @@ async function doRegister(){
   btn.disabled=false; btn.textContent='Ro\'yxatdan o\'tish →';
 }
 
-// Google callback — GSI SDK dan kelgan ID token backendga yuboriladi
+// Google callback
 async function onGoogleCredential(resp){
   try{
-    const d=await fetch('/api/auth/google',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({token:resp.credential})
-    }).then(r=>r.json());
+    const d=await fetch('/api/auth/google',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:resp.credential})}).then(r=>r.json());
     if(d.ok){
-      curToken=d.token;
-      curUser=d.user;
-      sessionStorage.setItem('_tok',curToken);
-      sessionStorage.setItem('_usr',JSON.stringify(curUser));
-      enterApp();
-    }else{
-      toast('❌ '+(d.error||'Google kirish xatolik'),'err');
-    }
-  }catch{
-    toast('❌ Server bilan aloqa yo\'q!','err');
-  }
+      curToken=d.token; curUser=d.user;
+      sessionStorage.setItem('_tok',curToken); sessionStorage.setItem('_usr',JSON.stringify(curUser));
+      updateNavUser(); closeAuthModal();
+      toast('✅ Google bilan kirildi!','ok');
+      if(_pendingAction){_pendingAction();_pendingAction=null;}
+    }else toast('❌ '+(d.error||'Google kirish xatolik'),'err');
+  }catch{toast('❌ Server bilan aloqa yo\'q!','err');}
 }
 
 function loadGoogleSDK(cid){
   if(!cid)return;
   window._gCid=cid;
-  if(window.google?.accounts?.id){
-    // Allaqachon yuklangan — qayta render
-    renderGoogleBtns();
-    return;
-  }
-  // SDK skriptini dinamik yuklash
+  if(window.google?.accounts?.id){renderGoogleBtns();return;}
   if(document.querySelector('script[src*="accounts.google.com/gsi"]'))return;
   const s=document.createElement('script');
-  s.src='https://accounts.google.com/gsi/client';
-  s.async=true;
+  s.src='https://accounts.google.com/gsi/client'; s.async=true;
   s.onload=renderGoogleBtns;
-  s.onerror=()=>{
-    const gn=document.getElementById('gnote');
-    if(gn)gn.textContent='⚠️ Google SDK yuklanmadi';
-  };
+  s.onerror=()=>{const gn=document.getElementById('gnote');if(gn)gn.textContent='⚠️ Google SDK yuklanmadi';};
   document.head.appendChild(s);
 }
 
 function renderGoogleBtns(){
   if(!window._gCid||!window.google?.accounts?.id)return;
-  // Google'ga callback ro'yxatdan o'tkazish
-  google.accounts.id.initialize({
-    client_id:window._gCid,
-    callback:onGoogleCredential,
-    auto_select:false,
-    cancel_on_tap_outside:true,
-  });
-  // Login sahifasidagi tugma o'rniga Google tugmasini chiqarish
+  google.accounts.id.initialize({client_id:window._gCid,callback:onGoogleCredential,auto_select:false,cancel_on_tap_outside:true});
   ['gBtnWrap','gBtnWrap2'].forEach(id=>{
-    const wrap=document.getElementById(id);
-    if(!wrap)return;
-    wrap.style.display='block';
-    wrap.innerHTML='';
-    google.accounts.id.renderButton(wrap,{
-      type:'standard',
-      shape:'rectangular',
-      theme:'filled_black',
-      text:'signin_with',
-      size:'large',
-      width:358,
-      logo_alignment:'left',
-    });
+    const wrap=document.getElementById(id); if(!wrap)return;
+    wrap.style.display='block'; wrap.innerHTML='';
+    google.accounts.id.renderButton(wrap,{type:'standard',shape:'rectangular',theme:'filled_black',text:'signin_with',size:'large',width:358,logo_alignment:'left'});
   });
-  const gn=document.getElementById('gnote');
-  if(gn)gn.textContent='✅ Google kirish tayyor!';
+  const gn=document.getElementById('gnote'); if(gn)gn.textContent='✅ Google kirish tayyor!';
 }
 
-function enterApp(){
-  document.getElementById('authScreen').style.display='none';
-  document.getElementById('mainApp').style.display='block';
+// Update nav user display
+function updateNavUser(){
+  const guestEl=document.getElementById('navGuest');
+  const userEl=document.getElementById('navUser');
   if(curUser){
-    document.getElementById('tnName').textContent=curUser.name||curUser.login;
+    if(guestEl)guestEl.style.display='none';
+    if(userEl)userEl.style.display='flex';
+    const tnName=document.getElementById('tnName');
+    if(tnName)tnName.textContent=curUser.name||curUser.login;
     const av=document.getElementById('tnAv');
-    if(curUser.avatar)av.innerHTML=`<img src="${curUser.avatar}" alt="av"/>`;
-    else av.textContent=(curUser.name||curUser.login).slice(0,2).toUpperCase();
+    if(av){
+      if(curUser.avatar)av.innerHTML=`<img src="${curUser.avatar}" alt="av"/>`;
+      else av.textContent=(curUser.name||curUser.login).slice(0,2).toUpperCase();
+    }
+  } else {
+    if(guestEl)guestEl.style.display='flex';
+    if(userEl)userEl.style.display='none';
   }
-  loadPublicSettings();
-  checkServers(); setInterval(checkServers,60000);
 }
 
 function doLogout(){
   sessionStorage.clear(); curToken=null; curUser=null;
-  document.getElementById('mainApp').style.display='none';
-  document.getElementById('authScreen').style.display='flex';
+  updateNavUser();
+  toast('👋 Chiqildi');
 }
 
-// Auto-login check
+// Auto-login check on load
 (async function(){
-  // Load Google SDK
   try{const pub=await fetch('/api/settings/public').then(r=>r.json());if(pub.google_client_id)loadGoogleSDK(pub.google_client_id);}catch{}
-  // Check existing session
   const t=sessionStorage.getItem('_tok');
   if(t){
     curToken=t;
     try{
       const d=await fetch('/api/auth/me',{headers:{'X-Admin-Token':t}}).then(r=>r.json());
-      if(d.ok){curUser=d.user;enterApp();return;}
-    }catch{}
-    sessionStorage.clear();
+      if(d.ok){curUser=d.user;}
+    }catch{}finally{sessionStorage.clear();}
+    if(curUser){sessionStorage.setItem('_tok',curToken);sessionStorage.setItem('_usr',JSON.stringify(curUser));}
   }
-  // Show auth + check servers
-  checkServers();
+  if(curUser){const us=sessionStorage.getItem('_usr');if(us)curUser=JSON.parse(us);curToken=sessionStorage.getItem('_tok');}
+  updateNavUser();
+  loadPublicSettings();
+  await loadRanks();
+  checkServers(); setInterval(checkServers,60000);
 })();
 
 // Load card info from settings
@@ -968,19 +1033,31 @@ function switchPeriod(cb){
   document.querySelectorAll('.pm').forEach(e=>e.style.display=on?'none':'block');
   document.querySelectorAll('.pl').forEach(e=>e.style.display=on?'block':'none');
   document.querySelectorAll('.plm').forEach(e=>e.style.display=on?'block':'none');
+  renderRankCards(); // re-render to show correct period prices
 }
 
 function openRankForm(rank){
+  // Require login
+  if(!curUser){
+    openAuthModal(()=>openRankForm(rank));
+    return;
+  }
+  const fw=document.getElementById('rankFormWrap'); if(fw)fw.style.display='grid';
   document.getElementById('f-rank').value=rank;
   const p=document.getElementById('tPeriod').checked?'life':'month';
   document.getElementById('f-period').value=p;
-  document.getElementById('f-amount').value=PRICES[rank][p];
-  setTimeout(()=>document.querySelector('.dform-box').scrollIntoView({behavior:'smooth',block:'start'}),100);
+  if(PRICES[rank])document.getElementById('f-amount').value=PRICES[rank][p];
+  setTimeout(()=>document.querySelector('#rankFormWrap .dform-box')?.scrollIntoView({behavior:'smooth',block:'start'}),100);
 }
-document.getElementById('f-period').addEventListener('change',function(){const r=document.getElementById('f-rank').value;if(r&&PRICES[r])document.getElementById('f-amount').value=PRICES[r][this.value];});
-document.getElementById('f-rank').addEventListener('change',function(){const p=document.getElementById('f-period').value;if(this.value&&PRICES[this.value])document.getElementById('f-amount').value=PRICES[this.value][p];});
+document.addEventListener('DOMContentLoaded',()=>{
+  const fp=document.getElementById('f-period');
+  const fr=document.getElementById('f-rank');
+  if(fp)fp.addEventListener('change',function(){const r=fr?.value;if(r&&PRICES[r])document.getElementById('f-amount').value=PRICES[r][this.value];});
+  if(fr)fr.addEventListener('change',function(){const p=fp?.value;if(this.value&&PRICES[this.value])document.getElementById('f-amount').value=PRICES[this.value][p];});
+});
 
 async function submitRank(){
+  if(!curUser){openAuthModal(submitRank);return;}
   const nick=document.getElementById('f-nick').value.trim();
   const rank=document.getElementById('f-rank').value;
   const period=document.getElementById('f-period').value;
@@ -1007,12 +1084,14 @@ async function submitRank(){
 
 // ── TOKEN ──
 function openTokenForm(amount,price){
+  if(!curUser){openAuthModal(()=>openTokenForm(amount,price));return;}
   document.getElementById('tf-amount').value=amount;
   document.getElementById('tf-price').value=price;
   setTimeout(()=>document.getElementById('page-token').querySelectorAll('.dform-box')[0].scrollIntoView({behavior:'smooth',block:'start'}),100);
 }
 
 async function submitToken(){
+  if(!curUser){openAuthModal(submitToken);return;}
   const nick=document.getElementById('tf-nick').value.trim();
   const amount=document.getElementById('tf-amount').value;
   const price=document.getElementById('tf-price').value;
@@ -1046,6 +1125,7 @@ function syncUnbanCard(){
 }
 
 async function submitUnban(){
+  if(!curUser){openAuthModal(submitUnban);return;}
   const nick=document.getElementById('uf-nick').value.trim();
   const tg=document.getElementById('uf-tg').value.trim();
   const reason=document.getElementById('uf-reason').value.trim();
