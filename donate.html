@@ -452,7 +452,7 @@ input:checked+.tslider::before{transform:translateX(27px);background:var(--gold)
         <div class="srv-card">
           <span class="sdot chk" id="hd2"></span>
           <div>
-            <div class="srv-ip">play.mastercraft.uz <button class="srv-copy" onclick="copyIP('play.mastercraft.uz')">Nusxa</button></div>
+            <div class="srv-ip">crystalmc.uz <button class="srv-copy" onclick="copyIP('crystalmc.uz')">Nusxa</button></div>
             <div class="srv-pl" id="hp2">Tekshirilmoqda...</div>
           </div>
         </div>
@@ -647,7 +647,7 @@ function toast(msg,type=''){clearTimeout(toastT);const t=document.getElementById
 function copyIP(ip){navigator.clipboard?.writeText(ip).then(()=>toast('✅ '+ip+' nusxa olindi!','ok')).catch(()=>toast('❌ Nusxa olmadi','err'));}
 
 async function checkServers(){
-  const pairs=[['hd1','hp1','mc.mastercraft.uz'],['hd2','hp2','play.mastercraft.uz']];
+  const pairs=[['hd1','hp1','mc.mastercraft.uz'],['hd2','hp2','crystalmc.uz']];
   for(const [hd,hp,ip] of pairs){
     try{const d=await fetch(`/api/server-status?ip=${ip}`,{signal:AbortSignal.timeout(6000)}).then(r=>r.json());
       document.getElementById(hd).className=d.online?'sdot on':'sdot off';
