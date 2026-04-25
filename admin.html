@@ -3,217 +3,239 @@
 <head>
 <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
 <title>Admin Panel — CrystalMC</title>
-<link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Rajdhani:wght@400;500;600;700&family=Oxanium:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 <style>
-:root{--bg:#060b14;--sf:#0d1626;--sf2:#111f36;--cr:#00d4ff;--gold:#ffd700;--gr:#00ff88;--rd:#ff4466;--or:#ff9922;--pu:#a855f7;--tx:#e8f4ff;--mu:#6a8aaa;--br:rgba(0,212,255,.15);}
+:root{
+  --bg:#08050F;--sf:#0F0A1E;--sf2:#17102A;--sf3:#1E1535;
+  --gold:#FFD700;--gold2:#F59E0B;--gold3:#B7860D;
+  --pu:#A855F7;--pu2:#7C3AED;--pu3:#6D28D9;
+  --gr:#22C55E;--rd:#EF4444;--or:#F97316;
+  --tx:#F5F0FF;--mu:#8B7AAD;--br:rgba(168,85,247,.18);
+  --br-gold:rgba(255,215,0,.2);
+}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{-webkit-tap-highlight-color:transparent}
 body{background:var(--bg);color:var(--tx);font-family:'Rajdhani',sans-serif;min-height:100vh;}
-.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 60% 40% at 20% 50%,rgba(0,100,200,.1) 0%,transparent 60%);}
-body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(0,212,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(0,212,255,.02) 1px,transparent 1px);background-size:40px 40px;}
 
-/* LOGIN */
+/* BG */
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 50% at 20% 30%,rgba(124,58,237,.1) 0%,transparent 55%),
+  radial-gradient(ellipse 50% 40% at 80% 70%,rgba(255,215,0,.05) 0%,transparent 55%);}
+body::after{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:linear-gradient(rgba(168,85,247,.03) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(168,85,247,.03) 1px,transparent 1px);background-size:50px 50px;}
+
+/* ── LOGIN ── */
 .lw{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem;}
-.lc{background:var(--sf);border:1px solid var(--br);border-radius:18px;padding:2.5rem 2rem;width:100%;max-width:380px;text-align:center;animation:popIn .4s ease;}
-.l-logo{font-family:'Oxanium',monospace;font-size:1.3rem;font-weight:800;background:linear-gradient(90deg,var(--cr),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
-.l-sub{color:var(--mu);font-size:.72rem;letter-spacing:.15em;text-transform:uppercase;margin-bottom:2rem;margin-top:.2rem;}
-.fg{margin-bottom:1rem;text-align:left;}
-.fg label{display:block;font-size:.67rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--mu);margin-bottom:.32rem;}
-.fg input{width:100%;background:var(--bg);border:1px solid var(--br);border-radius:7px;padding:.75rem .95rem;color:var(--tx);font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;outline:none;transition:.2s;-webkit-appearance:none;}
-.fg input:focus{border-color:var(--cr);}
-.fg input::placeholder{color:var(--mu);}
-.l-btn{width:100%;background:linear-gradient(135deg,#0077aa,#00d4ff);color:#000;border:none;border-radius:8px;padding:.88rem;font-family:'Oxanium',monospace;font-size:.92rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;-webkit-appearance:none;}
-.l-btn:active{opacity:.85;}
-.l-err{background:rgba(255,68,102,.1);border:1px solid rgba(255,68,102,.3);border-radius:7px;padding:.62rem .9rem;color:var(--rd);font-size:.83rem;font-weight:600;margin-bottom:.88rem;display:none;}
+.lc{background:linear-gradient(145deg,var(--sf),var(--sf2));border:1px solid var(--br);border-radius:22px;padding:2.8rem 2.2rem;width:100%;max-width:400px;text-align:center;animation:popIn .4s ease;box-shadow:0 0 80px rgba(124,58,237,.1);}
+.l-crown{font-size:3rem;margin-bottom:.8rem;}
+.l-logo{font-family:'Cinzel',serif;font-size:1.4rem;font-weight:700;background:linear-gradient(90deg,var(--pu),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:.05em;}
+.l-sub{color:var(--mu);font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:2.2rem;margin-top:.3rem;}
+.fg{margin-bottom:1.1rem;text-align:left;}
+.fg label{display:block;font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--mu);margin-bottom:.35rem;}
+.fg input{width:100%;background:rgba(0,0,0,.4);border:1px solid var(--br);border-radius:9px;padding:.8rem 1rem;color:var(--tx);font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:600;outline:none;transition:.2s;-webkit-appearance:none;}
+.fg input:focus{border-color:var(--pu);box-shadow:0 0 0 3px rgba(168,85,247,.12);}
+.fg input::placeholder{color:rgba(139,122,173,.45);}
+.l-btn{width:100%;background:linear-gradient(135deg,var(--pu2),var(--pu));color:#fff;border:none;border-radius:9px;padding:.92rem;font-family:'Oxanium',monospace;font-size:.92rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;box-shadow:0 4px 24px rgba(124,58,237,.45);transition:.2s;margin-top:.4rem;}
+.l-btn:hover{transform:translateY(-1px);box-shadow:0 6px 32px rgba(124,58,237,.55);}
+.l-btn:active{opacity:.88;}
+.l-err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:.65rem .95rem;color:var(--rd);font-size:.83rem;font-weight:600;margin-bottom:.95rem;display:none;}
 
-/* LAYOUT */
+/* ── LAYOUT ── */
 .admin-wrap{position:relative;z-index:1;display:flex;min-height:100vh;}
-.sidebar{width:230px;flex-shrink:0;background:var(--sf);border-right:1px solid var(--br);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto;transition:transform .3s;}
-.sb-brand{padding:1.2rem 1.3rem .8rem;border-bottom:1px solid var(--br);}
-.sb-logo{font-family:'Oxanium',monospace;font-size:.9rem;font-weight:800;background:linear-gradient(90deg,var(--cr),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.3;}
-.sb-sub{font-size:.58rem;color:var(--mu);letter-spacing:.12em;text-transform:uppercase;margin-top:.18rem;}
-.sb-user{padding:.72rem 1.3rem;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:.6rem;}
-.sb-av{width:30px;height:30px;border-radius:6px;background:var(--sf2);border:1px solid var(--br);display:flex;align-items:center;justify-content:center;font-family:'Oxanium',monospace;font-size:.7rem;font-weight:800;color:var(--cr);flex-shrink:0;overflow:hidden;}
+.sidebar{width:240px;flex-shrink:0;background:linear-gradient(180deg,var(--sf) 0%,var(--sf2) 100%);border-right:1px solid var(--br);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;overflow-y:auto;transition:transform .3s;}
+.sb-brand{padding:1.4rem 1.4rem 1rem;border-bottom:1px solid var(--br);}
+.sb-logo{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;background:linear-gradient(90deg,var(--pu),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.4;letter-spacing:.04em;}
+.sb-sub{font-size:.58rem;color:var(--mu);letter-spacing:.18em;text-transform:uppercase;margin-top:.22rem;}
+.sb-user{padding:.8rem 1.4rem;border-bottom:1px solid var(--br);display:flex;align-items:center;gap:.7rem;}
+.sb-av{width:34px;height:34px;border-radius:8px;background:var(--sf3);border:1px solid var(--br-gold);display:flex;align-items:center;justify-content:center;font-family:'Oxanium',monospace;font-size:.72rem;font-weight:800;color:var(--gold);flex-shrink:0;overflow:hidden;}
 .sb-av img{width:100%;height:100%;object-fit:cover;}
-.sb-uname{font-family:'Oxanium',monospace;font-size:.78rem;font-weight:700;}
+.sb-uname{font-family:'Oxanium',monospace;font-size:.8rem;font-weight:700;color:var(--tx);}
 .sb-role{font-size:.65rem;color:var(--mu);}
-.rbar{padding:.45rem 1.3rem;font-size:.68rem;font-weight:700;display:flex;align-items:center;gap:.42rem;}
-.rdot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-.rdot.ok{background:var(--gr);box-shadow:0 0 5px var(--gr);}
+.rbar{padding:.5rem 1.4rem;font-size:.68rem;font-weight:700;display:flex;align-items:center;gap:.45rem;}
+.rdot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.rdot.ok{background:var(--gr);box-shadow:0 0 8px var(--gr);}
 .rdot.err{background:var(--rd);}
-.rdot.spin{background:var(--or);animation:bl 1s infinite;}
-@keyframes bl{0%,100%{opacity:1}50%{opacity:.3}}
-.sb-nav{flex:1;padding:.4rem 0;}
-.ng{font-size:.57rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--mu);padding:.55rem 1.3rem .18rem;}
-.snav{display:flex;align-items:center;gap:.6rem;padding:.6rem 1.3rem;color:var(--mu);font-size:.82rem;font-weight:600;cursor:pointer;transition:.2s;border-left:3px solid transparent;border:none;background:none;width:100%;font-family:'Rajdhani',sans-serif;text-align:left;}
-.snav:hover,.snav.active{color:var(--tx);background:rgba(0,212,255,.06);border-left:3px solid var(--cr);}
-.sb-foot{padding:.7rem 1.3rem;border-top:1px solid var(--br);}
-.logout-btn{display:flex;align-items:center;gap:.45rem;color:var(--rd);font-size:.8rem;font-weight:600;cursor:pointer;background:none;border:none;font-family:'Rajdhani',sans-serif;}
+.rdot.spin{background:var(--or);animation:blink 1s infinite;}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.sb-nav{flex:1;padding:.5rem 0;}
+.ng{font-size:.58rem;font-weight:700;letter-spacing:.22em;text-transform:uppercase;color:var(--mu);padding:.6rem 1.4rem .22rem;opacity:.7;}
+.snav{display:flex;align-items:center;gap:.65rem;padding:.65rem 1.4rem;color:var(--mu);font-size:.84rem;font-weight:600;cursor:pointer;transition:.2s;border-left:3px solid transparent;border-top:none;border-right:none;border-bottom:none;background:none;width:100%;font-family:'Rajdhani',sans-serif;text-align:left;}
+.snav:hover{color:var(--tx);background:rgba(168,85,247,.07);}
+.snav.active{color:var(--pu);background:rgba(168,85,247,.1);border-left:3px solid var(--pu);}
+.sb-foot{padding:.8rem 1.4rem;border-top:1px solid var(--br);}
+.logout-btn{display:flex;align-items:center;gap:.5rem;color:var(--rd);font-size:.82rem;font-weight:600;cursor:pointer;background:none;border:none;font-family:'Rajdhani',sans-serif;transition:.2s;}
+.logout-btn:hover{opacity:.8;}
 
-.main{margin-left:230px;flex:1;padding:1.5rem 1.8rem;min-height:100vh;}
-.mhdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.5rem;gap:.8rem;flex-wrap:wrap;}
-.pt{font-family:'Oxanium',monospace;font-size:1.4rem;font-weight:800;}
-.ps{color:var(--mu);font-size:.8rem;margin-top:.12rem;}
+.main{margin-left:240px;flex:1;padding:1.8rem 2rem;min-height:100vh;}
+.mhdr{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.8rem;gap:.8rem;flex-wrap:wrap;}
+.pt{font-family:'Cinzel',serif;font-size:1.5rem;font-weight:700;background:linear-gradient(90deg,var(--pu),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.ps{color:var(--mu);font-size:.8rem;margin-top:.15rem;}
 .sec{display:none;}.sec.active{display:block;}
 
 /* STATS */
-.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.8rem;margin-bottom:1.3rem;}
-.sc{background:var(--sf);border:1px solid var(--br);border-radius:10px;padding:1rem 1.2rem;}
-.sl{font-size:.63rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--mu);margin-bottom:.35rem;}
-.sv{font-family:'Oxanium',monospace;font-size:1.7rem;font-weight:800;line-height:1;}
-.sv-cr{color:var(--cr)}.sv-or{color:var(--or)}.sv-gr{color:var(--gr)}.sv-rd{color:var(--rd)}.sv-gd{color:var(--gold)}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem;margin-bottom:1.5rem;}
+.sc{background:linear-gradient(135deg,var(--sf),var(--sf2));border:1px solid var(--br);border-radius:12px;padding:1.1rem 1.3rem;transition:.2s;}
+.sc:hover{border-color:rgba(168,85,247,.3);}
+.sl{font-size:.62rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--mu);margin-bottom:.4rem;}
+.sv{font-family:'Oxanium',monospace;font-size:1.8rem;font-weight:800;line-height:1;}
+.sv-pu{color:var(--pu)}.sv-or{color:var(--or)}.sv-gr{color:var(--gr)}.sv-rd{color:var(--rd)}.sv-gd{color:var(--gold)}
 
 /* FILTERS */
-.filters{display:flex;gap:.5rem;margin-bottom:1.1rem;flex-wrap:wrap;align-items:center;}
-.fb{background:var(--sf);border:1px solid var(--br);border-radius:5px;padding:.3rem .78rem;font-family:'Oxanium',monospace;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);cursor:pointer;transition:.2s;}
-.fb.fa{border-color:var(--cr);color:var(--cr);background:rgba(0,212,255,.08);}
-.fb.fp{border-color:var(--or);color:var(--or);background:rgba(255,153,34,.08);}
-.fb.fap{border-color:var(--gr);color:var(--gr);background:rgba(0,255,136,.08);}
-.fb.fr{border-color:var(--rd);color:var(--rd);background:rgba(255,68,102,.08);}
+.filters{display:flex;gap:.45rem;margin-bottom:1.2rem;flex-wrap:wrap;align-items:center;}
+.fb{background:var(--sf);border:1px solid var(--br);border-radius:6px;padding:.32rem .82rem;font-family:'Oxanium',monospace;font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--mu);cursor:pointer;transition:.2s;}
+.fb:hover{border-color:var(--pu);color:var(--pu);}
+.fb.fa{border-color:var(--pu);color:var(--pu);background:rgba(168,85,247,.1);}
+.fb.fp{border-color:var(--or);color:var(--or);background:rgba(249,115,22,.08);}
+.fb.fap{border-color:var(--gr);color:var(--gr);background:rgba(34,197,94,.08);}
+.fb.fr{border-color:var(--rd);color:var(--rd);background:rgba(239,68,68,.08);}
 .fb.fgd{border-color:var(--gold);color:var(--gold);background:rgba(255,215,0,.08);}
-.srch{background:var(--sf);border:1px solid var(--br);border-radius:5px;padding:.3rem .78rem;color:var(--tx);font-family:'Rajdhani',sans-serif;font-size:.85rem;font-weight:600;outline:none;transition:.2s;min-width:150px;margin-left:auto;-webkit-appearance:none;}
-.srch:focus{border-color:var(--cr);}
-.tw{background:var(--sf);border:1px solid var(--br);border-radius:10px;overflow:hidden;}
+.srch{background:var(--sf);border:1px solid var(--br);border-radius:6px;padding:.32rem .82rem;color:var(--tx);font-family:'Rajdhani',sans-serif;font-size:.85rem;font-weight:600;outline:none;transition:.2s;min-width:155px;margin-left:auto;-webkit-appearance:none;}
+.srch:focus{border-color:var(--pu);}
+
+/* TABLE */
+.tw{background:linear-gradient(135deg,var(--sf),var(--sf2));border:1px solid var(--br);border-radius:12px;overflow:hidden;box-shadow:0 4px 20px rgba(0,0,0,.3);}
 .ts{overflow-x:auto;}
 table{width:100%;border-collapse:collapse;}
-thead tr{background:var(--sf2);}
-th{padding:.68rem .85rem;font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);text-align:left;white-space:nowrap;}
-td{padding:.65rem .85rem;font-size:.84rem;font-weight:600;border-top:1px solid var(--br);vertical-align:middle;}
-tr:hover td{background:rgba(0,212,255,.02);}
-.nc{color:var(--cr);font-family:'Oxanium',monospace;font-weight:700;}
+thead tr{background:rgba(168,85,247,.07);}
+th{padding:.72rem .9rem;font-size:.62rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--mu);text-align:left;white-space:nowrap;}
+td{padding:.68rem .9rem;font-size:.84rem;font-weight:600;border-top:1px solid var(--br);vertical-align:middle;}
+tr:hover td{background:rgba(168,85,247,.04);}
+.nc{color:var(--pu);font-family:'Oxanium',monospace;font-weight:700;}
 .ac{color:var(--gold);font-family:'Oxanium',monospace;font-weight:800;}
 .tc{color:var(--mu);font-size:.74rem;}
-.rbadge{display:inline-block;padding:.14rem .45rem;border-radius:4px;font-family:'Oxanium',monospace;font-size:.67rem;font-weight:800;letter-spacing:.08em;}
-.tbadge{background:rgba(255,215,0,.12);color:var(--gold);border:1px solid rgba(255,215,0,.25);display:inline-block;padding:.14rem .45rem;border-radius:4px;font-family:'Oxanium',monospace;font-size:.67rem;font-weight:800;}
-.ubadge{background:rgba(255,68,102,.1);color:var(--rd);border:1px solid rgba(255,68,102,.2);display:inline-block;padding:.14rem .45rem;border-radius:4px;font-family:'Oxanium',monospace;font-size:.67rem;font-weight:800;}
-.sbadge{display:inline-flex;align-items:center;gap:.28rem;padding:.18rem .6rem;border-radius:100px;font-size:.67rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
-.sp{background:rgba(255,153,34,.12);color:var(--or);border:1px solid rgba(255,153,34,.25);}
-.sa{background:rgba(0,255,136,.1);color:var(--gr);border:1px solid rgba(0,255,136,.25);}
-.sr{background:rgba(255,68,102,.1);color:var(--rd);border:1px solid rgba(255,68,102,.25);}
+
+/* BADGES */
+.rbadge{display:inline-block;padding:.14rem .48rem;border-radius:5px;font-family:'Oxanium',monospace;font-size:.67rem;font-weight:800;letter-spacing:.08em;}
+.tbadge{background:rgba(255,215,0,.1);color:var(--gold);border:1px solid rgba(255,215,0,.25);display:inline-block;padding:.14rem .48rem;border-radius:5px;font-family:'Oxanium',monospace;font-size:.67rem;font-weight:800;}
+.ubadge{background:rgba(239,68,68,.1);color:var(--rd);border:1px solid rgba(239,68,68,.2);display:inline-block;padding:.14rem .48rem;border-radius:5px;font-family:'Oxanium',monospace;font-size:.67rem;font-weight:800;}
+.sbadge{display:inline-flex;align-items:center;gap:.28rem;padding:.2rem .65rem;border-radius:100px;font-size:.67rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;}
+.sp{background:rgba(249,115,22,.1);color:var(--or);border:1px solid rgba(249,115,22,.25);}
+.sa{background:rgba(34,197,94,.1);color:var(--gr);border:1px solid rgba(34,197,94,.25);}
+.sr{background:rgba(239,68,68,.1);color:var(--rd);border:1px solid rgba(239,68,68,.25);}
 .se{background:rgba(100,100,100,.1);color:var(--mu);border:1px solid rgba(100,100,100,.25);}
 .ar{display:flex;gap:.3rem;align-items:center;flex-wrap:wrap;}
-.ab{display:inline-flex;align-items:center;gap:.22rem;padding:.24rem .6rem;border-radius:4px;font-family:'Oxanium',monospace;font-size:.63rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;border:none;transition:.15s;-webkit-appearance:none;}
+.ab{display:inline-flex;align-items:center;gap:.22rem;padding:.26rem .65rem;border-radius:5px;font-family:'Oxanium',monospace;font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;border:none;transition:.15s;-webkit-appearance:none;}
 .ab:active{opacity:.7;}
 .ab:disabled{opacity:.4;cursor:not-allowed;}
-.bap{background:rgba(0,255,136,.15);color:var(--gr);border:1px solid rgba(0,255,136,.3);}
-.brj{background:rgba(255,68,102,.12);color:var(--rd);border:1px solid rgba(255,68,102,.25);}
-.bvw{background:rgba(0,212,255,.1);color:var(--cr);border:1px solid rgba(0,212,255,.2);}
+.bap{background:rgba(34,197,94,.12);color:var(--gr);border:1px solid rgba(34,197,94,.3);}
+.brj{background:rgba(239,68,68,.1);color:var(--rd);border:1px solid rgba(239,68,68,.25);}
+.bvw{background:rgba(168,85,247,.1);color:var(--pu);border:1px solid rgba(168,85,247,.2);}
 .bun{background:rgba(255,215,0,.1);color:var(--gold);border:1px solid rgba(255,215,0,.25);}
-.bdl{background:rgba(255,68,102,.08);color:var(--rd);border:1px solid rgba(255,68,102,.15);}
-.empty{padding:2.2rem;text-align:center;color:var(--mu);}
-.cmd-box{background:var(--bg);border:1px solid rgba(0,212,255,.15);border-radius:4px;padding:.28rem .6rem;font-family:'Oxanium',monospace;font-size:.64rem;color:var(--cr);margin-top:.2rem;word-break:break-all;}
-.tok-cmd{background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.18);border-radius:4px;padding:.28rem .6rem;font-family:'Oxanium',monospace;font-size:.64rem;color:var(--gold);margin-top:.2rem;word-break:break-all;}
-.unban-cmd{background:rgba(255,68,102,.07);border:1px solid rgba(255,68,102,.18);border-radius:4px;padding:.28rem .6rem;font-family:'Oxanium',monospace;font-size:.64rem;color:var(--rd);margin-top:.2rem;}
+.bdl{background:rgba(239,68,68,.08);color:var(--rd);border:1px solid rgba(239,68,68,.15);}
+.empty{padding:2.5rem;text-align:center;color:var(--mu);}
+.cmd-box{background:rgba(168,85,247,.07);border:1px solid rgba(168,85,247,.15);border-radius:5px;padding:.3rem .65rem;font-family:'Oxanium',monospace;font-size:.64rem;color:var(--pu);margin-top:.22rem;word-break:break-all;}
+.tok-cmd{background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.18);border-radius:5px;padding:.3rem .65rem;font-family:'Oxanium',monospace;font-size:.64rem;color:var(--gold);margin-top:.22rem;word-break:break-all;}
+.unban-cmd{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.18);border-radius:5px;padding:.3rem .65rem;font-family:'Oxanium',monospace;font-size:.64rem;color:var(--rd);margin-top:.22rem;}
 
 /* FORMS */
-.fbox{background:var(--sf);border:1px solid var(--br);border-radius:12px;padding:1.5rem;}
-.fbox h3{font-family:'Oxanium',monospace;font-size:.92rem;font-weight:800;margin-bottom:1rem;display:flex;align-items:center;gap:.45rem;}
-.gr2{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem;}
+.fbox{background:linear-gradient(145deg,var(--sf),var(--sf2));border:1px solid var(--br);border-radius:14px;padding:1.6rem;box-shadow:0 4px 20px rgba(0,0,0,.2);}
+.fbox h3{font-family:'Cinzel',serif;font-size:.95rem;font-weight:700;margin-bottom:1.1rem;display:flex;align-items:center;gap:.5rem;background:linear-gradient(90deg,var(--pu),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.gr2{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;}
 .fg2{margin-bottom:1rem;}
-.fg2 label{display:block;font-size:.65rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--mu);margin-bottom:.3rem;}
-.fg2 input,.fg2 select,.fg2 textarea{width:100%;background:var(--bg);border:1px solid var(--br);border-radius:5px;padding:.68rem .9rem;color:var(--tx);font-family:'Rajdhani',sans-serif;font-size:.9rem;font-weight:600;outline:none;transition:.2s;-webkit-appearance:none;resize:vertical;}
-.fg2 input:focus,.fg2 select:focus,.fg2 textarea:focus{border-color:var(--cr);}
-.fg2 input::placeholder,.fg2 textarea::placeholder{color:var(--mu);}
-.fg2 select option{background:var(--sf);}
+.fg2 label{display:block;font-size:.63rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--mu);margin-bottom:.35rem;}
+.fg2 input,.fg2 select,.fg2 textarea{width:100%;background:rgba(0,0,0,.4);border:1px solid var(--br);border-radius:7px;padding:.72rem .95rem;color:var(--tx);font-family:'Rajdhani',sans-serif;font-size:.92rem;font-weight:600;outline:none;transition:.2s;-webkit-appearance:none;resize:vertical;}
+.fg2 input:focus,.fg2 select:focus,.fg2 textarea:focus{border-color:var(--pu);box-shadow:0 0 0 3px rgba(168,85,247,.1);}
+.fg2 input::placeholder,.fg2 textarea::placeholder{color:rgba(139,122,173,.45);}
+.fg2 select option{background:var(--sf2);}
 .fg2-row{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;}
-.abtn{background:linear-gradient(135deg,#0077aa,#00d4ff);color:#000;border:none;border-radius:5px;padding:.7rem 1.2rem;font-family:'Oxanium',monospace;font-size:.8rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;-webkit-appearance:none;}
-.abtn:active{opacity:.85;}
-.abtn.dng{background:linear-gradient(135deg,#a01a2a,#ff4466);}
+.abtn{background:linear-gradient(135deg,var(--pu2),var(--pu));color:#fff;border:none;border-radius:7px;padding:.72rem 1.3rem;font-family:'Oxanium',monospace;font-size:.8rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;box-shadow:0 3px 16px rgba(124,58,237,.4);transition:.2s;}
+.abtn:hover{transform:translateY(-1px);box-shadow:0 5px 22px rgba(124,58,237,.5);}
+.abtn:active{opacity:.88;}
+.abtn.dng{background:linear-gradient(135deg,#991B1B,#EF4444);box-shadow:0 3px 16px rgba(239,68,68,.4);}
 
-/* ACC */
-.acc-item{display:flex;align-items:center;justify-content:space-between;padding:.7rem .85rem;background:var(--bg);border:1px solid var(--br);border-radius:7px;margin-bottom:.35rem;transition:.2s;}
-.acc-item:hover{border-color:rgba(0,212,255,.22);}
-.acc-av{width:30px;height:30px;border-radius:6px;background:var(--sf2);border:1px solid var(--br);display:flex;align-items:center;justify-content:center;font-family:'Oxanium',monospace;font-size:.7rem;font-weight:800;color:var(--cr);overflow:hidden;flex-shrink:0;}
+/* ACCOUNTS */
+.acc-item{display:flex;align-items:center;justify-content:space-between;padding:.75rem .9rem;background:rgba(0,0,0,.25);border:1px solid var(--br);border-radius:9px;margin-bottom:.4rem;transition:.2s;}
+.acc-item:hover{border-color:rgba(168,85,247,.3);background:rgba(168,85,247,.04);}
+.acc-av{width:32px;height:32px;border-radius:7px;background:var(--sf2);border:1px solid var(--br-gold);display:flex;align-items:center;justify-content:center;font-family:'Oxanium',monospace;font-size:.7rem;font-weight:800;color:var(--gold);overflow:hidden;flex-shrink:0;}
 .acc-av img{width:100%;height:100%;object-fit:cover;}
-.role-b{display:inline-block;padding:.1rem .4rem;border-radius:4px;font-family:'Oxanium',monospace;font-size:.62rem;font-weight:700;letter-spacing:.06em;}
+.role-b{display:inline-block;padding:.1rem .42rem;border-radius:4px;font-family:'Oxanium',monospace;font-size:.62rem;font-weight:700;letter-spacing:.06em;}
 .ro{background:rgba(255,215,0,.12);color:var(--gold);border:1px solid rgba(255,215,0,.25);}
-.ra{background:rgba(0,212,255,.1);color:var(--cr);border:1px solid rgba(0,212,255,.2);}
-.rm{background:rgba(0,255,136,.1);color:var(--gr);border:1px solid rgba(0,255,136,.2);}
-.rh{background:rgba(168,85,247,.1);color:var(--pu);border:1px solid rgba(168,85,247,.2);}
+.ra{background:rgba(168,85,247,.1);color:var(--pu);border:1px solid rgba(168,85,247,.2);}
+.rm{background:rgba(34,197,94,.1);color:var(--gr);border:1px solid rgba(34,197,94,.2);}
+.rh{background:rgba(249,115,22,.1);color:var(--or);border:1px solid rgba(249,115,22,.2);}
 
 /* SETTINGS */
-.sg{background:var(--sf);border:1px solid var(--br);border-radius:12px;padding:1.5rem;}
-.sg h3{font-family:'Oxanium',monospace;font-size:.9rem;font-weight:800;color:var(--cr);margin-bottom:1rem;display:flex;align-items:center;gap:.45rem;padding-bottom:.6rem;border-bottom:1px solid var(--br);}
-.hint{font-size:.74rem;color:var(--mu);line-height:1.6;margin-bottom:.85rem;background:rgba(0,212,255,.04);border:1px solid rgba(0,212,255,.1);border-radius:6px;padding:.65rem .85rem;}
-.hint a{color:var(--cr);text-decoration:none;}
-.hint code{background:rgba(0,212,255,.1);padding:.1rem .35rem;border-radius:4px;font-size:.82em;}
-.sg-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem;}
+.sg{background:linear-gradient(145deg,var(--sf),var(--sf2));border:1px solid var(--br);border-radius:14px;padding:1.6rem;box-shadow:0 4px 20px rgba(0,0,0,.2);}
+.sg h3{font-family:'Cinzel',serif;font-size:.92rem;font-weight:700;margin-bottom:1.1rem;display:flex;align-items:center;gap:.5rem;padding-bottom:.65rem;border-bottom:1px solid var(--br);background:linear-gradient(90deg,var(--pu),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hint{font-size:.75rem;color:var(--mu);line-height:1.7;margin-bottom:.9rem;background:rgba(168,85,247,.05);border:1px solid rgba(168,85,247,.12);border-radius:7px;padding:.7rem .9rem;}
+.hint a{color:var(--pu);text-decoration:none;}
+.hint code{background:rgba(168,85,247,.1);padding:.1rem .35rem;border-radius:4px;font-size:.82em;}
+.sg-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;}
 
 /* RULES */
-.rules-mgr{display:grid;grid-template-columns:1fr 1fr;gap:1.3rem;}
-.rlb{background:var(--sf);border:1px solid var(--br);border-radius:12px;padding:1.2rem;max-height:520px;overflow-y:auto;}
-.rlb h3{font-family:'Oxanium',monospace;font-size:.85rem;font-weight:800;color:var(--cr);margin-bottom:.8rem;display:flex;align-items:center;justify-content:space-between;}
-.ri{display:flex;align-items:flex-start;gap:.55rem;padding:.58rem .68rem;border:1px solid var(--br);border-radius:6px;margin-bottom:.3rem;cursor:pointer;transition:.2s;}
-.ri:hover{border-color:rgba(0,212,255,.22);background:rgba(0,212,255,.03);}
-.ri.sel{border-color:var(--cr);background:rgba(0,212,255,.06);}
-.rn2{font-family:'Oxanium',monospace;font-size:.7rem;font-weight:800;color:var(--cr);min-width:28px;flex-shrink:0;}
-.rt2{font-size:.77rem;color:var(--mu);line-height:1.5;}
-.reb{background:var(--sf);border:1px solid var(--br);border-radius:12px;padding:1.2rem;}
-.reb h3{font-family:'Oxanium',monospace;font-size:.85rem;font-weight:800;color:var(--gold);margin-bottom:.8rem;}
+.rules-mgr{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;}
+.rlb{background:linear-gradient(145deg,var(--sf),var(--sf2));border:1px solid var(--br);border-radius:14px;padding:1.3rem;max-height:520px;overflow-y:auto;}
+.rlb h3{font-family:'Cinzel',serif;font-size:.88rem;font-weight:700;color:var(--pu);margin-bottom:.9rem;display:flex;align-items:center;justify-content:space-between;}
+.ri{display:flex;align-items:flex-start;gap:.55rem;padding:.6rem .7rem;border:1px solid var(--br);border-radius:7px;margin-bottom:.3rem;cursor:pointer;transition:.2s;}
+.ri:hover{border-color:rgba(168,85,247,.3);background:rgba(168,85,247,.04);}
+.ri.sel{border-color:var(--pu);background:rgba(168,85,247,.08);}
+.rn2{font-family:'Oxanium',monospace;font-size:.7rem;font-weight:800;color:var(--pu);min-width:30px;flex-shrink:0;}
+.rt2{font-size:.77rem;color:var(--mu);line-height:1.55;}
+.reb{background:linear-gradient(145deg,var(--sf),var(--sf2));border:1px solid var(--br);border-radius:14px;padding:1.3rem;}
+.reb h3{font-family:'Cinzel',serif;font-size:.88rem;font-weight:700;color:var(--gold);margin-bottom:.9rem;}
 
 /* RCON */
-.rlog{background:var(--bg);border:1px solid var(--br);border-radius:7px;padding:.85rem;font-family:'Oxanium',monospace;font-size:.75rem;color:var(--gr);min-height:160px;max-height:320px;overflow-y:auto;white-space:pre-wrap;}
+.rlog{background:rgba(0,0,0,.5);border:1px solid var(--br);border-radius:9px;padding:.9rem;font-family:'Oxanium',monospace;font-size:.76rem;color:var(--gr);min-height:165px;max-height:320px;overflow-y:auto;white-space:pre-wrap;}
 
 /* IMG MODAL */
-.imodal{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.92);backdrop-filter:blur(10px);align-items:center;justify-content:center;padding:1rem;}
+.imodal{display:none;position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.93);backdrop-filter:blur(12px);align-items:center;justify-content:center;padding:1rem;}
 .imodal.open{display:flex;}
-.iinner{background:var(--sf);border:1px solid var(--br);border-radius:14px;overflow:hidden;max-width:90vw;max-height:90vh;display:flex;flex-direction:column;animation:popIn .3s ease;}
-.ihead{padding:.8rem 1.2rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--br);}
-.ihead h3{font-family:'Oxanium',monospace;font-size:.85rem;font-weight:800;color:var(--cr);}
-.iclose{background:none;border:none;color:var(--mu);font-size:1.2rem;cursor:pointer;}
-.ibody{flex:1;overflow:auto;padding:.85rem;display:flex;align-items:center;justify-content:center;min-height:180px;}
-.ibody img{max-width:100%;max-height:65vh;border-radius:7px;}
-.ifoot{padding:.8rem 1.2rem;border-top:1px solid var(--br);display:flex;gap:.5rem;justify-content:flex-end;}
+.iinner{background:linear-gradient(145deg,var(--sf),var(--sf2));border:1px solid var(--br);border-radius:16px;overflow:hidden;max-width:90vw;max-height:90vh;display:flex;flex-direction:column;animation:popIn .3s ease;}
+.ihead{padding:.85rem 1.3rem;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--br);}
+.ihead h3{font-family:'Cinzel',serif;font-size:.88rem;font-weight:700;color:var(--pu);}
+.iclose{background:none;border:none;color:var(--mu);font-size:1.2rem;cursor:pointer;transition:.2s;}
+.iclose:hover{color:var(--tx);}
+.ibody{flex:1;overflow:auto;padding:.9rem;display:flex;align-items:center;justify-content:center;min-height:185px;}
+.ibody img{max-width:100%;max-height:65vh;border-radius:9px;}
+.ifoot{padding:.85rem 1.3rem;border-top:1px solid var(--br);display:flex;gap:.5rem;justify-content:flex-end;}
 
 /* TOAST */
-.toast{position:fixed;bottom:1.2rem;left:50%;transform:translateX(-50%) translateY(8px);z-index:1000;background:var(--sf);border:1px solid var(--br);border-radius:100px;padding:.62rem 1.3rem;font-size:.84rem;font-weight:600;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;white-space:nowrap;}
+.toast{position:fixed;bottom:1.4rem;left:50%;transform:translateX(-50%) translateY(8px);z-index:1000;background:var(--sf2);border:1px solid var(--br);border-radius:100px;padding:.65rem 1.4rem;font-size:.84rem;font-weight:600;opacity:0;pointer-events:none;transition:opacity .3s,transform .3s;white-space:nowrap;box-shadow:0 8px 30px rgba(0,0,0,.5);}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-.toast.ok{border-color:rgba(0,255,136,.4);color:var(--gr);}
-.toast.err{border-color:rgba(255,68,102,.4);color:var(--rd);}
-.sp2{display:inline-block;width:12px;height:12px;border:2px solid rgba(0,212,255,.3);border-top-color:var(--cr);border-radius:50%;animation:spin .7s linear infinite;}
+.toast.ok{border-color:rgba(34,197,94,.4);color:var(--gr);}
+.toast.err{border-color:rgba(239,68,68,.4);color:var(--rd);}
+.sp2{display:inline-block;width:12px;height:12px;border:2px solid rgba(168,85,247,.3);border-top-color:var(--pu);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes popIn{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
 
 /* HAMBURGER */
-.ham{display:none;background:none;border:none;color:var(--tx);font-size:1.3rem;cursor:pointer;padding:.3rem;position:fixed;top:.7rem;left:.8rem;z-index:201;}
-.overlay{display:none;position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.5);}
+.ham{display:none;background:none;border:none;color:var(--tx);font-size:1.3rem;cursor:pointer;padding:.3rem;position:fixed;top:.8rem;left:.9rem;z-index:201;}
+.overlay{display:none;position:fixed;inset:0;z-index:99;background:rgba(0,0,0,.6);}
 
 @media(max-width:900px){.sg-grid{grid-template-columns:1fr}.gr2{grid-template-columns:1fr}.rules-mgr{grid-template-columns:1fr}.stats-row{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:768px){
   .sidebar{transform:translateX(-100%);z-index:200;}
   .sidebar.open{transform:translateX(0);}
-  .main{margin-left:0;padding:1rem;padding-top:3.5rem;}
+  .main{margin-left:0;padding:1rem;padding-top:4rem;}
   .ham{display:block;}
   .overlay.show{display:block;}
-  .ts{overflow-x:auto;}
   .fg2-row{grid-template-columns:1fr;}
 }
 </style>
 </head>
 <body>
 <div class="bg"></div>
-
-<!-- HAMBURGER (mobile) -->
-<button class="ham" id="hamBtn" onclick="toggleSidebar()">☰</button>
+<button class="ham" id="hamBtn" onclick="toggleSidebar()" style="display:none">☰</button>
 <div class="overlay" id="overlay" onclick="closeSidebar()"></div>
 
-<!-- LOGIN -->
+<!-- ═══ LOGIN ═══ -->
 <div class="lw" id="loginPage">
   <div class="lc">
-    <div style="font-size:2.5rem;margin-bottom:1rem">🛡️</div>
-    <div class="l-logo">CrystalMC & MasterCraft</div>
+    <div class="l-crown">🛡️</div>
+    <div class="l-logo">CrystalMC ✦ MasterCraft</div>
     <div class="l-sub">Admin Panel</div>
     <div class="l-err" id="lerr"></div>
-    <div class="fg"><label>Login</label><input type="text" id="li" placeholder="echoranger" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+    <div class="fg"><label>Login</label><input type="text" id="li" placeholder="login..." autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()"/></div>
     <div class="fg"><label>Parol</label><input type="password" id="lp" placeholder="••••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"/></div>
     <button class="l-btn" onclick="doLogin()">🔐 Kirish</button>
   </div>
 </div>
 
-<!-- ADMIN PANEL -->
+<!-- ═══ ADMIN PANEL ═══ -->
 <div class="admin-wrap" id="adminPage" style="display:none">
   <aside class="sidebar" id="sidebar">
-    <div class="sb-brand"><div class="sb-logo">CrystalMC<br/>& MasterCraft</div><div class="sb-sub">Admin Panel</div></div>
+    <div class="sb-brand"><div class="sb-logo">CrystalMC<br/>✦ MasterCraft</div><div class="sb-sub">Admin Panel</div></div>
     <div class="sb-user">
       <div class="sb-av" id="sbAv">??</div>
       <div><div class="sb-uname" id="sbName">—</div><div class="sb-role" id="sbRole">—</div></div>
@@ -223,15 +245,15 @@ tr:hover td{background:rgba(0,212,255,.02);}
       <button class="snav active" onclick="showSec('orders',this)">📋 So'rovlar</button>
       <button class="snav" onclick="showSec('stats',this)">📊 Statistika</button>
       <div class="ng">Boshqaruv</div>
-      <button class="snav" onclick="showSec('accounts',this)">👤 Akkauntlar</button>
+      <button class="snav" onclick="showSec('accounts',this)" id="navAccounts">👤 Akkauntlar</button>
       <button class="snav" onclick="showSec('ranks',this)">💎 Ranklar</button>
       <button class="snav" onclick="showSec('rules',this)">📜 Qoidalar</button>
       <div class="ng">Server</div>
-      <button class="snav" onclick="showSec('settings',this)">⚙️ Sozlamalar</button>
-      <button class="snav" onclick="showSec('rcon',this)">🔌 RCON</button>
+      <button class="snav" onclick="showSec('settings',this)" id="navSettings">⚙️ Sozlamalar</button>
+      <button class="snav" onclick="showSec('rcon',this)" id="navRcon">🔌 RCON</button>
     </nav>
     <div class="rbar"><span class="rdot spin" id="rdot"></span><span id="rtxt" style="color:var(--mu)">Tekshirilmoqda...</span></div>
-    <div style="padding:.3rem 1.3rem .55rem"><button onclick="testRcon()" style="background:rgba(0,212,255,.07);border:1px solid var(--br);color:var(--cr);border-radius:5px;padding:.27rem .68rem;font-family:'Oxanium',monospace;font-size:.65rem;font-weight:700;cursor:pointer;width:100%">🔌 Test</button></div>
+    <div style="padding:.35rem 1.4rem .6rem"><button onclick="testRcon()" style="background:rgba(168,85,247,.08);border:1px solid var(--br);color:var(--pu);border-radius:6px;padding:.28rem .72rem;font-family:'Oxanium',monospace;font-size:.65rem;font-weight:700;cursor:pointer;width:100%;transition:.2s">🔌 RCON Test</button></div>
     <div class="sb-foot"><button class="logout-btn" onclick="doLogout()">🚪 Chiqish</button></div>
   </aside>
 
@@ -242,12 +264,12 @@ tr:hover td{background:rgba(0,212,255,.02);}
       <div class="mhdr">
         <div><div class="pt">So'rovlar</div><div class="ps">Rank, Token va Unban so'rovlari</div></div>
         <div style="display:flex;gap:.5rem;flex-wrap:wrap">
-          <button onclick="clearAll()" style="background:rgba(255,68,102,.1);border:1px solid rgba(255,68,102,.25);color:var(--rd);border-radius:5px;padding:.3rem .78rem;font-family:'Oxanium',monospace;font-size:.67rem;font-weight:700;cursor:pointer">🗑</button>
-          <button onclick="loadOrders()" style="background:rgba(0,212,255,.1);border:1px solid var(--br);color:var(--cr);border-radius:5px;padding:.3rem .78rem;font-family:'Oxanium',monospace;font-size:.67rem;font-weight:700;cursor:pointer">🔄</button>
+          <button onclick="clearAll()" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);color:var(--rd);border-radius:6px;padding:.32rem .82rem;font-family:'Oxanium',monospace;font-size:.67rem;font-weight:700;cursor:pointer">🗑 Hammasini o'chirish</button>
+          <button onclick="loadOrders()" style="background:rgba(168,85,247,.1);border:1px solid var(--br);color:var(--pu);border-radius:6px;padding:.32rem .82rem;font-family:'Oxanium',monospace;font-size:.67rem;font-weight:700;cursor:pointer">🔄 Yangilash</button>
         </div>
       </div>
       <div class="stats-row">
-        <div class="sc"><div class="sl">Jami</div><div class="sv sv-cr" id="sT">—</div></div>
+        <div class="sc"><div class="sl">Jami</div><div class="sv sv-pu" id="sT">—</div></div>
         <div class="sc"><div class="sl">Kutilmoqda</div><div class="sv sv-or" id="sP">—</div></div>
         <div class="sc"><div class="sl">Tasdiqlangan</div><div class="sv sv-gr" id="sA">—</div></div>
         <div class="sc"><div class="sl">Rad etilgan</div><div class="sv sv-rd" id="sR">—</div></div>
@@ -274,99 +296,94 @@ tr:hover td{background:rgba(0,212,255,.02);}
       <div class="mhdr"><div><div class="pt">Statistika</div></div></div>
       <div class="stats-row" style="grid-template-columns:repeat(3,1fr)">
         <div class="sc"><div class="sl">Jami tushum</div><div class="sv sv-gd" style="font-size:1.3rem" id="stRev">—</div><div style="font-size:.65rem;color:var(--mu);margin-top:.18rem">UZS</div></div>
-        <div class="sc"><div class="sl">Bu oy</div><div class="sv sv-cr" style="font-size:1.3rem" id="stMon">—</div><div style="font-size:.65rem;color:var(--mu);margin-top:.18rem">UZS</div></div>
+        <div class="sc"><div class="sl">Bu oy</div><div class="sv sv-pu" style="font-size:1.3rem" id="stMon">—</div><div style="font-size:.65rem;color:var(--mu);margin-top:.18rem">UZS</div></div>
         <div class="sc"><div class="sl">Token so'rovlari</div><div class="sv" style="color:var(--gold)" id="stTok">—</div></div>
       </div>
-      <div id="rankGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:.7rem;margin-top:.9rem"></div>
+      <div id="rankGrid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:.75rem;margin-top:1rem"></div>
     </div>
 
-    <!-- ACCOUNTS -->
+    <!-- ACCOUNTS (BUG FIXED: Owner bo'lmagan adminlar ham kira oladi) -->
     <div class="sec" id="sec-accounts">
-      <div class="mhdr"><div><div class="pt">Akkauntlar</div></div></div>
+      <div class="mhdr"><div><div class="pt">Akkauntlar</div><div class="ps">Admin va moder akkauntlarni boshqaring</div></div></div>
       <div class="gr2">
         <div class="fbox">
-          <h3 style="color:var(--cr)">➕ Yangi Akkaunt</h3>
+          <h3>➕ Yangi Akkaunt</h3>
+          <div id="accCreateErr" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:.65rem 1rem;color:var(--rd);font-size:.83rem;font-weight:600;margin-bottom:.9rem;display:none"></div>
+          <div id="accCreateSuc" style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:8px;padding:.65rem 1rem;color:var(--gr);font-size:.83rem;font-weight:600;margin-bottom:.9rem;display:none"></div>
           <div class="fg2"><label>Login</label><input type="text" id="al" placeholder="admin_user"/></div>
           <div class="fg2"><label>Parol</label><input type="password" id="ap2" placeholder="Kuchli parol"/></div>
           <div class="fg2"><label>Ism</label><input type="text" id="an" placeholder="Ali Valiyev"/></div>
-          <div class="fg2"><label>Rol</label><select id="ar"><option value="admin">🔵 Admin</option><option value="moder">🟢 Moder</option><option value="helper">🟣 Helper</option></select></div>
+          <div class="fg2"><label>Rol</label><select id="ar"><option value="admin">🔵 Admin</option><option value="moder">🟢 Moder</option><option value="helper">🟠 Helper</option></select></div>
           <div class="fg2"><label>Telegram</label><input type="text" id="at" placeholder="@username"/></div>
           <button class="abtn" onclick="createAccount()" style="width:100%">✅ Yaratish</button>
         </div>
         <div class="fbox">
-          <h3 style="color:var(--cr)">👥 Akkauntlar</h3>
+          <h3>👥 Barcha Akkauntlar</h3>
           <div id="accList"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RANKS -->
+    <div class="sec" id="sec-ranks">
+      <div class="mhdr">
+        <div><div class="pt">Ranklar</div><div class="ps">Rank narxlari va sozlamalarini boshqaring</div></div>
+        <div style="display:flex;gap:.5rem">
+          <button onclick="addNewRank()" style="background:rgba(34,197,94,.1);border:1px solid rgba(34,197,94,.25);color:var(--gr);border-radius:6px;padding:.35rem .85rem;font-family:'Oxanium',monospace;font-size:.7rem;font-weight:700;cursor:pointer">➕ Qo'shish</button>
+          <button onclick="saveRanks()" style="background:linear-gradient(135deg,var(--pu2),var(--pu));color:#fff;border:none;border-radius:6px;padding:.35rem .85rem;font-family:'Oxanium',monospace;font-size:.7rem;font-weight:800;cursor:pointer;box-shadow:0 2px 12px rgba(124,58,237,.4)">💾 Saqlash</button>
+        </div>
+      </div>
+      <div id="ranksContainer" style="display:flex;flex-direction:column;gap:.7rem"></div>
+    </div>
+
+    <!-- RULES -->
+    <div class="sec" id="sec-rules">
+      <div class="mhdr"><div><div class="pt">Qoidalar</div></div></div>
+      <div class="rules-mgr">
+        <div class="rlb">
+          <h3>📜 Qoidalar <button onclick="addRule()" style="background:rgba(168,85,247,.1);border:1px solid var(--br);color:var(--pu);border-radius:4px;padding:.12rem .5rem;font-family:'Oxanium',monospace;font-size:.6rem;font-weight:700;cursor:pointer">➕</button></h3>
+          <div id="ruleCatBtns" style="display:flex;flex-wrap:wrap;gap:.3rem;margin-bottom:.7rem"></div>
+          <div id="ruleItems"></div>
+        </div>
+        <div class="reb">
+          <h3>✏️ Tahrirlash</h3>
+          <div id="ruleEditContent"><p style="color:var(--mu);font-size:.83rem">Qoida tanlang.</p></div>
         </div>
       </div>
     </div>
 
     <!-- SETTINGS -->
     <div class="sec" id="sec-settings">
-      <div class="mhdr">
-        <div><div class="pt">Sozlamalar</div></div>
-        <button class="abtn" onclick="saveAllSettings()">💾 Barchasini saqlash</button>
-      </div>
+      <div class="mhdr"><div><div class="pt">Sozlamalar</div></div></div>
       <div class="sg-grid">
         <div class="sg">
-          <h3>🔌 RCON</h3>
-          <div class="hint">server.properties:<br/><code>enable-rcon=true</code><br/><code>rcon.port=25575</code><br/><code>rcon.password=PAROL</code></div>
-          <div class="fg2"><label>Host</label><input type="text" id="s-rcon_host" placeholder="localhost"/></div>
-          <div class="fg2"><label>Port</label><input type="number" id="s-rcon_port" placeholder="25575" inputmode="numeric"/></div>
-          <div class="fg2"><label>Parol</label><input type="password" id="s-rcon_password" placeholder="Yangi parol (o'zgartirish uchun)"/></div>
-          <button class="abtn" onclick="saveRcon()" style="width:100%">🔌 RCON Saqlash va Test</button>
+          <h3>🔌 RCON Sozlamalari</h3>
+          <div class="hint">Minecraft serverga ulanish uchun RCON ma'lumotlarini kiriting. <code>server.properties</code> da <code>enable-rcon=true</code> bo'lishi kerak.</div>
+          <div class="fg2"><label>RCON Host</label><input type="text" id="s-rcon_host" placeholder="localhost"/></div>
+          <div class="fg2"><label>RCON Port</label><input type="number" id="s-rcon_port" placeholder="25575"/></div>
+          <div class="fg2"><label>RCON Parol</label><input type="password" id="s-rcon_password" placeholder="O'zgartirish uchun kiriting"/></div>
+          <button class="abtn" onclick="saveRcon()">💾 RCON Saqlash</button>
         </div>
         <div class="sg">
-          <h3>💳 Karta</h3>
-          <div class="fg2"><label>Karta raqami</label><input type="text" id="s-card_number" placeholder="3400 0385 6025 XXXX"/></div>
-          <div class="fg2"><label>Egasi</label><input type="text" id="s-card_holder" placeholder="ISMI FAMILIYA"/></div>
-          <div class="fg2"><label>Bank</label><input type="text" id="s-card_bank" placeholder="Uzcard / Humo"/></div>
-          <div class="fg2"><label>Admin Telegram</label><input type="text" id="s-tg_admin" placeholder="@MASTERCRAFT_ADMIN"/></div>
-          <button class="abtn" onclick="saveCardSettings()" style="width:100%">💾 Karta Saqlash</button>
+          <h3>💳 Karta Sozlamalari</h3>
+          <div class="fg2"><label>Karta Raqami</label><input type="text" id="s-card_number" placeholder="3400 0385 6025 XXXX"/></div>
+          <div class="fg2"><label>Karta Egasi</label><input type="text" id="s-card_holder" placeholder="MASTERCRAFT ADMIN"/></div>
+          <div class="fg2"><label>Bank Nomi</label><input type="text" id="s-card_bank" placeholder="Uzcard / Humo"/></div>
+          <div class="fg2"><label>Telegram Admin</label><input type="text" id="s-tg_admin" placeholder="@MASTERCRAFT_ADMIN"/></div>
+          <button class="abtn" onclick="saveCardSettings()">💾 Karta Saqlash</button>
         </div>
-        <div class="sg" style="grid-column:1/-1">
-          <h3>🔵 Google OAuth</h3>
-          <div class="hint">
-            1. <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a> → Loyiha yarating<br/>
-            2. APIs &amp; Services → Credentials → Create OAuth 2.0 Client ID<br/>
-            3. App type: <code>Web application</code> → Authorized origins: <code>http://localhost:5000</code><br/>
-            4. Chiqgan Client ID ni kiriting
-          </div>
-          <div class="fg2"><label>Google Client ID</label><input type="text" id="s-google_client_id" placeholder="123456789-xxxx.apps.googleusercontent.com"/></div>
-          <button class="abtn" onclick="saveGoogleSettings()">💾 Google Saqlash</button>
+        <div class="sg">
+          <h3>🔑 Google OAuth</h3>
+          <div class="hint">Google bilan kirish uchun <a href="https://console.cloud.google.com/" target="_blank" style="color:var(--pu)">Google Console</a> da OAuth Client ID yarating.</div>
+          <div class="fg2"><label>Google Client ID</label><input type="text" id="s-google_client_id" placeholder="xxxxx.apps.googleusercontent.com"/></div>
+          <button class="abtn" onclick="saveGoogleSettings()">💾 Saqlash</button>
         </div>
-      </div>
-    </div>
-
-    <!-- RANKS MANAGER -->
-    <div class="sec" id="sec-ranks">
-      <div class="mhdr">
-        <div><div class="pt">💎 Ranklar boshqaruvi</div><div class="ps">Rank nom, narx va LuckPerms nomini tahrirlash</div></div>
-        <div style="display:flex;gap:.5rem">
-          <button class="abtn" onclick="addNewRank()" style="background:rgba(0,255,136,.15);border:1px solid rgba(0,255,136,.3);color:var(--gr)">+ Rank qo'shish</button>
-          <button class="abtn" onclick="saveRanks()">💾 Saqlash</button>
-        </div>
-      </div>
-      <div class="hint">Rank nomini, narxini va LuckPerms buyrug'idagi nomni o'zgartiring. <strong>Saqlash</strong> tugmasini bossangiz sayt va server avtomatik yangilanadi.</div>
-      <div id="ranksContainer" style="display:flex;flex-direction:column;gap:.6rem"></div>
-    </div>
-
-    <!-- RULES -->
-    <div class="sec" id="sec-rules">
-      <div class="mhdr">
-        <div><div class="pt">Qoidalar</div></div>
-        <button class="abtn" onclick="saveRulesToStorage();toast('✅ Saqlandi','ok')">💾 Saqlash</button>
-      </div>
-      <div class="rules-mgr">
-        <div>
-          <div class="fbox" style="padding:.85rem;margin-bottom:.9rem"><div style="display:flex;gap:.32rem;flex-wrap:wrap" id="ruleCatBtns"></div></div>
-          <div class="rlb">
-            <h3>📋 Qoidalar <button onclick="addRule()" style="background:rgba(0,212,255,.1);border:1px solid rgba(0,212,255,.2);color:var(--cr);border-radius:4px;padding:.17rem .52rem;font-family:'Oxanium',monospace;font-size:.65rem;font-weight:700;cursor:pointer">+</button></h3>
-            <div id="ruleItems"></div>
-          </div>
-        </div>
-        <div class="reb">
-          <h3>✏️ Tahrirlash</h3>
-          <div id="ruleEditContent"><p style="color:var(--mu);font-size:.82rem">Chapdan qoida tanlang.</p></div>
+        <div class="sg">
+          <h3>🔐 Parol o'zgartirish</h3>
+          <div class="hint">Hozirgi akkauntingiz parolini o'zgartiring.</div>
+          <div class="fg2"><label>Yangi parol</label><input type="password" id="s-new-pass" placeholder="Yangi kuchli parol"/></div>
+          <div class="fg2"><label>Tasdiqlash</label><input type="password" id="s-conf-pass" placeholder="Parolni qayta kiriting"/></div>
+          <button class="abtn" onclick="changePassword()">🔒 O'zgartirish</button>
         </div>
       </div>
     </div>
@@ -374,23 +391,25 @@ tr:hover td{background:rgba(0,212,255,.02);}
     <!-- RCON -->
     <div class="sec" id="sec-rcon">
       <div class="mhdr"><div><div class="pt">RCON Konsol</div></div></div>
-      <div class="gr2">
+      <div style="display:grid;grid-template-columns:1fr;gap:1.2rem;max-width:700px">
         <div class="fbox">
-          <h3 style="color:var(--cr)">⌨️ Buyruq</h3>
-          <div class="fg2"><label>Buyruq</label><input type="text" id="rcmd" placeholder="lp user Steve parent add gercog" onkeydown="if(event.key==='Enter')sendRcon()"/></div>
-          <div style="display:flex;gap:.42rem;flex-wrap:wrap;margin-bottom:.9rem">
-            <button onclick="qcmd('list')" style="background:rgba(0,212,255,.08);border:1px solid var(--br);color:var(--cr);border-radius:4px;padding:.23rem .65rem;font-family:'Oxanium',monospace;font-size:.63rem;cursor:pointer">list</button>
-            <button onclick="qcmd('tps')" style="background:rgba(0,212,255,.08);border:1px solid var(--br);color:var(--cr);border-radius:4px;padding:.23rem .65rem;font-family:'Oxanium',monospace;font-size:.63rem;cursor:pointer">tps</button>
-            <button onclick="qcmd('lp info')" style="background:rgba(0,212,255,.08);border:1px solid var(--br);color:var(--cr);border-radius:4px;padding:.23rem .65rem;font-family:'Oxanium',monospace;font-size:.63rem;cursor:pointer">lp info</button>
+          <h3>⚡ Buyruq yuborish</h3>
+          <div class="fg2"><label>Buyruq</label><input type="text" id="rcmd" placeholder="say Hello World" onkeydown="if(event.key==='Enter')sendRcon()"/></div>
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.9rem">
+            <button class="ab bvw" onclick="qcmd('list')">list</button>
+            <button class="ab bvw" onclick="qcmd('tps')">tps</button>
+            <button class="ab bvw" onclick="qcmd('plugins')">plugins</button>
+            <button class="ab bvw" onclick="qcmd('gc')">gc</button>
           </div>
-          <button class="abtn" onclick="sendRcon()" style="width:100%">📡 Yuborish</button>
+          <button class="abtn" onclick="sendRcon()">▶ Yuborish</button>
         </div>
-        <div class="fbox" style="display:flex;flex-direction:column">
-          <h3 style="color:var(--cr);margin-bottom:.75rem">📟 Javob</h3>
-          <div class="rlog" id="rconLog">Kutilmoqda...</div>
+        <div class="fbox">
+          <h3>📟 Javob</h3>
+          <div class="rlog" id="rconLog">Buyruq yuboring...</div>
         </div>
       </div>
     </div>
+
   </main>
 </div>
 
@@ -401,19 +420,26 @@ tr:hover td{background:rgba(0,212,255,.02);}
     <div class="ibody" id="imgB"></div>
     <div class="ifoot">
       <button class="ab bap" id="imgApp" onclick="imgAct('approve')">✅ Tasdiqlash</button>
-      <button class="ab brj" id="imgRej" onclick="imgAct('reject')">❌ Rad</button>
+      <button class="ab brj" id="imgRej" onclick="imgAct('reject')">❌ Rad etish</button>
       <button class="ab bvw" onclick="closeImg()">Yopish</button>
     </div>
   </div>
 </div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-const OL='echoranger', OP='shamsiddin1312';
+// ════════════════════════════════════
+//  BUG FIX: OL/OP hardcode olib tashlandi!
+//  Endi server-side auth ishlaydi.
+//  Istalgan rol (owner/admin/moder/helper) kirishi mumkin.
+// ════════════════════════════════════
 let TOKEN=null, curUser=null, curFilter='all', imgId=null;
 let rulesData=JSON.parse(localStorage.getItem('mc_rules')||'null')||getDefaultRules();
 let selCat='asosiy', selRuleId=null;
-const rClr={HEROIC:'#c87941',ASPID:'#55cc66',SKVID:'#44ccff',GLAVA:'#cc55ff',ELITE:'#ff9922',TITAN:'#66aaff',STRIKER:'#ff4455',PRINSS:'#ff55cc',KNYAZ:'#ffcc00',GERCOG:'#00d4ff'};
+const rClr={HEROIC:'#c87941',ASPID:'#55cc66',SKVID:'#44ccff',GLAVA:'#cc55ff',ELITE:'#ff9922',TITAN:'#66aaff',STRIKER:'#ff4455',PRINSS:'#ff55cc',KNYAZ:'#ffcc00',GERCOG:'#A855F7'};
+// Rol darajalari: owner > admin > moder > helper
+const ROLE_LEVEL={owner:4,admin:3,moder:2,helper:1};
 
 let tT;
 function toast(msg,type=''){clearTimeout(tT);const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(type?' '+type:'');tT=setTimeout(()=>t.className='toast',4000);}
@@ -422,61 +448,93 @@ async function api(path,method='GET',body=null){
   const opts={method,headers:{'X-Admin-Token':TOKEN||''}};
   if(body&&!(body instanceof FormData)){opts.headers['Content-Type']='application/json';opts.body=JSON.stringify(body);}
   else if(body)opts.body=body;
-  return fetch(path,opts).then(r=>r.json());
+  const r=await fetch(path,opts);
+  return r.json();
 }
 
-// Sidebar toggle (mobile)
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('overlay').classList.toggle('show');}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
 
-// AUTH
+// ════════════════════════════════════
+//  BUG FIX: Faqat owner emas — istalgan
+//  admin/moder/helper kirishi mumkin!
+//  Rol tekshiruvi server-side.
+// ════════════════════════════════════
 async function doLogin(){
   const l=document.getElementById('li').value.trim(), p=document.getElementById('lp').value;
-  const err=document.getElementById('lerr'); err.style.display='none';
+  const err=document.getElementById('lerr');err.style.display='none';
   if(!l||!p){err.textContent='Login va parol kiriting!';err.style.display='block';return;}
-  // Faqat owner kirishi mumkin
-  if(l!==OL||p!==OP){err.textContent='Login yoki parol noto\'g\'ri!';err.style.display='block';return;}
   try{
     const d=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({login:l,password:p})}).then(r=>r.json());
-    if(d.ok){TOKEN=d.token;curUser=d.user;sessionStorage.setItem('mc_adm',TOKEN);sessionStorage.setItem('mc_usr',JSON.stringify(curUser));enterAdmin();}
-    else{err.textContent=d.error||'Xatolik!';err.style.display='block';}
-  }catch{err.textContent='Server bilan aloqa yo\'q!';err.style.display='block';}
+    if(d.ok){
+      // Rol tekshiruvi: kamida 'helper' bo'lishi kerak
+      const role=d.user?.role;
+      if(!ROLE_LEVEL[role]){err.textContent='Admin paneliga kirish huquqi yo\'q!';err.style.display='block';return;}
+      TOKEN=d.token;curUser=d.user;
+      sessionStorage.setItem('mc_adm',TOKEN);sessionStorage.setItem('mc_usr',JSON.stringify(curUser));
+      enterAdmin();
+    }else{err.textContent=d.error||'Xatolik!';err.style.display='block';}
+  }catch{err.textContent="Server bilan aloqa yo'q!";err.style.display='block';}
 }
+
 function enterAdmin(){
   document.getElementById('loginPage').style.display='none';
   document.getElementById('adminPage').style.display='flex';
   document.getElementById('hamBtn').style.display='block';
   if(curUser){
     document.getElementById('sbName').textContent=curUser.name||curUser.login;
-    const rm={owner:'👑 Owner',admin:'🔵 Admin',moder:'🟢 Moder',helper:'🟣 Helper'};
+    const rm={owner:'👑 Owner',admin:'🔵 Admin',moder:'🟢 Moder',helper:'🟠 Helper'};
     document.getElementById('sbRole').textContent=rm[curUser.role]||curUser.role;
     const av=document.getElementById('sbAv');
     if(curUser.avatar)av.innerHTML=`<img src="${curUser.avatar}" alt="av"/>`;
     else av.textContent=(curUser.name||curUser.login).slice(0,2).toUpperCase();
+    // Rol asosida menyu cheklash
+    const lvl=ROLE_LEVEL[curUser.role]||0;
+    if(lvl<3){// moder va helper sozlamalarni ko'rmasin
+      const ns=document.getElementById('navSettings');if(ns)ns.style.display='none';
+    }
+    if(lvl<4){// faqat owner akkauntlarni boshqara oladi
+      const na=document.getElementById('navAccounts');if(na)na.style.display='none';
+    }
+    if(lvl<2){// helper faqat orderlarni ko'ra oladi
+      document.getElementById('navRcon').style.display='none';
+    }
   }
-  loadOrders();testRcon();loadSettings();renderAccounts();renderRules();
+  loadOrders();testRcon();loadSettings();renderAccounts();renderRules();loadRanksMgr();
   setInterval(loadOrders,30000);
 }
-function doLogout(){sessionStorage.clear();TOKEN=null;curUser=null;document.getElementById('adminPage').style.display='none';document.getElementById('loginPage').style.display='flex';document.getElementById('hamBtn').style.display='none';}
 
+function doLogout(){
+  sessionStorage.clear();TOKEN=null;curUser=null;
+  document.getElementById('adminPage').style.display='none';
+  document.getElementById('loginPage').style.display='flex';
+  document.getElementById('hamBtn').style.display='none';
+}
+
+// ════════════════════════════════════
+//  BUG FIX: Session restore — endi
+//  faqat OL login emas, rol tekshiruvi
+// ════════════════════════════════════
 window.onload=async function(){
   document.getElementById('hamBtn').style.display='none';
   const t=sessionStorage.getItem('mc_adm');const u=sessionStorage.getItem('mc_usr');
-  if(t){TOKEN=t;curUser=u?JSON.parse(u):null;
-    // Faqat owner akkaunt
-    if(curUser?.login!==OL){sessionStorage.clear();return;}
-    try{const d=await api('/api/auth/me');if(d.ok&&d.user?.login===OL){curUser=d.user;enterAdmin();}else sessionStorage.clear();}
-    catch{sessionStorage.clear();}
+  if(t){
+    TOKEN=t;curUser=u?JSON.parse(u):null;
+    // Rol tekshiruvi
+    if(!curUser||!ROLE_LEVEL[curUser.role]){sessionStorage.clear();return;}
+    try{
+      const d=await api('/api/auth/me');
+      if(d.ok&&ROLE_LEVEL[d.user?.role]){curUser=d.user;enterAdmin();}
+      else{sessionStorage.clear();}
+    }catch{sessionStorage.clear();}
   }
 };
 
-// SECTION
 function showSec(name,btn){
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('.snav').forEach(b=>b.classList.remove('active'));
   document.getElementById('sec-'+name).classList.add('active');
-  if(btn)btn.classList.add('active');
-  closeSidebar();
+  if(btn)btn.classList.add('active');closeSidebar();
   if(name==='orders')loadOrders();
   if(name==='stats')loadStats();
   if(name==='accounts')renderAccounts();
@@ -489,10 +547,17 @@ function showSec(name,btn){
 async function testRcon(){
   const dot=document.getElementById('rdot'),txt=document.getElementById('rtxt');
   dot.className='rdot spin';txt.textContent='Tekshirilmoqda...';
-  try{const d=await api('/api/rcon/test','POST');if(d.ok){dot.className='rdot ok';txt.textContent='RCON ✓';txt.style.color='var(--gr)';}else{dot.className='rdot err';txt.textContent='Xatolik';txt.style.color='var(--rd)';}}
-  catch{dot.className='rdot err';txt.textContent='Ulanmagan';txt.style.color='var(--rd)';}
+  try{const d=await api('/api/rcon/test','POST');
+    if(d.ok){dot.className='rdot ok';txt.textContent='RCON ✓';txt.style.color='var(--gr)';}
+    else{dot.className='rdot err';txt.textContent='Xatolik';txt.style.color='var(--rd)';}
+  }catch{dot.className='rdot err';txt.textContent='Ulanmagan';txt.style.color='var(--rd)';}
 }
-async function sendRcon(){const cmd=document.getElementById('rcmd').value.trim();if(!cmd)return;const log=document.getElementById('rconLog');log.textContent='Yuborilmoqda...';try{const d=await api('/api/rcon/run','POST',{cmd});log.textContent=d.ok?('> '+cmd+'\n\n'+d.response):('❌ '+d.error);}catch{log.textContent='❌ Server bilan aloqa yo\'q!';}}
+async function sendRcon(){
+  const cmd=document.getElementById('rcmd').value.trim();if(!cmd)return;
+  const log=document.getElementById('rconLog');log.textContent='Yuborilmoqda...';
+  try{const d=await api('/api/rcon/run','POST',{cmd});log.textContent=d.ok?('> '+cmd+'\n\n'+d.response):('❌ '+d.error);}
+  catch{log.textContent="❌ Server bilan aloqa yo'q!";}
+}
 function qcmd(c){document.getElementById('rcmd').value=c;sendRcon();}
 
 // SETTINGS
@@ -504,17 +569,27 @@ async function loadSettings(){
 async function saveRcon(){
   const data={rcon_host:document.getElementById('s-rcon_host').value,rcon_port:document.getElementById('s-rcon_port').value};
   const p=document.getElementById('s-rcon_password').value;if(p&&p!=='••••••••')data.rcon_password=p;
-  const d=await api('/api/settings','POST',data);if(d.ok){toast('✅ RCON saqlandi, test...','ok');setTimeout(testRcon,400);}else toast('❌ Xatolik','err');
+  try{const d=await api('/api/settings','POST',data);if(d.ok){toast('✅ RCON saqlandi','ok');setTimeout(testRcon,400);}else toast('❌ Xatolik','err');}
+  catch{toast("❌ Server bilan aloqa yo'q!",'err');}
 }
 async function saveCardSettings(){
   const data={card_number:document.getElementById('s-card_number').value,card_holder:document.getElementById('s-card_holder').value,card_bank:document.getElementById('s-card_bank').value,tg_admin:document.getElementById('s-tg_admin').value};
-  const d=await api('/api/settings','POST',data);if(d.ok)toast('✅ Karta saqlandi','ok');else toast('❌ Xatolik','err');
+  try{const d=await api('/api/settings','POST',data);if(d.ok)toast('✅ Karta saqlandi','ok');else toast('❌ Xatolik','err');}
+  catch{toast("❌ Server bilan aloqa yo'q!",'err');}
 }
 async function saveGoogleSettings(){
   const data={google_client_id:document.getElementById('s-google_client_id').value};
-  const d=await api('/api/settings','POST',data);if(d.ok)toast('✅ Google saqlandi','ok');else toast('❌ Xatolik','err');
+  try{const d=await api('/api/settings','POST',data);if(d.ok)toast('✅ Google saqlandi','ok');else toast('❌ Xatolik','err');}
+  catch{toast("❌ Server bilan aloqa yo'q!",'err');}
 }
-async function saveAllSettings(){await saveRcon();await saveCardSettings();await saveGoogleSettings();}
+async function changePassword(){
+  const np=document.getElementById('s-new-pass').value,cp=document.getElementById('s-conf-pass').value;
+  if(!np){toast('❌ Yangi parol kiriting!','err');return;}
+  if(np!==cp){toast('❌ Parollar mos emas!','err');return;}
+  if(np.length<6){toast('❌ Parol kamida 6 belgi!','err');return;}
+  try{const d=await api('/api/auth/change-password','POST',{password:np});if(d.ok){toast('✅ Parol o\'zgartirildi','ok');document.getElementById('s-new-pass').value='';document.getElementById('s-conf-pass').value='';}else toast('❌ '+(d.error||'Xatolik'),'err');}
+  catch{toast("❌ Server bilan aloqa yo'q!",'err');}
+}
 
 // ORDERS
 async function loadOrders(){
@@ -525,8 +600,7 @@ async function loadOrders(){
   else if(curFilter!=='all')params.push('status='+curFilter);
   if(q)params.push('q='+encodeURIComponent(q));
   const url='/api/orders'+(params.length?'?'+params.join('&'):'');
-  try{
-    const d=await api(url);if(!d.ok)return;
+  try{const d=await api(url);if(!d.ok)return;
     document.getElementById('sT').textContent=d.stats?.total??0;
     document.getElementById('sP').textContent=d.stats?.pending??0;
     document.getElementById('sA').textContent=d.stats?.approved??0;
@@ -534,7 +608,6 @@ async function loadOrders(){
     renderOrders(d.orders||[]);
   }catch{}
 }
-
 function renderOrders(orders){
   const tb=document.getElementById('ordersBody');
   if(!orders.length){tb.innerHTML='<tr><td colspan="10" class="empty">😴 So\'rov topilmadi</td></tr>';return;}
@@ -543,31 +616,30 @@ function renderOrders(orders){
     let badge='',cmdBox='';
     if(o.type==='token'){badge=`<span class="tbadge">🪙 TOKEN</span>`;cmdBox=`<div class="tok-cmd">points give ${o.nick} ${o.token_amount||o.rank?.replace('TOKEN_','')}</div>`;}
     else if(o.type==='unban'){badge=`<span class="ubadge">🔓 UNBAN</span>`;cmdBox=`<div class="unban-cmd">/unban ${o.nick}</div>`;}
-    else{const rc=rClr[o.rank]||'var(--cr)';badge=`<span class="rbadge" style="background:${rc}22;color:${rc}">${o.rank}</span>`;const lp=o.period==='30 kun'?`lp user ${o.nick} parent addtemp ${o.rank.toLowerCase()} 30d`:`lp user ${o.nick} parent add ${o.rank.toLowerCase()}`;cmdBox=`<div class="cmd-box">${lp}</div>`;}
+    else{const rc=rClr[o.rank]||'var(--pu)';badge=`<span class="rbadge" style="background:${rc}22;color:${rc}">${o.rank}</span>`;const lp=o.period==='30 kun'?`lp user ${o.nick} parent addtemp ${o.rank.toLowerCase()} 30d`:`lp user ${o.nick} parent add ${o.rank.toLowerCase()}`;cmdBox=`<div class="cmd-box">${lp}</div>`;}
     const acts=o.status==='pending'
       ?`<div class="ar"><button class="ab bvw" onclick="viewCheck('${o.id}','${o.nick}')">👁</button><button class="ab bap" id="a${o.id}" onclick="approveOrder('${o.id}')">✅</button><button class="ab brj" onclick="rejectOrder('${o.id}')">❌</button></div>${cmdBox}`
       :`<div class="ar"><button class="ab bvw" onclick="viewCheck('${o.id}','${o.nick}')">👁</button><button class="ab bun" onclick="resetOrder('${o.id}')">↩</button><button class="ab bdl" onclick="deleteOrder('${o.id}')">🗑</button></div>`;
     return `<tr><td style="color:var(--mu);font-size:.73rem">${i+1}</td><td class="nc">${o.nick}</td><td>${badge}</td><td style="font-size:.77rem">${o.period||'—'}</td><td class="ac">${Number(o.amount).toLocaleString()} UZS</td><td style="color:var(--mu);font-size:.77rem">${o.tg||'—'}</td><td>${o.check_url?`<button class="ab bvw" onclick="viewCheck('${o.id}','${o.nick}')">📷</button>`:'—'}</td><td>${sm[o.status]||o.status}</td><td class="tc">${o.time}</td><td>${acts}</td></tr>`;
   }).join('');
 }
-
 function setFilter(f){
   curFilter=f;
-  const fc={'all':'fa','pending':'fp','approved':'fap','rejected':'fr','token':'fgd','unban':'fr'};
+  const fc={all:'fa',pending:'fp',approved:'fap',rejected:'fr',token:'fgd',unban:'fr'};
   Object.keys(fc).forEach(k=>{const b=document.getElementById('fb-'+k);if(!b)return;b.className='fb'+(k===f?' '+fc[k]:'');});
   loadOrders();
 }
-
 async function approveOrder(id){
   const btn=document.getElementById('a'+id);if(btn){btn.disabled=true;btn.innerHTML='<span class="sp2"></span>';}
-  const d=await api(`/api/orders/${id}/approve`,'POST');
-  if(d.ok){toast('✅ '+(d.command||'Muvaffaqiyatli!'),'ok');await loadOrders();}
-  else{toast('❌ '+(d.error||'Xatolik')+(d.hint?' — '+d.hint:''),'err');if(btn){btn.disabled=false;btn.textContent='✅';}}
+  try{const d=await api(`/api/orders/${id}/approve`,'POST');
+    if(d.ok){toast('✅ '+(d.command||'Muvaffaqiyatli!'),'ok');await loadOrders();}
+    else{toast('❌ '+(d.error||'Xatolik')+(d.hint?' — '+d.hint:''),'err');if(btn){btn.disabled=false;btn.textContent='✅';}}
+  }catch{toast("❌ Server bilan aloqa yo'q!",'err');if(btn){btn.disabled=false;btn.textContent='✅';}}
 }
-async function rejectOrder(id){if(!confirm('Rad etmoqchimisiz?'))return;const d=await api(`/api/orders/${id}/reject`,'POST');if(d.ok){toast('❌ Rad etildi');await loadOrders();}}
-async function resetOrder(id){const d=await api(`/api/orders/${id}/reset`,'POST');if(d.ok){toast('↩ Qaytarildi');await loadOrders();}}
-async function deleteOrder(id){if(!confirm('O\'chirmoqchimisiz?'))return;const d=await api(`/api/orders/${id}`,'DELETE');if(d.ok){toast('🗑 O\'chirildi');await loadOrders();}}
-async function clearAll(){if(!confirm('BARCHA so\'rovlarni o\'chirmoqchimisiz?'))return;const d=await api('/api/orders/clear','DELETE');if(d.ok){toast('🗑 Barchasi o\'chirildi');await loadOrders();}}
+async function rejectOrder(id){if(!confirm('Rad etmoqchimisiz?'))return;try{const d=await api(`/api/orders/${id}/reject`,'POST');if(d.ok){toast('❌ Rad etildi');await loadOrders();}}catch{toast("❌ Xatolik",'err');}}
+async function resetOrder(id){try{const d=await api(`/api/orders/${id}/reset`,'POST');if(d.ok){toast('↩ Qaytarildi');await loadOrders();}}catch{toast("❌ Xatolik",'err');}}
+async function deleteOrder(id){if(!confirm("O'chirmoqchimisiz?"))return;try{const d=await api(`/api/orders/${id}`,'DELETE');if(d.ok){toast("🗑 O'chirildi");await loadOrders();}}catch{toast("❌ Xatolik",'err');}}
+async function clearAll(){if(!confirm("BARCHA so'rovlarni o'chirmoqchimisiz?"))return;try{const d=await api('/api/orders/clear','DELETE');if(d.ok){toast("🗑 Barchasi o'chirildi");await loadOrders();}}catch{toast("❌ Xatolik",'err');}}
 
 // STATS
 async function loadStats(){
@@ -581,7 +653,7 @@ async function loadStats(){
     document.getElementById('stMon').textContent=monRev.toLocaleString();
     document.getElementById('stTok').textContent=tokCount;
     const rc={};app.filter(o=>!['token','unban'].includes(o.type)).forEach(o=>rc[o.rank]=(rc[o.rank]||0)+1);
-    document.getElementById('rankGrid').innerHTML=Object.entries(rc).sort((a,b)=>b[1]-a[1]).map(([r,c])=>`<div style="background:var(--sf);border:1px solid var(--br);border-radius:9px;padding:.8rem"><div style="font-family:'Oxanium',monospace;font-size:.7rem;font-weight:800;color:${rClr[r]||'var(--cr)'};margin-bottom:.2rem">${r}</div><div style="font-family:'Oxanium',monospace;font-size:1.4rem;font-weight:800">${c}</div></div>`).join('');
+    document.getElementById('rankGrid').innerHTML=Object.entries(rc).sort((a,b)=>b[1]-a[1]).map(([r,c])=>`<div style="background:linear-gradient(135deg,var(--sf),var(--sf2));border:1px solid var(--br);border-radius:10px;padding:.9rem"><div style="font-family:'Oxanium',monospace;font-size:.72rem;font-weight:800;color:${rClr[r]||'var(--pu)'};margin-bottom:.22rem">${r}</div><div style="font-family:'Oxanium',monospace;font-size:1.5rem;font-weight:800">${c}</div></div>`).join('');
   }catch{}
 }
 
@@ -589,131 +661,140 @@ async function loadStats(){
 async function viewCheck(id,nick){
   imgId=id;document.getElementById('imgT').textContent=nick+' — chek';
   const body=document.getElementById('imgB');body.innerHTML='<div class="sp2" style="width:26px;height:26px;border-width:3px"></div>';
-  const d=await api('/api/orders');const order=d.orders?.find(o=>o.id===id);
-  body.innerHTML=order?.check_url?`<img src="${order.check_url}" alt="Chek"/>`:'<p style="color:var(--mu);padding:2rem">📭 Chek yuklanmagan</p>';
-  const ip=order?.status==='pending';
-  document.getElementById('imgApp').style.display=ip?'inline-flex':'none';
-  document.getElementById('imgRej').style.display=ip?'inline-flex':'none';
+  try{const d=await api('/api/orders');const order=d.orders?.find(o=>o.id===id);
+    body.innerHTML=order?.check_url?`<img src="${order.check_url}" alt="Chek"/>`:'<p style="color:var(--mu);padding:2rem">📭 Chek yuklanmagan</p>';
+    const ip=order?.status==='pending';
+    document.getElementById('imgApp').style.display=ip?'inline-flex':'none';
+    document.getElementById('imgRej').style.display=ip?'inline-flex':'none';
+  }catch{body.innerHTML='<p style="color:var(--rd);padding:2rem">❌ Chek yuklab bo\'lmadi</p>';}
   document.getElementById('imgModal').classList.add('open');
 }
 function closeImg(){document.getElementById('imgModal').classList.remove('open');imgId=null;}
 async function imgAct(a){if(!imgId)return;if(a==='approve')await approveOrder(imgId);else await rejectOrder(imgId);closeImg();}
 document.getElementById('imgModal').addEventListener('click',function(e){if(e.target===this)closeImg();});
 
-// ACCOUNTS
+// ════════════════════════════════════
+//  BUG FIX: createAccount — try/catch
+//  qo'shildi, error xabari ko'rinadi
+// ════════════════════════════════════
 async function renderAccounts(){
   try{const d=await api('/api/accounts');
     const list=document.getElementById('accList');
     const rc={owner:'ro',admin:'ra',moder:'rm',helper:'rh'};
-    const rl={owner:'👑 Owner',admin:'🔵 Admin',moder:'🟢 Moder',helper:'🟣 Helper'};
-    let html=`<div class="acc-item"><div style="display:flex;align-items:center;gap:.6rem"><div class="acc-av">OW</div><div><div style="font-family:'Oxanium',monospace;font-size:.78rem;font-weight:700">Owner <span class="role-b ro">👑 Owner</span></div><div style="font-size:.65rem;color:var(--mu)">@echoranger</div></div></div><span style="color:var(--gold);font-size:.68rem;font-family:'Oxanium',monospace">Protected</span></div>`;
-    if(d.ok)d.accounts.forEach(a=>{const av=a.avatar?`<img src="${a.avatar}" alt="av"/>`:(a.name||a.login).slice(0,2).toUpperCase();html+=`<div class="acc-item"><div style="display:flex;align-items:center;gap:.6rem"><div class="acc-av">${av}</div><div><div style="font-family:'Oxanium',monospace;font-size:.77rem;font-weight:700">${a.name||a.login} <span class="role-b ${rc[a.role]||'ra'}">${rl[a.role]||a.role}</span></div><div style="font-size:.65rem;color:var(--mu)">@${a.login}${a.tg?' · '+a.tg:''}${!a.active?' · <span style="color:var(--rd)">Blok</span>':''}</div></div></div><div style="display:flex;gap:.3rem"><button class="ab bun" onclick="toggleAcc(${a.id},${a.active})">${a.active?'⏸':'▶'}</button><button class="ab bdl" onclick="deleteAcc(${a.id})">🗑</button></div></div>`;});
+    const rl={owner:'👑 Owner',admin:'🔵 Admin',moder:'🟢 Moder',helper:'🟠 Helper'};
+    let html='';
+    // Owner qatori
+    if(curUser?.role==='owner'){
+      html+=`<div class="acc-item"><div style="display:flex;align-items:center;gap:.65rem"><div class="acc-av">👑</div><div><div style="font-family:'Oxanium',monospace;font-size:.78rem;font-weight:700">Owner <span class="role-b ro">👑 Owner</span></div><div style="font-size:.65rem;color:var(--mu)">@${curUser.login}</div></div></div><span style="color:var(--gold);font-size:.68rem;font-family:'Oxanium',monospace">Protected</span></div>`;
+    }
+    if(d.ok&&d.accounts?.length){
+      d.accounts.forEach(a=>{
+        const av=a.avatar?`<img src="${a.avatar}" alt="av"/>`:(a.name||a.login).slice(0,2).toUpperCase();
+        const isOwner=a.role==='owner';
+        const actions=(!isOwner&&curUser?.role==='owner')?`<div style="display:flex;gap:.3rem"><button class="ab bun" onclick="toggleAcc(${a.id},${a.active})">${a.active?'⏸':'▶'}</button><button class="ab bdl" onclick="deleteAcc(${a.id})">🗑</button></div>`:'<span style="color:var(--mu);font-size:.65rem;font-family:\'Oxanium\',monospace">Protected</span>';
+        html+=`<div class="acc-item"><div style="display:flex;align-items:center;gap:.65rem"><div class="acc-av">${av}</div><div><div style="font-family:'Oxanium',monospace;font-size:.77rem;font-weight:700">${a.name||a.login} <span class="role-b ${rc[a.role]||'ra'}">${rl[a.role]||a.role}</span></div><div style="font-size:.65rem;color:var(--mu)">@${a.login}${a.tg?' · '+a.tg:''}${!a.active?' · <span style="color:var(--rd)">Bloklangan</span>':''}</div></div></div>${actions}</div>`;
+      });
+    }else if(d.ok&&!d.accounts?.length&&curUser?.role==='owner'){
+      html+='<p style="color:var(--mu);font-size:.82rem;text-align:center;padding:1rem">Hali admin/moder yo\'q</p>';
+    }else if(!d.ok){
+      html+='<p style="color:var(--mu);font-size:.82rem;padding:1rem">Akkauntlarni ko\'rish huquqi yo\'q</p>';
+    }
     list.innerHTML=html;
-  }catch{}
+  }catch(e){console.error('renderAccounts error:',e);}
 }
+
 async function createAccount(){
   const l=document.getElementById('al').value.trim(),p=document.getElementById('ap2').value,n=document.getElementById('an').value.trim(),r=document.getElementById('ar').value,t=document.getElementById('at').value.trim();
-  if(!l||!p){toast('❌ Login va parol kiritish shart!','err');return;}
-  const d=await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json','X-Admin-Token':TOKEN},body:JSON.stringify({login:l,password:p,name:n||l,role:r,tg:t})}).then(r=>r.json());
-  if(d.ok){toast('✅ Akkaunt yaratildi!','ok');['al','ap2','an','at'].forEach(id=>document.getElementById(id).value='');renderAccounts();}
-  else toast('❌ '+(d.error||'Xatolik'),'err');
+  const errEl=document.getElementById('accCreateErr'),sucEl=document.getElementById('accCreateSuc');
+  errEl.style.display='none';sucEl.style.display='none';
+  if(!l||!p){errEl.textContent='Login va parol kiritish shart!';errEl.style.display='block';return;}
+  if(p.length<6){errEl.textContent='Parol kamida 6 belgi bo\'lishi kerak!';errEl.style.display='block';return;}
+  try{
+    const d=await fetch('/api/auth/register',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Admin-Token':TOKEN},
+      body:JSON.stringify({login:l,password:p,name:n||l,role:r,tg:t})
+    }).then(res=>res.json());
+    if(d.ok){
+      sucEl.textContent='✅ Akkaunt yaratildi! Login: '+l;sucEl.style.display='block';
+      ['al','ap2','an','at'].forEach(id=>document.getElementById(id).value='');
+      await renderAccounts();
+      setTimeout(()=>sucEl.style.display='none',4000);
+    }else{
+      errEl.textContent='❌ '+(d.error||'Xatolik yuz berdi');errEl.style.display='block';
+    }
+  }catch(err){
+    errEl.textContent="❌ Server bilan aloqa yo'q! Qayta urinib ko'ring.";errEl.style.display='block';
+    console.error('createAccount error:',err);
+  }
 }
-async function toggleAcc(id,active){const d=await api(`/api/accounts/${id}`,'PUT',{active:!active});if(d.ok){toast(active?'⏸ Bloklandi':'▶ Faollashtirildi');renderAccounts();}}
-async function deleteAcc(id){if(!confirm('O\'chirmoqchimisiz?'))return;const d=await api(`/api/accounts/${id}`,'DELETE');if(d.ok){toast('🗑 O\'chirildi');renderAccounts();}}
 
-// RANKS MANAGER
+async function toggleAcc(id,active){
+  try{const d=await api(`/api/accounts/${id}`,'PUT',{active:!active});if(d.ok){toast(active?'⏸ Bloklandi':'▶ Faollashtirildi');renderAccounts();}else toast('❌ '+(d.error||'Xatolik'),'err');}
+  catch{toast("❌ Server bilan aloqa yo'q!",'err');}
+}
+async function deleteAcc(id){
+  if(!confirm("O'chirmoqchimisiz?"))return;
+  try{const d=await api(`/api/accounts/${id}`,'DELETE');if(d.ok){toast("🗑 O'chirildi");renderAccounts();}else toast('❌ '+(d.error||'Xatolik'),'err');}
+  catch{toast("❌ Server bilan aloqa yo'q!",'err');}
+}
+
+// RANKS
 let ranksData=[];
 async function loadRanksMgr(){
-  try{
-    const d=await api('/api/ranks');
-    ranksData=d.ranks||[];
-    renderRanksMgr();
-  }catch{toast('\u274c Ranklar yuklanmadi','err');}
+  try{const d=await api('/api/ranks');ranksData=d.ranks||[];renderRanksMgr();}
+  catch{toast('❌ Ranklar yuklanmadi','err');}
 }
 function renderRanksMgr(){
-  const c=document.getElementById('ranksContainer');
-  if(!c)return;
+  const c=document.getElementById('ranksContainer');if(!c)return;
   c.innerHTML=ranksData.map((r,i)=>`
-    <div style="background:var(--sf);border:1px solid ${r.color||'var(--br)'};border-radius:10px;padding:1rem 1.2rem;display:grid;grid-template-columns:auto 1fr 1fr 1fr 1fr 1fr auto;gap:.7rem;align-items:center;" id="rank-row-${i}">
-      <div style="font-size:1.4rem;cursor:pointer" title="Rang" onclick="pickColor(${i})">${r.icon||'\ud83d\udc8e'}<span style="display:inline-block;width:12px;height:12px;background:${r.color||'#fff'};border-radius:3px;margin-left:.3rem;border:1px solid rgba(255,255,255,.2)"></span></div>
-      <div>
-        <label style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);display:block;margin-bottom:.2rem">Nom</label>
-        <input type="text" value="${r.name}" onchange="ranksData[${i}].name=this.value" style="width:100%;background:var(--bg);border:1px solid var(--br);border-radius:4px;padding:.45rem .6rem;color:var(--tx);font-family:'Oxanium',monospace;font-size:.82rem;font-weight:700;outline:none" onfocus="this.style.borderColor='${r.color||'var(--cr)'}'" onblur="this.style.borderColor='var(--br)'"/>
-      </div>
-      <div>
-        <label style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);display:block;margin-bottom:.2rem">LP Nomi</label>
-        <input type="text" value="${r.lp||r.name.toLowerCase()}" onchange="ranksData[${i}].lp=this.value" style="width:100%;background:var(--bg);border:1px solid var(--br);border-radius:4px;padding:.45rem .6rem;color:var(--cr);font-family:'Oxanium',monospace;font-size:.82rem;outline:none" placeholder="lp nomi"/>
-      </div>
-      <div>
-        <label style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);display:block;margin-bottom:.2rem">Emoji</label>
-        <input type="text" value="${r.icon||''}" maxlength="4" onchange="ranksData[${i}].icon=this.value" style="width:100%;background:var(--bg);border:1px solid var(--br);border-radius:4px;padding:.45rem .6rem;color:var(--tx);font-size:1.1rem;text-align:center;outline:none"/>
-      </div>
-      <div>
-        <label style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);display:block;margin-bottom:.2rem">30 kun (UZS)</label>
-        <input type="number" value="${r.month_price}" onchange="ranksData[${i}].month_price=+this.value" style="width:100%;background:var(--bg);border:1px solid var(--br);border-radius:4px;padding:.45rem .6rem;color:var(--gold);font-family:'Oxanium',monospace;font-size:.85rem;font-weight:700;outline:none"/>
-      </div>
-      <div>
-        <label style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);display:block;margin-bottom:.2rem">Butun umr (UZS)</label>
-        <input type="number" value="${r.life_price}" onchange="ranksData[${i}].life_price=+this.value" style="width:100%;background:var(--bg);border:1px solid var(--br);border-radius:4px;padding:.45rem .6rem;color:var(--gold);font-family:'Oxanium',monospace;font-size:.85rem;font-weight:700;outline:none"/>
-      </div>
-      <div style="display:flex;flex-direction:column;gap:.3rem">
-        <input type="color" value="${r.color||'#00d4ff'}" onchange="ranksData[${i}].color=this.value;renderRanksMgr()" style="width:32px;height:32px;border:none;background:none;cursor:pointer;border-radius:4px" title="Rang">
-        <button class="ab bdl" onclick="deleteRankRow(${i})" title="O'chirish">🗑</button>
-      </div>
+    <div style="background:linear-gradient(135deg,var(--sf),var(--sf2));border:1px solid ${r.color||'var(--br)'};border-radius:12px;padding:1rem 1.2rem;display:grid;grid-template-columns:auto 1fr 1fr 1fr 1fr 1fr auto;gap:.75rem;align-items:center;">
+      <div style="font-size:1.4rem">${r.icon||'💎'}<span style="display:inline-block;width:12px;height:12px;background:${r.color||'#fff'};border-radius:3px;margin-left:.3rem;border:1px solid rgba(255,255,255,.2);vertical-align:middle"></span></div>
+      <div><label style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);display:block;margin-bottom:.22rem">Nom</label><input type="text" value="${r.name}" onchange="ranksData[${i}].name=this.value" style="width:100%;background:rgba(0,0,0,.4);border:1px solid var(--br);border-radius:5px;padding:.45rem .65rem;color:var(--tx);font-family:'Oxanium',monospace;font-size:.82rem;font-weight:700;outline:none"/></div>
+      <div><label style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);display:block;margin-bottom:.22rem">LP Nomi</label><input type="text" value="${r.lp||r.name.toLowerCase()}" onchange="ranksData[${i}].lp=this.value" style="width:100%;background:rgba(0,0,0,.4);border:1px solid var(--br);border-radius:5px;padding:.45rem .65rem;color:var(--pu);font-family:'Oxanium',monospace;font-size:.82rem;outline:none"/></div>
+      <div><label style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);display:block;margin-bottom:.22rem">Emoji</label><input type="text" value="${r.icon||''}" maxlength="4" onchange="ranksData[${i}].icon=this.value" style="width:100%;background:rgba(0,0,0,.4);border:1px solid var(--br);border-radius:5px;padding:.45rem .65rem;color:var(--tx);font-size:1.1rem;text-align:center;outline:none"/></div>
+      <div><label style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);display:block;margin-bottom:.22rem">30 kun (UZS)</label><input type="number" value="${r.month_price}" onchange="ranksData[${i}].month_price=+this.value" style="width:100%;background:rgba(0,0,0,.4);border:1px solid var(--br);border-radius:5px;padding:.45rem .65rem;color:var(--gold);font-family:'Oxanium',monospace;font-size:.85rem;font-weight:700;outline:none"/></div>
+      <div><label style="font-size:.58rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mu);display:block;margin-bottom:.22rem">Umrlik (UZS)</label><input type="number" value="${r.life_price}" onchange="ranksData[${i}].life_price=+this.value" style="width:100%;background:rgba(0,0,0,.4);border:1px solid var(--br);border-radius:5px;padding:.45rem .65rem;color:var(--gold);font-family:'Oxanium',monospace;font-size:.85rem;font-weight:700;outline:none"/></div>
+      <div style="display:flex;flex-direction:column;gap:.4rem"><input type="color" value="${r.color||'#A855F7'}" onchange="ranksData[${i}].color=this.value;renderRanksMgr()" style="width:34px;height:34px;border:none;background:none;cursor:pointer;border-radius:5px" title="Rang"><button class="ab bdl" onclick="deleteRankRow(${i})">🗑</button></div>
     </div>
   `).join('');
 }
-function deleteRankRow(i){
-  if(!confirm('Rankni o\'chirmoqchimisiz?'))return;
-  ranksData.splice(i,1);
-  renderRanksMgr();
-  toast('\ud83d\uddd1 Rank o\'chirildi');
-}
-function addNewRank(){
-  ranksData.push({id:'NEW_'+Date.now(),name:'YANGI',icon:'\u2b50',lp:'yangi',color:'#00d4ff',month_price:10000,life_price:25000});
-  renderRanksMgr();
-  document.getElementById('ranksContainer').lastElementChild?.scrollIntoView({behavior:'smooth'});
-}
+function deleteRankRow(i){if(!confirm("Rankni o'chirmoqchimisiz?"))return;ranksData.splice(i,1);renderRanksMgr();toast("🗑 Rank o'chirildi");}
+function addNewRank(){ranksData.push({id:'NEW_'+Date.now(),name:'YANGI',icon:'⭐',lp:'yangi',color:'#A855F7',month_price:10000,life_price:25000});renderRanksMgr();document.getElementById('ranksContainer').lastElementChild?.scrollIntoView({behavior:'smooth'});}
 async function saveRanks(){
-  // Sync id from name for new ranks
-  ranksData.forEach(r=>{
-    if(r.id.startsWith('NEW_'))r.id=r.name.toUpperCase().replace(/\s+/g,'_');
-  });
-  try{
-    const d=await api('/api/ranks','POST',ranksData);
-    if(d.ok){toast('\u2705 Ranklar saqlandi!','ok');}
-    else toast('\u274c Xatolik: '+(d.error||''),'err');
-  }catch{toast('\u274c Server bilan aloqa yo\'q!','err');}
+  ranksData.forEach(r=>{if(r.id.startsWith('NEW_'))r.id=r.name.toUpperCase().replace(/\s+/g,'_');});
+  try{const d=await api('/api/ranks','POST',ranksData);if(d.ok){toast('✅ Ranklar saqlandi!','ok');}else toast('❌ Xatolik: '+(d.error||''),'err');}
+  catch{toast("❌ Server bilan aloqa yo'q!",'err');}
 }
 
 // RULES
-function getDefaultRules(){return{asosiy:[{id:'1.1',text:'Qoidalarni bilmaslik sizni javobgarlikdan ozod qilmaydi.',pen:''},{id:'1.2',text:'Serverda o\'ynashni boshlash orqali barcha qoidalarga roziligingizni avtomatik tasdiqlaysiz.',pen:''},{id:'1.3',text:'Server plaginlari noto\'g\'ri ishlashi tufayli narsalar yo\'qolishi uchun server javobgar emas.',pen:''},{id:'1.4',text:'Ma\'muriyat serverning ishlashini kafolatlamaydi.',pen:''},{id:'1.5',text:'Server xatolar natijasida etkazilgan zarar uchun javobgar emas.',pen:''},{id:'1.6',text:'O\'yinchilar barcha qoidalarga rioya qilishlari shart.',pen:''},{id:'1.7',text:'Server barcha harakatlar tarixini saqlaydi.',pen:''},{id:'1.8',text:'Server qoidalarni ogohlantirmasdan o\'zgartirish huquqiga ega.',pen:''},{id:'1.9',text:'Server va ishchilarni haqorat qilish taqiqlanadi.',pen:'2 soat mute'}],chat:[{id:'2.1',text:'Caps/Spam/Flood taqiqlanadi.',pen:'2 soat mute'},{id:'2.2',text:'Kamsitish va haqorat taqiqlanadi.',pen:'5 soat mute'},{id:'2.3',text:'Behayo so\'zlar taqiqlanadi.',pen:'5 soat mute'},{id:'2.4',text:'Reklama taqiqlanadi.',pen:'30 kun ban'},{id:'2.5',text:'Qarindoshlarini haqorat qilish taqiqlanadi.',pen:'5 kun ban'},{id:'2.6',text:'Urush qo\'zg\'atish, irqchilik taqiqlanadi.',pen:'5 kun ban'},{id:'2.7',text:'Chat blokirovkasini chetlab o\'tish taqiqlanadi.',pen:'2.2-2.6'},{id:'2.8',text:'Server chatdagi aldov uchun javobgar emas.',pen:''},{id:'2.9',text:'Chatda aloqa ma\'lumotlarini yuborish taqiqlanadi.',pen:'5 soat mute'}],rejim:[{id:'3.0',text:'Rejim nomidagi nik/taxallusni qo\'yib kirish taqiqlanadi.',pen:'Ban'},{id:'3.1',text:'Anarxiya rejimida jamoa 3 tadan oshishi taqiqlanadi.',pen:'30 kun ban'},{id:'3.2',text:'Rejimlarni kamsitish yoki flood qilish taqiqlanadi.',pen:'2 soat mute'},{id:'3.3',text:'3.0 qoida buzilsa rank boshqa akkauntga ko\'chirib o\'tkazish mumkin.',pen:'Ban'}],akkaunt:[{id:'4.1',text:'Nikda so\'kinish, kamsitish bo\'lmasligi kerak.',pen:'Doimiy ban'},{id:'4.2',text:'Hisobingizni boshqa shaxslarga berish taqiqlanadi.',pen:'Doimiy ban'},{id:'4.3',text:'Akkaunt egasi barcha harakatlar uchun javobgar.',pen:''},{id:'4.4',text:'Akkaunt va donatlarni sotish/o\'tkazish taqiqlanadi.',pen:'Doimiy ban'},{id:'4.5',text:'Donatni boshqa hisobga o\'tkazib bo\'lmaydi.',pen:''}],oyun:[{id:'5.1',text:'Firibgarlik taqiqlanadi.',pen:'Ban'},{id:'5.2',text:'Uchinchi tomon dasturlari taqiqlanadi.',pen:'30 kun ban'},{id:'5.3',text:'Qoidabuzarga yordam berish taqiqlanadi.',pen:'Ban'},{id:'5.4',text:'Serverni buzishga urinish taqiqlanadi.',pen:'Ban'},{id:'5.5',text:'Server bag\'laridan foydalanish taqiqlanadi.',pen:'Ban'},{id:'5.6',text:'Jinsiy organlar, natsist ramzlari qurish taqiqlanadi.',pen:'5 kun ban'},{id:'5.7',text:'Uchinchi shaxslarni qoidalarni buzishga undash taqiqlanadi.',pen:'5 kun ban'}],tekshiruv:[{id:'6.1',text:'Moderning barcha talablariga rioya qilishingiz shart.',pen:''},{id:'6.2',text:'Verifierdan xabarni ko\'rmaslik — bandan chiqarish sababi emas.',pen:''},{id:'6.3',text:'Tekshiruvga aralashish taqiqlanadi.',pen:'Ban'},{id:'6.4',text:'Tekshiruv paytida fayllarni o\'chirish taqiqlanadi.',pen:'Ban'},{id:'6.5',text:'Tekshiruv paytida Minecraft\'dan chiqish taqiqlanadi.',pen:'Ban'},{id:'6.6',text:'Tekshiruvni tasvirga olish taqiqlanadi.',pen:''},{id:'6.7',text:'Moder dasturlarni o\'rnatishingizni so\'rashga haqli.',pen:''},{id:'6.8',text:'Moder qoidalarni buzsa — ishidan ozod qilinadi.',pen:''}],donat:[{id:'7.0',text:'Donatlarni bekor qilib pul qaytarib olish mumkin emas.',pen:''},{id:'7.1',text:'Donat orqali bosim o\'tkazish taqiqlanadi.',pen:'10 kun ban'},{id:'7.2',text:'Donatdan foydalanib besabab mute, ban, kick taqiqlanadi.',pen:'10 kun ban'},{id:'7.3',text:'Soxta chek orqali donat olishga urunish taqiqlanadi.',pen:'Doimiy ban'},{id:'7.4',text:'Helper muteni qoidalarga asosan berishi shart. Tanish-bilishchilik — Helperlikdan olinish va umrbod ban.',pen:'Doimiy ban'}]};}
-const catL={asosiy:'📋 Asosiy',chat:'💬 Chat',rejim:'🎮 Rejim',akkaunt:'👤 Akkaunt',oyun:'⚔️ O\'yin',tekshiruv:'🔍 Tekshiruv',donat:'💎 Donat'};
+function getDefaultRules(){return{asosiy:[{id:'1.1',text:'Qoidalarni bilmaslik sizni javobgarlikdan ozod qilmaydi.',pen:''},{id:'1.2',text:"Serverda o'ynashni boshlash orqali barcha qoidalarga roziligingizni avtomatik tasdiqlaysiz.",pen:''},{id:'1.3',text:"Server plaginlari noto'g'ri ishlashi tufayli narsalar yo'qolishi uchun server javobgar emas.",pen:''},{id:'1.9',text:"Server va ishchilarni haqorat qilish taqiqlanadi.",pen:'2 soat mute'}],chat:[{id:'2.1',text:'Caps/Spam/Flood taqiqlanadi.',pen:'2 soat mute'},{id:'2.2',text:'Kamsitish va haqorat taqiqlanadi.',pen:'5 soat mute'},{id:'2.4',text:'Reklama taqiqlanadi.',pen:'30 kun ban'}],rejim:[{id:'3.0',text:"Rejim nomidagi nik/taxallusni qo'yib kirish taqiqlanadi.",pen:'Ban'}],akkaunt:[{id:'4.1',text:"Nikda so'kinish, kamsitish bo'lmasligi kerak.",pen:'Doimiy ban'},{id:'4.2',text:'Hisobingizni boshqa shaxslarga berish taqiqlanadi.',pen:'Doimiy ban'}],oyun:[{id:'5.1',text:'Firibgarlik taqiqlanadi.',pen:'Ban'},{id:'5.2',text:'Uchinchi tomon dasturlari taqiqlanadi.',pen:'30 kun ban'}],tekshiruv:[{id:'6.1',text:'Moderning barcha talablariga rioya qilishingiz shart.',pen:''}],donat:[{id:'7.0',text:'Donatlarni bekor qilib pul qaytarib olish mumkin emas.',pen:''},{id:'7.3',text:'Soxta chek orqali donat olishga urunish taqiqlanadi.',pen:'Doimiy ban'}]};}
+const catL={asosiy:'📋 Asosiy',chat:'💬 Chat',rejim:'🎮 Rejim',akkaunt:'👤 Akkaunt',oyun:"⚔️ O'yin",tekshiruv:'🔍 Tekshiruv',donat:'💎 Donat'};
 function renderRules(){
   const btns=document.getElementById('ruleCatBtns');
-  btns.innerHTML=Object.keys(rulesData).map(k=>`<button onclick="selCatFn('${k}')" style="background:${selCat===k?'rgba(0,212,255,.12)':'transparent'};border:1px solid ${selCat===k?'var(--cr)':'var(--br)'};color:${selCat===k?'var(--cr)':'var(--mu)'};border-radius:5px;padding:.26rem .65rem;font-family:'Oxanium',monospace;font-size:.66rem;font-weight:700;cursor:pointer;margin:.1rem">${catL[k]||k}</button>`).join('');
+  btns.innerHTML=Object.keys(rulesData).map(k=>`<button onclick="selCatFn('${k}')" style="background:${selCat===k?'rgba(168,85,247,.12)':'transparent'};border:1px solid ${selCat===k?'var(--pu)':'var(--br)'};color:${selCat===k?'var(--pu)':'var(--mu)'};border-radius:6px;padding:.28rem .68rem;font-family:'Oxanium',monospace;font-size:.66rem;font-weight:700;cursor:pointer;margin:.1rem">${catL[k]||k}</button>`).join('');
   renderRuleList();
 }
 function selCatFn(c){selCat=c;selRuleId=null;renderRules();}
 function renderRuleList(){
   const items=document.getElementById('ruleItems');const rules=rulesData[selCat]||[];
-  items.innerHTML=rules.map(r=>`<div class="ri${selRuleId===r.id?' sel':''}" onclick="selRule('${r.id}')"><div class="rn2">${r.id}</div><div class="rt2">${r.text.slice(0,60)}${r.text.length>60?'...':''} ${r.pen?`<br/><span style="background:rgba(255,68,102,.1);color:var(--rd);padding:.08rem .3rem;border-radius:3px;font-size:.6rem;font-family:'Oxanium',monospace">${r.pen}</span>`:''}</div></div>`).join('')||'<p style="color:var(--mu);font-size:.78rem">Qoidalar yo\'q</p>';
+  items.innerHTML=rules.map(r=>`<div class="ri${selRuleId===r.id?' sel':''}" onclick="selRule('${r.id}')"><div class="rn2">${r.id}</div><div class="rt2">${r.text.slice(0,60)}${r.text.length>60?'...:':''} ${r.pen?`<br/><span style="background:rgba(239,68,68,.1);color:var(--rd);padding:.08rem .3rem;border-radius:3px;font-size:.6rem;font-family:'Oxanium',monospace">${r.pen}</span>`:''}</div></div>`).join('')||'<p style="color:var(--mu);font-size:.78rem">Qoidalar yo\'q</p>';
 }
 function selRule(id){
   selRuleId=id;renderRuleList();
   const r=rulesData[selCat]?.find(x=>x.id===id);if(!r)return;
   document.getElementById('ruleEditContent').innerHTML=`
     <div class="fg2"><label>ID</label><input type="text" id="re-id" value="${r.id}"/></div>
-    <div class="fg2"><label>Matn</label><textarea id="re-txt" rows="5" style="width:100%;background:var(--bg);border:1px solid var(--br);border-radius:5px;padding:.65rem;color:var(--tx);font-family:'Rajdhani',sans-serif;font-size:.87rem;outline:none;resize:vertical">${r.text}</textarea></div>
+    <div class="fg2"><label>Matn</label><textarea id="re-txt" rows="5" style="width:100%;background:rgba(0,0,0,.4);border:1px solid var(--br);border-radius:7px;padding:.68rem;color:var(--tx);font-family:'Rajdhani',sans-serif;font-size:.88rem;outline:none;resize:vertical">${r.text}</textarea></div>
     <div class="fg2"><label>Jazo</label><input type="text" id="re-pen" value="${r.pen}" placeholder="5 kun ban..."/></div>
-    <div style="display:flex;gap:.5rem;margin-top:.35rem">
-      <button class="abtn" onclick="saveRule('${id}')" style="flex:1;padding:.6rem">💾</button>
-      <button class="abtn dng" onclick="deleteRule('${id}')" style="flex:1;padding:.6rem">🗑</button>
+    <div style="display:flex;gap:.5rem;margin-top:.4rem">
+      <button class="abtn" onclick="saveRule('${id}')" style="flex:1;padding:.65rem">💾 Saqlash</button>
+      <button class="abtn dng" onclick="deleteRule('${id}')" style="flex:1;padding:.65rem">🗑 O'chirish</button>
     </div>`;
 }
-function addRule(){const rules=rulesData[selCat];const last=rules[rules.length-1];const p=last?.id?.split('.')||[String(Object.keys(rulesData).indexOf(selCat)+1),'0'];const nid=p[0]+'.'+(parseInt(p[1]||0)+1);rules.push({id:nid,text:'Yangi qoida...',pen:''});selRuleId=nid;renderRuleList();selRule(nid);}
+function addRule(){const rules=rulesData[selCat];const last=rules[rules.length-1];const p=last?.id?.split('.')||[String(Object.keys(rulesData).indexOf(selCat)+1),'0'];const nid=p[0]+'.'+(parseInt(p[1]||0)+1);rules.push({id:nid,text:"Yangi qoida...",pen:''});selRuleId=nid;renderRuleList();selRule(nid);}
 function saveRule(oldId){const nid=document.getElementById('re-id').value.trim();const txt=document.getElementById('re-txt').value.trim();const pen=document.getElementById('re-pen').value.trim();const rules=rulesData[selCat];const idx=rules.findIndex(r=>r.id===oldId);if(idx>=0){rules[idx]={id:nid,text:txt,pen};selRuleId=nid;}saveRulesToStorage();toast('✅ Saqlandi','ok');renderRuleList();}
-function deleteRule(id){if(!confirm('O\'chirmoqchimisiz?'))return;rulesData[selCat]=rulesData[selCat].filter(r=>r.id!==id);selRuleId=null;saveRulesToStorage();toast('🗑 O\'chirildi');renderRuleList();document.getElementById('ruleEditContent').innerHTML='<p style="color:var(--mu);font-size:.82rem">Qoida tanlang.</p>';}
+function deleteRule(id){if(!confirm("O'chirmoqchimisiz?"))return;rulesData[selCat]=rulesData[selCat].filter(r=>r.id!==id);selRuleId=null;saveRulesToStorage();toast("🗑 O'chirildi");renderRuleList();document.getElementById('ruleEditContent').innerHTML='<p style="color:var(--mu);font-size:.82rem">Qoida tanlang.</p>';}
 function saveRulesToStorage(){localStorage.setItem('mc_rules',JSON.stringify(rulesData));}
 </script>
 </body>
