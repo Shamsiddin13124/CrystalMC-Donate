@@ -18,7 +18,7 @@ DB_PATH      = "donate.db"
 UPLOAD_FOLDER = "checks"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
-RANK_MAP = {"HEROIC":"heroic","ASPID":"aspid","SKVID":"skvid","GLAVA":"glava","ELITE":"elite","TITAN":"titan","STRIKER":"striker","PRINSS":"prinss","KNYAZ":"knyaz","GERCOG":"gercog"}
+RANK_MAP = {"VIP":"vip","VIP+":"vip_plus","LEGEND":"legend","DONATOR":"donator","GOLD":"gold","NITRO":"nitro","COMET":"comet","HERO":"hero","ULTRA":"ultra","PRIME":"prime"}
 
 # ── DB ──
 def init_db():
@@ -36,16 +36,16 @@ def init_db():
             google_email TEXT, avatar TEXT, active INTEGER DEFAULT 1, created TEXT)""")
         con.execute("""CREATE TABLE IF NOT EXISTS settings (key TEXT PRIMARY KEY, value TEXT)""")
         default_ranks = json.dumps([
-            {"id":"HEROIC","name":"HEROIC","icon":"🟤","lp":"heroic","color":"#c87941","month_price":3000,"life_price":7000},
-            {"id":"ASPID","name":"ASPID","icon":"🟢","lp":"aspid","color":"#55cc66","month_price":7000,"life_price":18000},
-            {"id":"SKVID","name":"SKVID","icon":"🔵","lp":"skvid","color":"#44ccff","month_price":10000,"life_price":25000},
-            {"id":"GLAVA","name":"GLAVA","icon":"🟣","lp":"glava","color":"#cc55ff","month_price":15000,"life_price":50000},
-            {"id":"ELITE","name":"ELITE","icon":"🟠","lp":"elite","color":"#ff9922","month_price":30000,"life_price":75000},
-            {"id":"TITAN","name":"TITAN","icon":"💙","lp":"titan","color":"#66aaff","month_price":40000,"life_price":100000},
-            {"id":"STRIKER","name":"STRIKER","icon":"🔴","lp":"striker","color":"#ff4455","month_price":50000,"life_price":125000},
-            {"id":"PRINSS","name":"PRINSS","icon":"💗","lp":"prinss","color":"#ff55cc","month_price":60000,"life_price":150000},
-            {"id":"KNYAZ","name":"KNYAZ","icon":"👑","lp":"knyaz","color":"#ffcc00","month_price":70000,"life_price":200000},
-            {"id":"GERCOG","name":"GERCOG","icon":"💎","lp":"gercog","color":"#00d4ff","month_price":80000,"life_price":250000}
+            {"id":"VIP",    "name":"VIP",    "icon":"🟢","lp":"vip",      "color":"#00E5FF","month_price":2999, "life_price":5999},
+            {"id":"VIP+",   "name":"VIP+",   "icon":"💎","lp":"vip_plus", "color":"#7B61FF","month_price":5999, "life_price":12999},
+            {"id":"LEGEND", "name":"LEGEND", "icon":"⭐","lp":"legend",   "color":"#FF55CC","month_price":8999, "life_price":20999},
+            {"id":"DONATOR","name":"DONATOR","icon":"💰","lp":"donator",  "color":"#F97316","month_price":9999, "life_price":25999},
+            {"id":"GOLD",   "name":"GOLD",   "icon":"🏆","lp":"gold",     "color":"#FFD700","month_price":14999,"life_price":34999},
+            {"id":"NITRO",  "name":"NITRO",  "icon":"⚡","lp":"nitro",    "color":"#FF4DE6","month_price":17999,"life_price":42999},
+            {"id":"COMET",  "name":"COMET",  "icon":"☄️","lp":"comet",    "color":"#00FFC8","month_price":22999,"life_price":55999},
+            {"id":"HERO",   "name":"HERO",   "icon":"🦸","lp":"hero",     "color":"#44AAFF","month_price":27999,"life_price":79999},
+            {"id":"ULTRA",  "name":"ULTRA",  "icon":"🔥","lp":"ultra",    "color":"#22C55E","month_price":33999,"life_price":99999},
+            {"id":"PRIME",  "name":"PRIME",  "icon":"👑","lp":"prime",    "color":"#FF5533","month_price":49999,"life_price":149999}
         ])
         defaults = {"rcon_host":"localhost","rcon_port":"25575","rcon_password":"",
                     "card_number":"3400 0385 6025 XXXX","card_holder":"MASTERCRAFT ADMIN",
