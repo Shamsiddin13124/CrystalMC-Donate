@@ -26,9 +26,21 @@ def init_db():
         con.execute("""CREATE TABLE IF NOT EXISTS orders (
             id TEXT PRIMARY KEY, nick TEXT NOT NULL, rank TEXT NOT NULL,
             period TEXT, duration TEXT, amount INTEGER NOT NULL,
+            original_amount INTEGER, promo_code TEXT, discount_percent INTEGER DEFAULT 0,
             tg TEXT, check_file TEXT, status TEXT DEFAULT 'pending',
             time TEXT NOT NULL, approved_at TEXT, expires_at TEXT,
             type TEXT DEFAULT 'rank', token_amount TEXT)""")
+        # Migrate existing orders table if needed
+        try: con.execute("ALTER TABLE orders ADD COLUMN original_amount INTEGER")
+        except: pass
+        try: con.execute("ALTER TABLE orders ADD COLUMN promo_code TEXT")
+        except: pass
+        try: con.execute("ALTER TABLE orders ADD COLUMN discount_percent INTEGER DEFAULT 0")
+        except: pass
+        con.execute("""CREATE TABLE IF NOT EXISTS promocodes (
+            code TEXT PRIMARY KEY, discount_percent INTEGER NOT NULL DEFAULT 10,
+            max_uses INTEGER DEFAULT 0, used_count INTEGER DEFAULT 0,
+            active INTEGER DEFAULT 1, created TEXT)""")
         con.execute("""CREATE TABLE IF NOT EXISTS accounts (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             login TEXT UNIQUE NOT NULL, password_hash TEXT, name TEXT,
@@ -304,8 +316,24 @@ def create_order():
     order_type=request.form.get("type","rank")  # rank | token | unban
     token_amount=request.form.get("token_amount","")
     check=request.files.get("check")
+    promo_code=request.form.get("promo_code","").strip().upper()
+    discount_percent=0; original_amount=int(amount)
 
     if not nick: return jsonify({"ok":False,"error":"Nick majburiy"}),400
+
+    # Validate promo code if provided
+    if promo_code:
+        with get_db() as con:
+            prow=con.execute("SELECT * FROM promocodes WHERE code=? AND active=1",(promo_code,)).fetchone()
+        if prow and (prow["max_uses"]==0 or prow["used_count"]<prow["max_uses"]):
+            discount_percent=prow["discount_percent"]
+            original_amount=int(amount)
+            amount=str(int(original_amount*(1-discount_percent/100)))
+            with get_db() as con:
+                con.execute("UPDATE promocodes SET used_count=used_count+1 WHERE code=?",(promo_code,))
+                con.commit()
+        else:
+            promo_code=""  # invalid, ignore silently
 
     check_file=None
     if check and check.filename:
@@ -324,11 +352,22 @@ def create_order():
 
     oid=f"ORD-{int(datetime.datetime.now().timestamp()*1000)}"
     with get_db() as con:
-        con.execute("INSERT INTO orders (id,nick,rank,period,amount,tg,check_file,status,time,type,token_amount) VALUES (?,?,?,?,?,?,?,?,?,?,?)",
-                    (oid,nick,rank,period_label,int(amount),tg,check_file,"pending",
+        con.execute("INSERT INTO orders (id,nick,rank,period,amount,original_amount,promo_code,discount_percent,tg,check_file,status,time,type,token_amount) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                    (oid,nick,rank,period_label,int(amount),original_amount,promo_code or None,discount_percent,tg,check_file,"pending",
                      datetime.datetime.now().strftime("%Y-%m-%d %H:%M"),order_type,token_amount))
         con.commit()
     return jsonify({"ok":True,"id":oid})
+
+@app.route("/api/my-orders")
+def my_orders():
+    nick = request.args.get("nick","").strip()
+    if not nick:
+        return jsonify({"ok":False,"error":"Nick kiritilmagan"}),400
+    with get_db() as con:
+        rows=[dict(r) for r in con.execute(
+            "SELECT id,nick,rank,period,amount,original_amount,promo_code,discount_percent,status,time,approved_at,expires_at,type,token_amount FROM orders WHERE nick=? ORDER BY time DESC LIMIT 50",
+            (nick,)).fetchall()]
+    return jsonify({"ok":True,"orders":rows})
 
 @app.route("/api/orders")
 def list_orders():
@@ -416,6 +455,72 @@ def clear_orders():
             except: pass
         con.execute("DELETE FROM orders"); con.commit()
     return jsonify({"ok":True})
+
+# ── PROMOCODES ──
+@app.route("/api/promocodes/validate", methods=["POST"])
+def validate_promo():
+    d = request.get_json() or {}
+    code = d.get("code", "").strip().upper()
+    if not code:
+        return jsonify({"ok": False, "error": "Promokod kiritilmagan"}), 400
+    with get_db() as con:
+        row = con.execute("SELECT * FROM promocodes WHERE code=?", (code,)).fetchone()
+    if not row:
+        return jsonify({"ok": False, "error": "Promokod topilmadi"}), 404
+    if not row["active"]:
+        return jsonify({"ok": False, "error": "Promokod faol emas"}), 400
+    if row["max_uses"] > 0 and row["used_count"] >= row["max_uses"]:
+        return jsonify({"ok": False, "error": "Promokod limiti tugagan"}), 400
+    return jsonify({"ok": True, "discount_percent": row["discount_percent"], "code": row["code"]})
+
+@app.route("/api/promocodes", methods=["GET"])
+def list_promos():
+    if not check_auth(): return jsonify({"error": "Ruxsat yo'q"}), 403
+    with get_db() as con:
+        rows = [dict(r) for r in con.execute("SELECT * FROM promocodes ORDER BY created DESC").fetchall()]
+    return jsonify({"ok": True, "promocodes": rows})
+
+@app.route("/api/promocodes", methods=["POST"])
+def create_promo():
+    if not check_auth(): return jsonify({"error": "Ruxsat yo'q"}), 403
+    d = request.get_json() or {}
+    code = d.get("code", "").strip().upper()
+    discount = int(d.get("discount_percent", 10))
+    max_uses = int(d.get("max_uses", 0))
+    if not code:
+        return jsonify({"ok": False, "error": "Kod kiritilmagan"}), 400
+    if discount < 1 or discount > 99:
+        return jsonify({"ok": False, "error": "Chegirma 1–99% orasida bo'lishi kerak"}), 400
+    with get_db() as con:
+        try:
+            con.execute("INSERT INTO promocodes (code,discount_percent,max_uses,used_count,active,created) VALUES (?,?,?,0,1,?)",
+                        (code, discount, max_uses, datetime.datetime.now().strftime("%Y-%m-%d %H:%M")))
+            con.commit()
+        except sqlite3.IntegrityError:
+            return jsonify({"ok": False, "error": "Bu promokod allaqachon mavjud"}), 400
+    return jsonify({"ok": True, "message": "Promokod yaratildi"})
+
+@app.route("/api/promocodes/<pcode>", methods=["PUT"])
+def update_promo(pcode):
+    if not check_auth(): return jsonify({"error": "Ruxsat yo'q"}), 403
+    d = request.get_json() or {}
+    with get_db() as con:
+        if "active" in d:
+            con.execute("UPDATE promocodes SET active=? WHERE code=?", (1 if d["active"] else 0, pcode.upper()))
+        if "discount_percent" in d:
+            con.execute("UPDATE promocodes SET discount_percent=? WHERE code=?", (int(d["discount_percent"]), pcode.upper()))
+        if "max_uses" in d:
+            con.execute("UPDATE promocodes SET max_uses=? WHERE code=?", (int(d["max_uses"]), pcode.upper()))
+        con.commit()
+    return jsonify({"ok": True})
+
+@app.route("/api/promocodes/<pcode>", methods=["DELETE"])
+def delete_promo(pcode):
+    if not check_auth(): return jsonify({"error": "Ruxsat yo'q"}), 403
+    with get_db() as con:
+        con.execute("DELETE FROM promocodes WHERE code=?", (pcode.upper(),))
+        con.commit()
+    return jsonify({"ok": True})
 
 # ── RCON ──
 @app.route("/api/rcon/test",methods=["POST"])
