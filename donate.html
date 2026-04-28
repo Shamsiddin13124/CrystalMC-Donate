@@ -725,7 +725,46 @@ input:checked+.tslider::before{transform:translateX(27px);background:var(--gold)
 <script>
 let RANKS=[],PRICES={};
 const tokPrices={1000:5000,2000:10000,5000:25000,10000:50000};
+
+// ════════════════════════════════════
+//  SESSION STORAGE — Akkaunt saqlanib qoladi
+//  - localStorage: TOKEN va user ma'lumoti
+//  - Session check: server-side tekshiruvi
+//  - Auto restore: sahifa yangilanganda qaytadi
+// ════════════════════════════════════
 let curToken=null,curUser=null,_pendingAction=null;
+
+// ════ SESSION STORAGE FUNKSIYALARI ════
+function saveSessionData(){
+  if(curToken&&curUser){
+    localStorage.setItem('_tok',curToken);
+    localStorage.setItem('_usr',JSON.stringify(curUser));
+    localStorage.setItem('_session_time',Date.now().toString());
+  }
+}
+function getSessionData(){
+  return {
+    token: localStorage.getItem('_tok'),
+    user: localStorage.getItem('_usr')?JSON.parse(localStorage.getItem('_usr')):null,
+    time: parseInt(localStorage.getItem('_session_time')||0)
+  };
+}
+function clearSessionData(){
+  localStorage.removeItem('_tok');
+  localStorage.removeItem('_usr');
+  localStorage.removeItem('_session_time');
+}
+function isSessionValid(){
+  const s=getSessionData();
+  if(!s.token||!s.user)return false;
+  // 7 kundan eski session o'chiriladi
+  const maxAge=7*24*60*60*1000;
+  if(Date.now()-s.time>maxAge){
+    clearSessionData();
+    return false;
+  }
+  return true;
+}
 
 let toastT;
 function toast(msg,type=''){clearTimeout(toastT);const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(type?' '+type:'');toastT=setTimeout(()=>t.className='toast',3500);}
@@ -807,7 +846,7 @@ async function doLogin(){
   const btn=document.getElementById('lbtn');btn.disabled=true;btn.textContent='⏳...';
   try{
     const d=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({login:l,password:p})}).then(r=>r.json());
-    if(d.ok){curToken=d.token;curUser=d.user;localStorage.setItem('_tok',curToken);localStorage.setItem('_usr',JSON.stringify(curUser));updateNavUser();closeAuthModal();toast('✅ Xush kelibsiz, '+(curUser.name||curUser.login)+'!','ok');if(_pendingAction){_pendingAction();_pendingAction=null;}}
+    if(d.ok){curToken=d.token;curUser=d.user;saveSessionData();updateNavUser();closeAuthModal();toast('✅ Xush kelibsiz, '+(curUser.name||curUser.login)+'!','ok');if(_pendingAction){_pendingAction();_pendingAction=null;}}
     else{err.textContent=d.error||'Xatolik!';err.style.display='block';}
   }catch{err.textContent="Server bilan aloqa yo'q!";err.style.display='block';}
   btn.disabled=false;btn.textContent='Kirish →';
@@ -830,7 +869,7 @@ async function doRegister(){
 async function onGoogleCredential(resp){
   try{
     const d=await fetch('/api/auth/google',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({token:resp.credential})}).then(r=>r.json());
-    if(d.ok){curToken=d.token;curUser=d.user;localStorage.setItem('_tok',curToken);localStorage.setItem('_usr',JSON.stringify(curUser));updateNavUser();closeAuthModal();toast('✅ Google bilan kirildi!','ok');if(_pendingAction){_pendingAction();_pendingAction=null;}}
+    if(d.ok){curToken=d.token;curUser=d.user;saveSessionData();updateNavUser();closeAuthModal();toast('✅ Google bilan kirildi!','ok');if(_pendingAction){_pendingAction();_pendingAction=null;}}
     else toast('❌ '+(d.error||'Google kirish xatolik'),'err');
   }catch{toast("❌ Server bilan aloqa yo'q!",'err');}
 }
@@ -854,15 +893,42 @@ function updateNavUser(){
     const av=document.getElementById('tnAv');if(av){if(curUser.avatar)av.innerHTML=`<img src="${curUser.avatar}" alt="av"/>`;else av.textContent=(curUser.name||curUser.login).slice(0,2).toUpperCase();}
   }else{if(g)g.style.display='flex';if(u)u.style.display='none';}
 }
-function doLogout(){localStorage.removeItem('_tok');localStorage.removeItem('_usr');curToken=null;curUser=null;updateNavUser();toast('👋 Chiqildi');}
+function doLogout(){clearSessionData();curToken=null;curUser=null;updateNavUser();toast('👋 Chiqildi','ok');}
 
+// ════════════════════════════════════
+//  PAGE LOAD — Auto session restore
+//  - Session tekshiruvi
+//  - Server-side validation
+//  - Auto-login agar valid bo'lsa
+// ════════════════════════════════════
 (async function(){
   try{const pub=await fetch('/api/settings/public').then(r=>r.json());if(pub.google_client_id)loadGoogleSDK(pub.google_client_id);}catch{}
-  const t=localStorage.getItem('_tok');
-  if(t){curToken=t;
-    try{const d=await fetch('/api/auth/me',{headers:{'X-Admin-Token':t}}).then(r=>r.json());if(d.ok){curUser=d.user;localStorage.setItem('_usr',JSON.stringify(curUser));}}
-    catch{localStorage.removeItem('_tok');localStorage.removeItem('_usr');}
-  }else{const us=localStorage.getItem('_usr');if(us)try{curUser=JSON.parse(us);}catch{}}
+  
+  // Saqlangan session ma'lumotini o'qish
+  if(isSessionValid()){
+    const session=getSessionData();
+    curToken=session.token;
+    curUser=session.user;
+    
+    try{
+      // Server-side session tekshiruvi
+      const d=await fetch('/api/auth/me',{headers:{'X-Admin-Token':curToken}}).then(r=>r.json());
+      if(d.ok){
+        curUser=d.user;
+        saveSessionData();
+      }else{
+        clearSessionData();
+        curToken=null;
+        curUser=null;
+      }
+    }catch(e){
+      console.error('Session restore xatoligi:',e);
+      clearSessionData();
+      curToken=null;
+      curUser=null;
+    }
+  }
+  
   updateNavUser();loadPublicSettings();await loadRanks();checkServers();setInterval(checkServers,60000);
 })();
 
