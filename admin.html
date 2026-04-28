@@ -454,9 +454,10 @@ tr:hover td{background:rgba(168,85,247,.04);}
 
 <script>
 // ════════════════════════════════════
-//  BUG FIX: OL/OP hardcode olib tashlandi!
-//  Endi server-side auth ishlaydi.
-//  Istalgan rol (owner/admin/moder/helper) kirishi mumkin.
+//  SESSION STORAGE — Akkaunt saqlanib qoladi
+//  - localStorage: TOKEN va user ma'lumoti
+//  - Session check: server-side tekshiruvi
+//  - Auto restore: sahifa yangilanganda qaytadi
 // ════════════════════════════════════
 let TOKEN=null, curUser=null, curFilter='all', imgId=null;
 let rulesData=JSON.parse(localStorage.getItem('mc_rules')||'null')||getDefaultRules();
@@ -464,6 +465,38 @@ let selCat='asosiy', selRuleId=null;
 const rClr={VIP:'#00E5FF','VIP+':'#7B61FF',LEGEND:'#FF55CC',DONATOR:'#F97316',GOLD:'#FFD700',NITRO:'#FF4DE6',COMET:'#00FFC8',HERO:'#44AAFF',ULTRA:'#22C55E',PRIME:'#FF5533'};
 // Rol darajalari: owner > admin > moder > helper
 const ROLE_LEVEL={owner:4,admin:3,moder:2,helper:1};
+
+// ════ SESSION STORAGE FUNKSIYALARI ════
+function saveSessionData(){
+  if(TOKEN&&curUser){
+    localStorage.setItem('mc_adm',TOKEN);
+    localStorage.setItem('mc_usr',JSON.stringify(curUser));
+    localStorage.setItem('mc_session_time',Date.now().toString());
+  }
+}
+function getSessionData(){
+  return {
+    token: localStorage.getItem('mc_adm'),
+    user: localStorage.getItem('mc_usr')?JSON.parse(localStorage.getItem('mc_usr')):null,
+    time: parseInt(localStorage.getItem('mc_session_time')||0)
+  };
+}
+function clearSessionData(){
+  localStorage.removeItem('mc_adm');
+  localStorage.removeItem('mc_usr');
+  localStorage.removeItem('mc_session_time');
+}
+function isSessionValid(){
+  const s=getSessionData();
+  if(!s.token||!s.user)return false;
+  // 7 kundan eski session o'chiriladi
+  const maxAge=7*24*60*60*1000;
+  if(Date.now()-s.time>maxAge){
+    clearSessionData();
+    return false;
+  }
+  return true;
+}
 
 let tT;
 function toast(msg,type=''){clearTimeout(tT);const t=document.getElementById('toast');t.textContent=msg;t.className='toast show'+(type?' '+type:'');tT=setTimeout(()=>t.className='toast',4000);}
@@ -480,9 +513,7 @@ function toggleSidebar(){document.getElementById('sidebar').classList.toggle('op
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
 
 // ════════════════════════════════════
-//  BUG FIX: Faqat owner emas — istalgan
-//  admin/moder/helper kirishi mumkin!
-//  Rol tekshiruvi server-side.
+//  LOGIN FUNKSIYASI — Session saqlanadi
 // ════════════════════════════════════
 async function doLogin(){
   const l=document.getElementById('li').value.trim(), p=document.getElementById('lp').value;
@@ -495,7 +526,7 @@ async function doLogin(){
       const role=d.user?.role;
       if(!ROLE_LEVEL[role]){err.textContent='Admin paneliga kirish huquqi yo\'q!';err.style.display='block';return;}
       TOKEN=d.token;curUser=d.user;
-      localStorage.setItem('mc_adm',TOKEN);localStorage.setItem('mc_usr',JSON.stringify(curUser));
+      saveSessionData();
       enterAdmin();
     }else{err.textContent=d.error||'Xatolik!';err.style.display='block';}
   }catch{err.textContent="Server bilan aloqa yo'q!";err.style.display='block';}
@@ -529,29 +560,50 @@ function enterAdmin(){
 }
 
 function doLogout(){
-  localStorage.removeItem('mc_adm');localStorage.removeItem('mc_usr');TOKEN=null;curUser=null;
+  clearSessionData();
+  TOKEN=null;
+  curUser=null;
   document.getElementById('adminPage').style.display='none';
   document.getElementById('loginPage').style.display='flex';
   document.getElementById('hamBtn').style.display='none';
+  toast('👋 Chiqildi','ok');
 }
 
 // ════════════════════════════════════
-//  BUG FIX: Session restore — endi
-//  faqat OL login emas, rol tekshiruvi
+//  PAGE LOAD — Auto session restore
+//  - Session tekshiruvi
+//  - Server-side validation
+//  - Auto-login agar valid bo'lsa
 // ════════════════════════════════════
 window.onload=async function(){
   document.getElementById('hamBtn').style.display='none';
-  const t=localStorage.getItem('mc_adm');const u=localStorage.getItem('mc_usr');
-  if(t){
-    TOKEN=t;curUser=u?JSON.parse(u):null;
-    // Rol tekshiruvi
-    if(!curUser||!ROLE_LEVEL[curUser.role]){localStorage.removeItem('mc_adm');localStorage.removeItem('mc_usr');return;}
+  
+  // Saqlangan session ma'lumotini o'qish
+  if(isSessionValid()){
+    const session=getSessionData();
+    TOKEN=session.token;
+    curUser=session.user;
+    
     try{
+      // Server-side session tekshiruvi
       const d=await api('/api/auth/me');
-      if(d.ok&&ROLE_LEVEL[d.user?.role]){curUser=d.user;localStorage.setItem('mc_usr',JSON.stringify(curUser));enterAdmin();}
-      else{localStorage.removeItem('mc_adm');localStorage.removeItem('mc_usr');}
-    }catch{localStorage.removeItem('mc_adm');localStorage.removeItem('mc_usr');}
+      if(d.ok&&ROLE_LEVEL[d.user?.role]){
+        curUser=d.user;
+        saveSessionData();
+        enterAdmin();
+        return;
+      }else{
+        clearSessionData();
+      }
+    }catch(e){
+      console.error('Session restore xatoligi:',e);
+      clearSessionData();
+    }
   }
+  
+  // Session topilmagan yoki xato - login sahifasini ko'rsatish
+  document.getElementById('loginPage').style.display='flex';
+  document.getElementById('adminPage').style.display='none';
 };
 
 function showSec(name,btn){
