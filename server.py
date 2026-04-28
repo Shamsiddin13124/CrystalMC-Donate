@@ -14,8 +14,9 @@ CORS(app, supports_credentials=True)
 
 OWNER_LOGIN  = "echoranger"
 OWNER_PASS   = "shamsiddin1312"
-DB_PATH      = "donate.db"
-UPLOAD_FOLDER = "checks"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH      = os.path.join(BASE_DIR, "donate.db")
+UPLOAD_FOLDER = os.path.join(BASE_DIR, "checks")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 RANK_MAP = {"VIP":"vip","VIP+":"vip_plus","LEGEND":"legend","DONATOR":"donator","GOLD":"gold","NITRO":"nitro","COMET":"comet","HERO":"hero","ULTRA":"ultra","PRIME":"prime"}
