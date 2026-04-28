@@ -448,6 +448,7 @@ input:checked+.tslider::before{transform:translateX(27px);background:var(--gold)
       <button class="tn-btn" id="nb-ranks" onclick="showPage('ranks')">💎 Ranklar</button>
       <button class="tn-btn" id="nb-token" onclick="showPage('token')">🪙 Token</button>
       <button class="tn-btn" id="nb-unban" onclick="showPage('unban')">🔓 Unban</button>
+      <button class="tn-btn" id="nb-orders" onclick="showPage('my-orders')">📦 Buyurtmalarim</button>
       <button class="tn-btn" id="nb-rules" onclick="showPage('rules')">📜 Qoidalar</button>
     </div>
     <div class="tn-right">
@@ -531,6 +532,14 @@ input:checked+.tslider::before{transform:translateX(27px);background:var(--gold)
             <div class="fg2"><label>Muddat</label><select id="f-period"><option value="month">📅 30 Kunlik</option><option value="life">♾️ Butun umrlik</option></select></div>
           </div>
           <div class="fg2"><label>Summa (UZS)</label><input type="number" id="f-amount" placeholder="15000" inputmode="numeric"/></div>
+          <div class="fg2" style="position:relative">
+            <label>Promokod (ixtiyoriy)</label>
+            <div style="display:flex;gap:.5rem">
+              <input type="text" id="f-promo" placeholder="PROMO2025" style="text-transform:uppercase;flex:1" oninput="this.value=this.value.toUpperCase()"/>
+              <button type="button" onclick="applyPromo('f-promo','f-amount','f-promo-result','rank')" style="background:linear-gradient(135deg,rgba(255,215,0,.15),rgba(255,215,0,.08));border:1px solid rgba(255,215,0,.3);color:var(--gold);border-radius:8px;padding:.5rem .9rem;font-family:'Oxanium',monospace;font-size:.72rem;font-weight:800;cursor:pointer;white-space:nowrap">✔ Qo'llash</button>
+            </div>
+            <div id="f-promo-result" style="margin-top:.4rem;font-size:.76rem;min-height:1.2rem"></div>
+          </div>
           <div class="fg2"><label>Telegram (ixtiyoriy)</label><input type="text" id="f-tg" placeholder="@username"/></div>
           <div class="fg2"><label>Chek rasmi</label>
             <div class="file-zone"><input type="file" id="f-check" accept="image/*" onchange="document.getElementById('fname').textContent='📄 '+this.files[0]?.name"/><div style="font-size:1.5rem;margin-bottom:.3rem">📎</div><div style="font-size:.78rem;color:var(--mu)">Bosing yoki suring</div><div class="fname" id="fname"></div></div>
@@ -575,6 +584,14 @@ input:checked+.tslider::before{transform:translateX(27px);background:var(--gold)
             <div class="fg2"><label>To'lov (UZS)</label><input type="number" id="tf-price" value="5000" readonly inputmode="numeric" style="color:var(--gold);border-color:rgba(255,215,0,.22)"/></div>
           </div>
           <div class="fg2"><label>Telegram (ixtiyoriy)</label><input type="text" id="tf-tg" placeholder="@username"/></div>
+          <div class="fg2" style="position:relative">
+            <label>Promokod (ixtiyoriy)</label>
+            <div style="display:flex;gap:.5rem">
+              <input type="text" id="tf-promo" placeholder="PROMO2025" style="text-transform:uppercase;flex:1" oninput="this.value=this.value.toUpperCase()"/>
+              <button type="button" onclick="applyPromo('tf-promo','tf-price','tf-promo-result','token')" style="background:linear-gradient(135deg,rgba(255,215,0,.15),rgba(255,215,0,.08));border:1px solid rgba(255,215,0,.3);color:var(--gold);border-radius:8px;padding:.5rem .9rem;font-family:'Oxanium',monospace;font-size:.72rem;font-weight:800;cursor:pointer;white-space:nowrap">✔ Qo'llash</button>
+            </div>
+            <div id="tf-promo-result" style="margin-top:.4rem;font-size:.76rem;min-height:1.2rem"></div>
+          </div>
           <div class="fg2"><label>Chek rasmi</label>
             <div class="file-zone"><input type="file" id="tf-check" accept="image/*" onchange="document.getElementById('tfname').textContent='📄 '+this.files[0]?.name"/><div style="font-size:1.5rem;margin-bottom:.3rem">📎</div><div style="font-size:.78rem;color:var(--mu)">Bosing yoki suring</div><div class="fname" id="tfname"></div></div>
           </div>
@@ -620,11 +637,44 @@ input:checked+.tslider::before{transform:translateX(27px);background:var(--gold)
           <div class="fg2"><label>Ban bo'lgan Minecraft nickname</label><input type="text" id="uf-nick" placeholder="Steve_pro"/></div>
           <div class="fg2"><label>Telegram (ixtiyoriy)</label><input type="text" id="uf-tg" placeholder="@username"/></div>
           <div class="fg2"><label>Sabab (ixtiyoriy)</label><input type="text" id="uf-reason" placeholder="Nima uchun ban oldingiz?"/></div>
-          <div class="fg2"><label>Chek rasmi (15,000 UZS to'lov)</label>
+          <div class="fg2" style="position:relative">
+            <label>Promokod (ixtiyoriy)</label>
+            <div style="display:flex;gap:.5rem">
+              <input type="text" id="uf-promo" placeholder="PROMO2025" style="text-transform:uppercase;flex:1" oninput="this.value=this.value.toUpperCase()"/>
+              <button type="button" onclick="applyPromo('uf-promo','uf-price','uf-promo-result','unban')" style="background:linear-gradient(135deg,rgba(239,68,68,.15),rgba(239,68,68,.08));border:1px solid rgba(239,68,68,.3);color:var(--rd);border-radius:8px;padding:.5rem .9rem;font-family:'Oxanium',monospace;font-size:.72rem;font-weight:800;cursor:pointer;white-space:nowrap">✔ Qo'llash</button>
+            </div>
+            <div id="uf-promo-result" style="margin-top:.4rem;font-size:.76rem;min-height:1.2rem"></div>
+          </div>
+          <input type="hidden" id="uf-price" value="15000"/>
+          <div class="fg2"><label>Chek rasmi <span id="uf-price-label" style="color:var(--rd)">(15,000 UZS to'lov)</span></label>
             <div class="file-zone" style="border-color:rgba(239,68,68,.2)"><input type="file" id="uf-check" accept="image/*" onchange="document.getElementById('ufname').textContent='📄 '+this.files[0]?.name"/><div style="font-size:1.5rem;margin-bottom:.3rem">📎</div><div style="font-size:.78rem;color:var(--mu)">Bosing yoki suring</div><div class="fname" id="ufname" style="color:var(--rd)"></div></div>
           </div>
           <button class="sub-btn" id="unbanSubBtn" onclick="submitUnban()" style="background:linear-gradient(135deg,#991B1B,#EF4444);box-shadow:0 4px 20px rgba(239,68,68,.4)">🔓 Unban so'rovini yuborish</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MY ORDERS -->
+  <div class="page" id="page-my-orders">
+    <div class="page-inner">
+      <div class="sh">
+        <div class="sh-tag" style="color:var(--gold)">Buyurtmalarim</div>
+        <h2 class="sh-title">📦 Mening <span style="color:var(--gold)">Buyurtmalarim</span></h2>
+        <p class="sh-sub">Barcha xaridlaringiz tarixi — rank, token va unban so'rovlari</p>
+      </div>
+      <div style="max-width:760px;margin:0 auto">
+        <!-- login hint banner -->
+        <div id="mo-login-hint" style="display:none;background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.18);border-radius:10px;padding:.9rem 1.2rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:.8rem;flex-wrap:wrap">
+          <span style="font-size:1.3rem">👑</span>
+          <div style="flex:1;font-size:.8rem;color:var(--mu)">Tezroq ko'rish uchun <b style="color:var(--gold)">kirish</b> qiling — nick avtomatik to'ldiriladi</div>
+          <button onclick="openAuthModal()" style="background:linear-gradient(135deg,var(--gold4),var(--gold3),var(--gold));color:#050300;border:none;border-radius:7px;padding:.4rem 1rem;font-family:'Oxanium',monospace;font-size:.72rem;font-weight:800;cursor:pointer">Kirish →</button>
+        </div>
+        <div style="display:flex;gap:.8rem;align-items:center;margin-bottom:1.4rem;flex-wrap:wrap">
+          <input type="text" id="mo-nick" placeholder="Minecraft nickname kiriting..." style="flex:1;min-width:180px" onkeydown="if(event.key==='Enter')loadMyOrders()"/>
+          <button onclick="loadMyOrders()" style="background:linear-gradient(135deg,var(--gold4),var(--gold3),var(--gold));color:#050300;border:none;border-radius:9px;padding:.62rem 1.3rem;font-family:'Oxanium',monospace;font-size:.78rem;font-weight:800;cursor:pointer;letter-spacing:.06em">🔍 Ko'rish</button>
+        </div>
+        <div id="mo-result"></div>
       </div>
     </div>
   </div>
@@ -657,6 +707,7 @@ input:checked+.tslider::before{transform:translateX(27px);background:var(--gold)
     <button class="mob-btn" id="mb-ranks" onclick="showPage('ranks')"><span>💎</span>Rank</button>
     <button class="mob-btn" id="mb-token" onclick="showPage('token')"><span>🪙</span>Token</button>
     <button class="mob-btn" id="mb-unban" onclick="showPage('unban')"><span>🔓</span>Unban</button>
+    <button class="mob-btn" id="mb-orders" onclick="showPage('my-orders')"><span>📦</span>Buyurtma</button>
     <button class="mob-btn" id="mb-rules" onclick="showPage('rules')"><span>📜</span>Qoidalar</button>
   </div>
 </div>
@@ -827,13 +878,14 @@ async function loadPublicSettings(){
 
 function showPage(name){
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  ['nb-home','nb-ranks','nb-token','nb-unban','nb-rules'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('active');});
-  ['mb-home','mb-ranks','mb-token','mb-unban','mb-rules'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('active');});
+  ['nb-home','nb-ranks','nb-token','nb-unban','nb-orders','nb-rules'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('active');});
+  ['mb-home','mb-ranks','mb-token','mb-unban','mb-orders','mb-rules'].forEach(id=>{const b=document.getElementById(id);if(b)b.classList.remove('active');});
   document.getElementById('page-'+name).classList.add('active');
   const nb=document.getElementById('nb-'+name);if(nb)nb.classList.add('active');
   const mb=document.getElementById('mb-'+name);if(mb)mb.classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
   if(name==='unban')syncUnbanCard();
+  if(name==='my-orders')initMyOrders();
 }
 function showRtab(name,btn){
   document.querySelectorAll('.rsec').forEach(s=>s.classList.remove('active'));
@@ -861,6 +913,38 @@ document.addEventListener('DOMContentLoaded',()=>{
   if(fr)fr.addEventListener('change',function(){const p=fp?.value;if(this.value&&PRICES[this.value])document.getElementById('f-amount').value=PRICES[this.value][p];});
 });
 
+// ── PROMOKOD ──
+const _promoCache={};
+async function applyPromo(promoInputId, amountInputId, resultId, formType){
+  const code=document.getElementById(promoInputId)?.value.trim().toUpperCase();
+  const resultEl=document.getElementById(resultId);
+  if(!resultEl)return;
+  if(!code){resultEl.innerHTML='<span style="color:var(--rd)">❌ Promokod kiritilmagan</span>';return;}
+  resultEl.innerHTML='<span style="color:var(--mu)">⏳ Tekshirilmoqda...</span>';
+  try{
+    const d=await fetch('/api/promocodes/validate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code})}).then(r=>r.json());
+    if(d.ok){
+      _promoCache[formType]={code:d.code,discount:d.discount_percent};
+      // update displayed amount
+      const amtEl=document.getElementById(amountInputId);
+      if(amtEl){
+        const orig=parseFloat(amtEl.dataset.orig||amtEl.value)||0;
+        if(!amtEl.dataset.orig)amtEl.dataset.orig=amtEl.value;
+        const discounted=Math.round(orig*(1-d.discount_percent/100));
+        amtEl.value=discounted;
+        resultEl.innerHTML=`<span style="color:var(--gr)">✅ <b>${d.code}</b> — ${d.discount_percent}% chegirma qo'llandi! <s style="color:var(--mu)">${Number(orig).toLocaleString()}</s> → <b style="color:var(--gold)">${Number(discounted).toLocaleString()} UZS</b></span>`;
+        if(amountInputId==='uf-price'){
+          const lbl=document.getElementById('uf-price-label');
+          if(lbl)lbl.innerHTML=`<s style="color:var(--mu)">15,000</s> → <b style="color:var(--gr)">${Number(discounted).toLocaleString()}</b> UZS`;
+        }
+      }
+    }else{
+      _promoCache[formType]=null;
+      resultEl.innerHTML=`<span style="color:var(--rd)">❌ ${d.error||"Promokod noto'g'ri"}</span>`;
+    }
+  }catch{resultEl.innerHTML='<span style="color:var(--rd)">❌ Server bilan aloqa yo\'q</span>';}
+}
+
 async function submitRank(){
   if(!curUser){openAuthModal(submitRank);return;}
   const nick=document.getElementById('f-nick').value.trim(),rank=document.getElementById('f-rank').value,
@@ -871,8 +955,9 @@ async function submitRank(){
   if(!amount){toast('❌ Summa kiriting!','err');return;}
   const btn=document.getElementById('rankSubBtn');btn.disabled=true;btn.textContent='⏳...';
   const fd=new FormData();fd.append('nick',nick);fd.append('rank',rank);fd.append('period',period);fd.append('amount',amount);fd.append('tg',tg);fd.append('type','rank');if(chk)fd.append('check',chk);
+  const promo=_promoCache['rank'];if(promo){fd.append('promo_code',promo.code);}
   try{const d=await fetch('/api/orders',{method:'POST',body:fd}).then(r=>r.json());
-    if(d.ok){['f-nick','f-rank','f-amount','f-tg'].forEach(id=>document.getElementById(id).value='');document.getElementById('f-check').value='';document.getElementById('fname').textContent='';showSuccess('💎',"Rank so'rovi yuborildi!",'Admin chekni tekshiradi va rank avtomatik beriladi!');}
+    if(d.ok){['f-nick','f-rank','f-amount','f-tg','f-promo'].forEach(id=>{const el=document.getElementById(id);if(el){el.value='';delete el.dataset.orig;}});document.getElementById('f-check').value='';document.getElementById('fname').textContent='';document.getElementById('f-promo-result').innerHTML='';_promoCache['rank']=null;showSuccess('💎',"Rank so'rovi yuborildi!",'Admin chekni tekshiradi va rank avtomatik beriladi!');}
     else toast('❌ '+d.error,'err');
   }catch{toast("❌ Server bilan aloqa yo'q!",'err');}
   btn.disabled=false;btn.textContent="⚡ To'lovni tasdiqlayman";
@@ -892,8 +977,9 @@ async function submitToken(){
   if(!nick){toast('❌ Nickname kiriting!','err');return;}
   const btn=document.getElementById('tokSubBtn');btn.disabled=true;btn.textContent='⏳...';
   const fd=new FormData();fd.append('nick',nick);fd.append('rank','TOKEN_'+amount);fd.append('period','token');fd.append('amount',price);fd.append('tg',tg);fd.append('type','token');fd.append('token_amount',amount);if(chk)fd.append('check',chk);
+  const promo=_promoCache['token'];if(promo){fd.append('promo_code',promo.code);}
   try{const d=await fetch('/api/orders',{method:'POST',body:fd}).then(r=>r.json());
-    if(d.ok){document.getElementById('tf-nick').value='';document.getElementById('tf-tg').value='';document.getElementById('tf-check').value='';document.getElementById('tfname').textContent='';showSuccess('🪙',"Token so'rovi yuborildi!",`Admin ${amount} token berilishini tasdiqlaydi!`);}
+    if(d.ok){['tf-nick','tf-tg','tf-promo'].forEach(id=>{const el=document.getElementById(id);if(el){el.value='';delete el.dataset.orig;}});document.getElementById('tf-check').value='';document.getElementById('tfname').textContent='';document.getElementById('tf-promo-result').innerHTML='';_promoCache['token']=null;showSuccess('🪙',"Token so'rovi yuborildi!",`Admin ${amount} token berilishini tasdiqlaydi!`);}
     else toast('❌ '+d.error,'err');
   }catch{toast("❌ Server bilan aloqa yo'q!",'err');}
   btn.disabled=false;btn.textContent="⚡ To'lovni tasdiqlayman";
@@ -912,10 +998,23 @@ async function submitUnban(){
     reason=document.getElementById('uf-reason').value.trim(),chk=document.getElementById('uf-check').files[0];
   if(!nick){toast('❌ Nickname kiriting!','err');return;}
   const btn=document.getElementById('unbanSubBtn');btn.disabled=true;btn.textContent='⏳...';
-  const fd=new FormData();fd.append('nick',nick);fd.append('rank','UNBAN');fd.append('period','unban');fd.append('amount',15000);fd.append('tg',(tg||reason)?`${tg} | ${reason}`:tg);fd.append('type','unban');if(chk)fd.append('check',chk);
+  const promo=_promoCache['unban'];
+  const priceEl=document.getElementById('uf-price');
+  const finalAmount=priceEl?parseInt(priceEl.value)||15000:15000;
+  const fd=new FormData();fd.append('nick',nick);fd.append('rank','UNBAN');fd.append('period','unban');
+  fd.append('amount',finalAmount);fd.append('tg',(tg||reason)?`${tg} | ${reason}`:tg);fd.append('type','unban');
+  if(chk)fd.append('check',chk);
+  if(promo){fd.append('promo_code',promo.code);}
   try{const d=await fetch('/api/orders',{method:'POST',body:fd}).then(r=>r.json());
-    if(d.ok){document.getElementById('uf-nick').value='';document.getElementById('uf-tg').value='';document.getElementById('uf-reason').value='';document.getElementById('uf-check').value='';document.getElementById('ufname').textContent='';showSuccess('🔓',"Unban so'rovi yuborildi!",'Admin to\'lovni tekshiradi va /unban buyrug\'ini bajaradi!');}
-    else toast('❌ '+d.error,'err');
+    if(d.ok){
+      ['uf-nick','uf-tg','uf-reason','uf-promo'].forEach(id=>{const el=document.getElementById(id);if(el){el.value='';delete el.dataset.orig;}});
+      document.getElementById('uf-check').value='';document.getElementById('ufname').textContent='';
+      document.getElementById('uf-promo-result').innerHTML='';
+      const lbl=document.getElementById('uf-price-label');if(lbl)lbl.innerHTML='(15,000 UZS to\'lov)';
+      if(priceEl)priceEl.value='15000';
+      _promoCache['unban']=null;
+      showSuccess('🔓',"Unban so'rovi yuborildi!",'Admin to\'lovni tekshiradi va /unban buyrug\'ini bajaradi!');
+    }else toast('❌ '+d.error,'err');
   }catch{toast("❌ Server bilan aloqa yo'q!",'err');}
   btn.disabled=false;btn.textContent="🔓 Unban so'rovini yuborish";
 }
@@ -927,6 +1026,67 @@ function showSuccess(icon,title,msg){
   document.getElementById('sucModal').classList.add('open');
 }
 
+// ── MY ORDERS ──
+function initMyOrders(){
+  const input=document.getElementById('mo-nick');
+  const hint=document.getElementById('mo-login-hint');
+  if(curUser){
+    // logged in — hide hint, auto-fill nick
+    if(hint)hint.style.display='none';
+    if(input&&!input.value){
+      const nick=curUser.login||curUser.name||'';
+      if(nick)input.value=nick;
+    }
+    if(input&&input.value)loadMyOrders();
+  } else {
+    // not logged in — show hint
+    if(hint)hint.style.display='flex';
+  }
+}
+
+async function loadMyOrders(){
+  const nick=document.getElementById('mo-nick')?.value.trim();
+  const result=document.getElementById('mo-result');
+  if(!nick){if(result)result.innerHTML='<p style="color:var(--rd);font-size:.85rem">❌ Nickname kiriting!</p>';return;}
+  if(result)result.innerHTML='<p style="color:var(--mu);font-size:.85rem">⏳ Yuklanmoqda...</p>';
+  try{
+    const d=await fetch(`/api/my-orders?nick=${encodeURIComponent(nick)}`).then(r=>r.json());
+    if(!d.ok||!d.orders.length){
+      result.innerHTML=`<div style="text-align:center;padding:2.5rem 1rem;color:var(--mu)"><div style="font-size:2.5rem;margin-bottom:.8rem">📭</div><div style="font-family:'Oxanium',monospace;font-weight:700">"${nick}" uchun buyurtma topilmadi</div></div>`;
+      return;
+    }
+    const statusMap={pending:'🟡 Kutilmoqda',approved:'✅ Tasdiqlandi',rejected:'❌ Rad etildi',expired:'⏰ Muddati tugagan'};
+    const typeIcon={rank:'💎',token:'🪙',unban:'🔓'};
+    result.innerHTML=`
+      <div style="font-size:.75rem;color:var(--mu);margin-bottom:1rem;font-family:'Oxanium',monospace">
+        👤 <b style="color:var(--gold)">${nick}</b> — ${d.orders.length} ta buyurtma topildi
+      </div>
+      ${d.orders.map(o=>{
+        const icon=typeIcon[o.type]||'📦';
+        const status=statusMap[o.status]||o.status;
+        const statusColor={pending:'var(--gold)',approved:'var(--gr)',rejected:'var(--rd)',expired:'var(--mu)'}[o.status]||'var(--mu)';
+        const hasDiscount=o.promo_code&&o.discount_percent>0;
+        return `<div style="background:var(--sf2);border:1px solid ${o.status==='approved'?'rgba(34,197,94,.18)':o.status==='rejected'?'rgba(239,68,68,.15)':'var(--br)'};border-radius:12px;padding:1rem 1.2rem;margin-bottom:.8rem;display:flex;gap:1rem;align-items:flex-start;flex-wrap:wrap">
+          <div style="font-size:1.8rem;flex-shrink:0">${icon}</div>
+          <div style="flex:1;min-width:180px">
+            <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin-bottom:.35rem">
+              <span style="font-family:'Oxanium',monospace;font-weight:800;font-size:.92rem;color:var(--gold)">${o.rank==='UNBAN'?'UNBAN':o.rank==='TOKEN_'+o.token_amount?o.token_amount+' Token':o.rank}</span>
+              ${o.period&&o.period!=='unban'&&o.period!=='token'?`<span style="font-size:.68rem;color:var(--mu);background:rgba(255,255,255,.04);border:1px solid var(--br);border-radius:4px;padding:.1rem .45rem">${o.period}</span>`:''}
+              <span style="font-size:.7rem;font-weight:700;color:${statusColor}">${status}</span>
+            </div>
+            <div style="font-size:.75rem;color:var(--mu)">
+              ${hasDiscount?`<span style="color:var(--gr)">🎟️ ${o.promo_code} (-${o.discount_percent}%)</span> &nbsp;
+              <s style="color:var(--mu)">${Number(o.original_amount||o.amount).toLocaleString()}</s> → `:``}
+              <b style="color:var(--gold)">${Number(o.amount).toLocaleString()} UZS</b>
+              &nbsp;|&nbsp; 📅 ${o.time}
+              ${o.approved_at?` &nbsp;|&nbsp; ✅ ${o.approved_at}`:''}
+              ${o.expires_at?` &nbsp;|&nbsp; ⏰ ${o.expires_at} gacha`:''}
+            </div>
+          </div>
+        </div>`;
+      }).join('')}`;
+  }catch{result.innerHTML='<p style="color:var(--rd);font-size:.85rem">❌ Server bilan aloqa yo\'q!</p>';}
+}
 /* Gold particles + shooting stars */
 (function(){
   const c=document.createElement('canvas');
