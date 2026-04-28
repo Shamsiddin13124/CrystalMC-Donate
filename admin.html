@@ -247,6 +247,7 @@ tr:hover td{background:rgba(168,85,247,.04);}
       <div class="ng">Boshqaruv</div>
       <button class="snav" onclick="showSec('accounts',this)" id="navAccounts">👤 Akkauntlar</button>
       <button class="snav" onclick="showSec('ranks',this)">💎 Ranklar</button>
+      <button class="snav" onclick="showSec('promos',this)">🎟️ Promokodlar</button>
       <button class="snav" onclick="showSec('rules',this)">📜 Qoidalar</button>
       <div class="ng">Server</div>
       <button class="snav" onclick="showSec('settings',this)" id="navSettings">⚙️ Sozlamalar</button>
@@ -384,6 +385,29 @@ tr:hover td{background:rgba(168,85,247,.04);}
           <div class="fg2"><label>Yangi parol</label><input type="password" id="s-new-pass" placeholder="Yangi kuchli parol"/></div>
           <div class="fg2"><label>Tasdiqlash</label><input type="password" id="s-conf-pass" placeholder="Parolni qayta kiriting"/></div>
           <button class="abtn" onclick="changePassword()">🔒 O'zgartirish</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROMOCODES -->
+    <div class="sec" id="sec-promos">
+      <div class="mhdr">
+        <div><div class="pt">Promokodlar</div><div class="ps">Chegirmali promokodlarni boshqaring</div></div>
+        <button onclick="loadPromos()" style="background:rgba(168,85,247,.1);border:1px solid var(--br);color:var(--pu);border-radius:6px;padding:.32rem .82rem;font-family:'Oxanium',monospace;font-size:.67rem;font-weight:700;cursor:pointer">🔄 Yangilash</button>
+      </div>
+      <div class="gr2">
+        <div class="fbox">
+          <h3>➕ Yangi Promokod</h3>
+          <div id="promoErr" style="background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);border-radius:8px;padding:.65rem 1rem;color:var(--rd);font-size:.83rem;font-weight:600;margin-bottom:.9rem;display:none"></div>
+          <div id="promoSuc" style="background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:8px;padding:.65rem 1rem;color:var(--gr);font-size:.83rem;font-weight:600;margin-bottom:.9rem;display:none"></div>
+          <div class="fg2"><label>Promokod (lotin harflar)</label><input type="text" id="pc-code" placeholder="SUMMER25" style="text-transform:uppercase"/></div>
+          <div class="fg2"><label>Chegirma foizi (%)</label><input type="number" id="pc-discount" placeholder="10" min="1" max="99" value="10"/></div>
+          <div class="fg2"><label>Ishlatish limiti (0 = cheksiz)</label><input type="number" id="pc-maxuses" placeholder="0" min="0" value="0"/></div>
+          <button class="abtn" onclick="createPromo()" style="width:100%">🎟️ Promokod yaratish</button>
+        </div>
+        <div class="fbox">
+          <h3>📋 Barcha Promokodlar</h3>
+          <div id="promoList"><p style="color:var(--mu);font-size:.85rem">Yuklanmoqda...</p></div>
         </div>
       </div>
     </div>
@@ -541,6 +565,7 @@ function showSec(name,btn){
   if(name==='settings')loadSettings();
   if(name==='rules')renderRules();
   if(name==='ranks')loadRanksMgr();
+  if(name==='promos')loadPromos();
 }
 
 // RCON
@@ -620,7 +645,7 @@ function renderOrders(orders){
     const acts=o.status==='pending'
       ?`<div class="ar"><button class="ab bvw" onclick="viewCheck('${o.id}','${o.nick}')">👁</button><button class="ab bap" id="a${o.id}" onclick="approveOrder('${o.id}')">✅</button><button class="ab brj" onclick="rejectOrder('${o.id}')">❌</button></div>${cmdBox}`
       :`<div class="ar"><button class="ab bvw" onclick="viewCheck('${o.id}','${o.nick}')">👁</button><button class="ab bun" onclick="resetOrder('${o.id}')">↩</button><button class="ab bdl" onclick="deleteOrder('${o.id}')">🗑</button></div>`;
-    return `<tr><td style="color:var(--mu);font-size:.73rem">${i+1}</td><td class="nc">${o.nick}</td><td>${badge}</td><td style="font-size:.77rem">${o.period||'—'}</td><td class="ac">${Number(o.amount).toLocaleString()} UZS</td><td style="color:var(--mu);font-size:.77rem">${o.tg||'—'}</td><td>${o.check_url?`<button class="ab bvw" onclick="viewCheck('${o.id}','${o.nick}')">📷</button>`:'—'}</td><td>${sm[o.status]||o.status}</td><td class="tc">${o.time}</td><td>${acts}</td></tr>`;
+    return `<tr><td style="color:var(--mu);font-size:.73rem">${i+1}</td><td class="nc">${o.nick}</td><td>${badge}</td><td style="font-size:.77rem">${o.period||'—'}</td><td class="ac">${o.promo_code?`<span style="color:var(--gr);font-size:.7rem">🎟️${o.promo_code} -${o.discount_percent}%</span><br><s style="color:var(--mu);font-size:.7rem">${Number(o.original_amount||o.amount).toLocaleString()}</s> `:''}<b>${Number(o.amount).toLocaleString()} UZS</b></td><td style="color:var(--mu);font-size:.77rem">${o.tg||'—'}</td><td>${o.check_url?`<button class="ab bvw" onclick="viewCheck('${o.id}','${o.nick}')">📷</button>`:'—'}</td><td>${sm[o.status]||o.status}</td><td class="tc">${o.time}</td><td>${acts}</td></tr>`;
   }).join('');
 }
 function setFilter(f){
@@ -815,6 +840,73 @@ function addRule(){const rules=rulesData[selCat];const last=rules[rules.length-1
 function saveRule(oldId){const nid=document.getElementById('re-id').value.trim();const txt=document.getElementById('re-txt').value.trim();const pen=document.getElementById('re-pen').value.trim();const rules=rulesData[selCat];const idx=rules.findIndex(r=>r.id===oldId);if(idx>=0){rules[idx]={id:nid,text:txt,pen};selRuleId=nid;}saveRulesToStorage();toast('✅ Saqlandi','ok');renderRuleList();}
 function deleteRule(id){if(!confirm("O'chirmoqchimisiz?"))return;rulesData[selCat]=rulesData[selCat].filter(r=>r.id!==id);selRuleId=null;saveRulesToStorage();toast("🗑 O'chirildi");renderRuleList();document.getElementById('ruleEditContent').innerHTML='<p style="color:var(--mu);font-size:.82rem">Qoida tanlang.</p>';}
 function saveRulesToStorage(){localStorage.setItem('mc_rules',JSON.stringify(rulesData));}
+
+// ── PROMOCODES ──
+async function loadPromos(){
+  try{
+    const d=await api('/api/promocodes');
+    if(!d.ok)return;
+    const list=document.getElementById('promoList');
+    if(!d.promocodes.length){list.innerHTML='<p style="color:var(--mu);font-size:.85rem">Hech qanday promokod yo\'q.</p>';return;}
+    list.innerHTML=d.promocodes.map(p=>`
+      <div style="background:var(--sf2);border:1px solid ${p.active?'rgba(255,215,0,.18)':'rgba(239,68,68,.18)'};border-radius:10px;padding:.85rem 1rem;margin-bottom:.6rem;display:flex;align-items:center;gap:.7rem;flex-wrap:wrap">
+        <div style="flex:1;min-width:120px">
+          <div style="font-family:'Oxanium',monospace;font-weight:800;font-size:.95rem;color:${p.active?'var(--gold)':'var(--rd)'}">🎟️ ${p.code}</div>
+          <div style="font-size:.72rem;color:var(--mu);margin-top:.2rem">
+            Chegirma: <b style="color:var(--gr)">${p.discount_percent}%</b> &nbsp;|&nbsp;
+            Ishlatilgan: <b>${p.used_count}</b>${p.max_uses>0?' / '+p.max_uses:' (cheksiz)'} &nbsp;|&nbsp;
+            <span style="color:${p.active?'var(--gr)':'var(--rd)'}">${p.active?'✅ Faol':'❌ Faol emas'}</span>
+          </div>
+          <div style="font-size:.65rem;color:var(--mu);margin-top:.12rem">Yaratilgan: ${p.created||'—'}</div>
+        </div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap">
+          <button onclick="togglePromo('${p.code}',${p.active})" style="background:${p.active?'rgba(239,68,68,.1)':'rgba(34,197,94,.1)'};border:1px solid ${p.active?'rgba(239,68,68,.25)':'rgba(34,197,94,.25)'};color:${p.active?'var(--rd)':'var(--gr)'};border-radius:5px;padding:.25rem .65rem;font-family:'Oxanium',monospace;font-size:.65rem;font-weight:700;cursor:pointer">${p.active?'⏸ O\'chir':'▶ Yoq'}</button>
+          <button onclick="editPromoDiscount('${p.code}',${p.discount_percent})" style="background:rgba(255,215,0,.07);border:1px solid rgba(255,215,0,.18);color:var(--gold);border-radius:5px;padding:.25rem .65rem;font-family:'Oxanium',monospace;font-size:.65rem;font-weight:700;cursor:pointer">✏️ Tahrir</button>
+          <button onclick="deletePromo('${p.code}')" style="background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);color:var(--rd);border-radius:5px;padding:.25rem .65rem;font-family:'Oxanium',monospace;font-size:.65rem;font-weight:700;cursor:pointer">🗑</button>
+        </div>
+      </div>`).join('');
+  }catch(e){toast('❌ Xatolik: '+e,'err');}
+}
+
+async function createPromo(){
+  const code=document.getElementById('pc-code').value.trim().toUpperCase();
+  const discount=parseInt(document.getElementById('pc-discount').value)||10;
+  const maxUses=parseInt(document.getElementById('pc-maxuses').value)||0;
+  const err=document.getElementById('promoErr'),suc=document.getElementById('promoSuc');
+  err.style.display='none';suc.style.display='none';
+  if(!code){err.textContent='Promokod kiritilmagan!';err.style.display='block';return;}
+  if(discount<1||discount>99){err.textContent='Chegirma 1–99% orasida bo\'lishi kerak!';err.style.display='block';return;}
+  try{
+    const d=await api('/api/promocodes','POST',{code,discount_percent:discount,max_uses:maxUses});
+    if(d.ok){
+      suc.textContent='✅ Promokod yaratildi: '+code+' ('+discount+'% chegirma)';suc.style.display='block';
+      document.getElementById('pc-code').value='';
+      document.getElementById('pc-discount').value='10';
+      document.getElementById('pc-maxuses').value='0';
+      loadPromos();
+    }else{err.textContent='❌ '+(d.error||'Xatolik');err.style.display='block';}
+  }catch(e){err.textContent='❌ Server xatoligi';err.style.display='block';}
+}
+
+async function togglePromo(code,active){
+  try{const d=await api(`/api/promocodes/${code}`,'PUT',{active:!active});if(d.ok){toast(active?'⏸ O\'chirildi':'✅ Yoqildi');loadPromos();}else toast('❌ '+(d.error||'Xatolik'),'err');}
+  catch{toast('❌ Xatolik','err');}
+}
+
+async function editPromoDiscount(code,currentDiscount){
+  const val=prompt(`"${code}" uchun yangi chegirma foizi (hozir: ${currentDiscount}%):`,currentDiscount);
+  if(val===null)return;
+  const disc=parseInt(val);
+  if(isNaN(disc)||disc<1||disc>99){toast('❌ 1–99% orasida kiriting','err');return;}
+  try{const d=await api(`/api/promocodes/${code}`,'PUT',{discount_percent:disc});if(d.ok){toast('✅ Chegirma yangilandi','ok');loadPromos();}else toast('❌ '+(d.error||'Xatolik'),'err');}
+  catch{toast('❌ Xatolik','err');}
+}
+
+async function deletePromo(code){
+  if(!confirm(`"${code}" promokodini o'chirmoqchimisiz?`))return;
+  try{const d=await api(`/api/promocodes/${code}`,'DELETE');if(d.ok){toast("🗑 Promokod o'chirildi");loadPromos();}else toast('❌ '+(d.error||'Xatolik'),'err');}
+  catch{toast('❌ Xatolik','err');}
+}
 </script>
 </body>
 </html>
